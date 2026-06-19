@@ -1,0 +1,456 @@
+// ============================================
+// RoomieBU — Prisma Schema
+// Bennett University Roommate Matching Platform
+// ============================================
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+// ============================================
+// Enums
+// ============================================
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum GenderPreference {
+  MALE
+  FEMALE
+  ANY
+}
+
+enum AccommodationType {
+  HOSTEL
+  FLAT
+  NOT_SURE
+}
+
+enum FrequencyLevel {
+  NEVER
+  OCCASIONALLY
+  REGULARLY
+}
+
+enum SleepSchedule {
+  MORNING_PERSON
+  NIGHT_PERSON
+  DEPENDS
+}
+
+enum StudyEnvironment {
+  SILENT
+  MODERATE
+  DOESNT_MATTER
+}
+
+enum GuestsPreference {
+  NEVER
+  OCCASIONALLY
+  FREQUENTLY
+}
+
+enum ListingStatus {
+  ACTIVE
+  FILLED
+  CLOSED
+  EXPIRED
+  DELETED
+}
+
+enum UrgencyStatus {
+  LOOKING_URGENTLY
+  WITHIN_1_MONTH
+  JUST_EXPLORING
+}
+
+enum OccupancyType {
+  SINGLE
+  DOUBLE
+  TRIPLE
+}
+
+enum PropertyType {
+  APARTMENT
+  BUILDER_FLOOR
+  INDEPENDENT_HOUSE
+}
+
+enum FurnishedStatus {
+  FURNISHED
+  SEMI_FURNISHED
+  UNFURNISHED
+}
+
+enum InterestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum ReportReason {
+  SPAM
+  FAKE_LISTING
+  HARASSMENT
+  SCAM
+  INAPPROPRIATE_CONTENT
+  OTHER
+}
+
+enum ReportTargetType {
+  USER
+  LISTING
+}
+
+enum AdminActionType {
+  SUSPEND_USER
+  BAN_USER
+  RESTORE_USER
+  REMOVE_LISTING
+  RESTORE_LISTING
+  RESOLVE_REPORT
+}
+
+enum NotificationType {
+  NEW_INTEREST
+  INTEREST_ACCEPTED
+  INTEREST_REJECTED
+  LISTING_EXPIRING
+  LISTING_FILLED
+  LISTING_REPORTED
+}
+
+// ============================================
+// Auth.js Models
+// ============================================
+
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(USER)
+  isOnboarded   Boolean   @default(false)
+  isSuspended   Boolean   @default(false)
+  isBanned      Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  profile       Profile?
+  listings      Listing[]
+  interests     ListingInterest[]
+  matchesAsA    Match[]           @relation("MatchUserA")
+  matchesAsB    Match[]           @relation("MatchUserB")
+  savedListings SavedListing[]
+  notifications Notification[]
+  reportsFiled  Report[]          @relation("ReportsFiled")
+  reportsAgainst Report[]         @relation("ReportsAgainst")
+  adminActions  AdminAction[]     @relation("AdminActions")
+  auditLogs     AuditLog[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================
+// Profile
+// ============================================
+
+model Profile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Basic Info
+  phone  String?
+  gender Gender?
+  dob    DateTime?
+  course String?
+  year   String?
+
+  // Lifestyle
+  smoking    FrequencyLevel @default(NEVER)
+  vaping     FrequencyLevel @default(NEVER)
+  drinking   FrequencyLevel @default(NEVER)
+  otherHabits String?
+
+  // Preferences
+  sleepSchedule     SleepSchedule    @default(DEPENDS)
+  cleanlinessLevel  Int              @default(3) // 1-5
+  studyEnvironment  StudyEnvironment @default(DOESNT_MATTER)
+  guestsPreference  GuestsPreference @default(OCCASIONALLY)
+
+  // About
+  languages    String[] @default([])
+  aboutMe      String?  @db.VarChar(300)
+  profilePhoto String?
+
+  // Accommodation
+  accommodationType AccommodationType @default(NOT_SURE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("profiles")
+}
+
+// ============================================
+// Listings
+// ============================================
+
+model Listing {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Common
+  title             String
+  accommodationType AccommodationType
+  numberRequired    Int                @default(1)
+  spotsFilled       Int                @default(0)
+  genderPreference  GenderPreference   @default(ANY)
+  currentStatus     UrgencyStatus      @default(JUST_EXPLORING)
+  moveInDate        DateTime?
+  description       String?            @db.Text
+
+  // Status
+  status    ListingStatus @default(ACTIVE)
+  expiresAt DateTime?
+
+  // Hostel-specific
+  occupancyType OccupancyType?
+  hostelBlock   String?
+
+  // Flat-specific
+  location       String?
+  minBudget      Int?
+  maxBudget      Int?
+  propertyType   PropertyType?
+  furnishedStatus FurnishedStatus?
+
+  // Soft delete
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  interests     ListingInterest[]
+  matches       Match[]
+  savedBy       SavedListing[]
+  reportsAgainst Report[]
+
+  @@index([status])
+  @@index([accommodationType])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("listings")
+}
+
+// ============================================
+// Interest System
+// ============================================
+
+model ListingInterest {
+  id               String         @id @default(uuid())
+  listingId        String
+  listing          Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  interestedUserId String
+  interestedUser   User           @relation(fields: [interestedUserId], references: [id], onDelete: Cascade)
+  status           InterestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([listingId, interestedUserId])
+  @@index([listingId])
+  @@index([interestedUserId])
+  @@map("listing_interests")
+}
+
+// ============================================
+// Matches
+// ============================================
+
+model Match {
+  id        String  @id @default(uuid())
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  userAId   String  // listing owner
+  userA     User    @relation("MatchUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userBId   String  // interested user
+  userB     User    @relation("MatchUserB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  acceptedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([listingId, userAId, userBId])
+  @@index([userAId])
+  @@index([userBId])
+  @@map("matches")
+}
+
+// ============================================
+// Saved Listings
+// ============================================
+
+model SavedListing {
+  id        String  @id @default(uuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, listingId])
+  @@map("saved_listings")
+}
+
+// ============================================
+// Notifications
+// ============================================
+
+model Notification {
+  id       String           @id @default(uuid())
+  userId   String
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type     NotificationType
+  title    String
+  message  String
+  isRead   Boolean          @default(false)
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ============================================
+// Reports
+// ============================================
+
+model Report {
+  id           String           @id @default(uuid())
+  reporterId   String
+  reporter     User             @relation("ReportsFiled", fields: [reporterId], references: [id], onDelete: Cascade)
+  targetType   ReportTargetType
+  targetUserId String?
+  targetUser   User?            @relation("ReportsAgainst", fields: [targetUserId], references: [id], onDelete: SetNull)
+  targetListingId String?
+  targetListing   Listing?      @relation(fields: [targetListingId], references: [id], onDelete: SetNull)
+  reason       ReportReason
+  notes        String?          @db.Text
+  isResolved   Boolean          @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminActions AdminAction[]
+
+  @@index([isResolved])
+  @@map("reports")
+}
+
+// ============================================
+// Admin
+// ============================================
+
+model AdminAction {
+  id             String          @id @default(uuid())
+  adminId        String
+  admin          User            @relation("AdminActions", fields: [adminId], references: [id], onDelete: Cascade)
+  actionType     AdminActionType
+  targetUserId   String?
+  targetListingId String?
+  reportId       String?
+  report         Report?         @relation(fields: [reportId], references: [id], onDelete: SetNull)
+  reason         String?
+  metadata       Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@map("admin_actions")
+}
+
+model AuditLog {
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action   String
+  entity   String
+  entityId String
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([entity, entityId])
+  @@map("audit_logs")
+}
