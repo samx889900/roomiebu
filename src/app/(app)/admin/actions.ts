@@ -165,6 +165,18 @@ export async function adminRestoreListing(listingId: string) {
   revalidatePath("/admin/listings");
 }
 
+export async function getAdminUserById(id: string) {
+  await requireAdmin();
+
+  return prisma.user.findUnique({
+    where: { id },
+    include: {
+      profile: true,
+      _count: { select: { listings: true, matchesAsA: true, matchesAsB: true } },
+    },
+  });
+}
+
 export async function getAdminUsers(search?: string) {
   await requireAdmin();
 
