@@ -13,6 +13,13 @@ export async function createListing(data: ListingFormData) {
 
   const validated = listingSchema.parse(data);
 
+  // Auto-set occupancyType for hostel listings
+  const occupancyType = validated.accommodationType === "HOSTEL" ? "TRIPLE" : (validated.occupancyType || null);
+
+  // Clean NaN values from number fields
+  const minBudget = validated.minBudget && !isNaN(validated.minBudget) ? validated.minBudget : null;
+  const maxBudget = validated.maxBudget && !isNaN(validated.maxBudget) ? validated.maxBudget : null;
+
   const listing = await prisma.listing.create({
     data: {
       userId: session.user.id,
@@ -24,11 +31,11 @@ export async function createListing(data: ListingFormData) {
       currentStatus: validated.currentStatus,
       moveInDate: validated.moveInDate ? new Date(validated.moveInDate) : null,
       description: validated.description || null,
-      occupancyType: validated.occupancyType || null,
+      occupancyType,
       hostelBlock: validated.hostelBlock || null,
       location: validated.location || null,
-      minBudget: validated.minBudget || null,
-      maxBudget: validated.maxBudget || null,
+      minBudget,
+      maxBudget,
       propertyType: validated.propertyType || null,
       furnishedStatus: validated.furnishedStatus || null,
       expiresAt: new Date(Date.now() + LISTING_EXPIRY_DAYS * 24 * 60 * 60 * 1000),

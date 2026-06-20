@@ -55,10 +55,20 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         collapsed ? "w-[84px]" : "w-[288px]"
       )}
     >
-      <div className="flex h-20 items-center justify-between border-b border-border/70 px-5">
-        <Link href="/listings" className="flex items-center gap-3 overflow-hidden">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl gradient-primary text-white">
-            <Building2 className="h-6 w-6" />
+      {/* Header */}
+      <div className={cn(
+        "flex h-20 items-center border-b border-border/70 shrink-0",
+        collapsed ? "justify-center px-2" : "justify-between px-5"
+      )}>
+        <Link href="/listings" className={cn(
+          "flex items-center overflow-hidden",
+          collapsed ? "justify-center" : "gap-3"
+        )}>
+          <div className={cn(
+            "flex items-center justify-center rounded-2xl gradient-primary text-white shrink-0",
+            collapsed ? "h-10 w-10" : "h-12 w-12"
+          )}>
+            <Building2 className={cn(collapsed ? "h-5 w-5" : "h-6 w-6")} />
           </div>
           {!collapsed && (
             <div className="min-w-0">
@@ -67,13 +77,21 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             </div>
           )}
         </Link>
-        <Button variant="ghost" size="icon-sm" onClick={onToggle} className="hidden lg:inline-flex">
-          <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
-        </Button>
+        {!collapsed && (
+          <Button variant="ghost" size="icon-sm" onClick={onToggle} className="hidden lg:inline-flex shrink-0">
+            <ChevronLeft className="h-4 w-4 transition-transform" />
+          </Button>
+        )}
+        {collapsed && (
+          <Button variant="ghost" size="icon-sm" onClick={onToggle} className="hidden lg:inline-flex absolute right-1 top-7">
+            <ChevronLeft className="h-4 w-4 rotate-180 transition-transform" />
+          </Button>
+        )}
       </div>
 
-      <ScrollArea className="flex-1 px-4 py-5">
-        <nav className="space-y-1.5">
+      {/* Nav */}
+      <ScrollArea className="flex-1 py-5">
+        <nav className={cn("space-y-1.5", collapsed ? "px-2" : "px-4")}>
           {NAV_ITEMS.map((item) => {
             const Icon = iconMap[item.icon] || LayoutGrid;
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -82,7 +100,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               <Link key={item.href} href={item.href}>
                 <div
                   className={cn(
-                    "flex items-center gap-3 rounded-full px-4 py-3 text-sm font-medium transition-all",
+                    "flex items-center gap-3 rounded-full text-sm font-medium transition-all",
+                    collapsed ? "justify-center px-0 py-3" : "px-4 py-3",
                     isActive
                       ? "bg-[#fff1f3] text-primary"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -105,7 +124,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 Admin
               </div>
             )}
-            <nav className="space-y-1.5">
+            <nav className={cn("space-y-1.5", collapsed ? "px-2" : "px-4")}>
               {ADMIN_NAV_ITEMS.map((item) => {
                 const Icon = iconMap[item.icon] || BarChart3;
                 const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -114,7 +133,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                   <Link key={item.href} href={item.href}>
                     <div
                       className={cn(
-                        "flex items-center gap-3 rounded-full px-4 py-3 text-sm font-medium transition-all",
+                        "flex items-center gap-3 rounded-full text-sm font-medium transition-all",
+                        collapsed ? "justify-center px-0 py-3" : "px-4 py-3",
                         isActive
                           ? "bg-[#fff1f3] text-primary"
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -131,9 +151,13 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         )}
       </ScrollArea>
 
-      <div className="border-t border-border/70 p-4">
-        <div className={cn("surface-subtle flex items-center gap-3 p-3", collapsed && "justify-center px-2") }>
-          <Avatar className="h-11 w-11 shrink-0">
+      {/* Footer */}
+      <div className={cn("border-t border-border/70", collapsed ? "p-2" : "p-4")}>
+        <div className={cn(
+          "surface-subtle flex items-center",
+          collapsed ? "justify-center p-2" : "gap-3 p-3"
+        )}>
+          <Avatar className={cn("shrink-0", collapsed ? "h-9 w-9" : "h-11 w-11")}>
             <AvatarImage src={session?.user?.image || ""} />
             <AvatarFallback className="bg-primary/10 text-primary text-xs">
               {session?.user?.name ? getInitials(session.user.name) : "?"}

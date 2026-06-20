@@ -29,6 +29,7 @@ export default function CreateListingPage() {
       spotsFilled: 0,
       genderPreference: "ANY",
       currentStatus: "JUST_EXPLORING",
+      occupancyType: "TRIPLE",
     },
   });
 
@@ -37,11 +38,23 @@ export default function CreateListingPage() {
   async function onSubmit(data: ListingFormData) {
     setLoading(true);
     try {
+      // Auto-set occupancyType to TRIPLE for hostel
+      if (data.accommodationType === "HOSTEL") {
+        data.occupancyType = "TRIPLE";
+      }
+      // Clean up NaN values from empty number inputs
+      if (data.minBudget !== undefined && isNaN(data.minBudget as number)) {
+        data.minBudget = undefined;
+      }
+      if (data.maxBudget !== undefined && isNaN(data.maxBudget as number)) {
+        data.maxBudget = undefined;
+      }
       await createListing(data);
-      toast.success("Listing created");
+      toast.success("Listing created!");
       router.push("/my-listings");
     } catch (error) {
-      toast.error("Failed to create listing");
+      const message = error instanceof Error ? error.message : "Failed to create listing";
+      toast.error(message);
       console.error(error);
     } finally {
       setLoading(false);
@@ -128,7 +141,7 @@ export default function CreateListingPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Move-in date</Label>
+                  <Label>Move-in date <span className="text-muted-foreground font-normal">(optional)</span></Label>
                   <Input type="date" {...form.register("moveInDate")} />
                 </div>
 
@@ -138,17 +151,10 @@ export default function CreateListingPage() {
                     <div className="grid gap-4 md:grid-cols-2">
                       <div className="space-y-2">
                         <Label>Occupancy type</Label>
-                        <Select onValueChange={(v: string | null) => { if (v) form.setValue("occupancyType", v as ListingFormData["occupancyType"]); }}>
-                          <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="SINGLE">Single</SelectItem>
-                            <SelectItem value="DOUBLE">Double</SelectItem>
-                            <SelectItem value="TRIPLE">Triple</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <Input value="Triple" disabled className="bg-muted/50" />
                       </div>
                       <div className="space-y-2">
-                        <Label>Hostel block</Label>
+                        <Label>Hostel block <span className="text-muted-foreground font-normal">(if allotted any, else NA)</span></Label>
                         <Input {...form.register("hostelBlock")} placeholder="BH-3" />
                       </div>
                     </div>
@@ -165,11 +171,11 @@ export default function CreateListingPage() {
                       </div>
                       <div className="grid gap-4 md:grid-cols-2">
                         <div className="space-y-2">
-                          <Label>Min budget (â‚¹)</Label>
+                          <Label>Min budget (₹)</Label>
                           <Input type="number" {...form.register("minBudget", { valueAsNumber: true })} placeholder="5000" />
                         </div>
                         <div className="space-y-2">
-                          <Label>Max budget (â‚¹)</Label>
+                          <Label>Max budget (₹)</Label>
                           <Input type="number" {...form.register("maxBudget", { valueAsNumber: true })} placeholder="15000" />
                         </div>
                       </div>
@@ -206,6 +212,11 @@ export default function CreateListingPage() {
                   <Textarea {...form.register("description")} placeholder="Describe the room, vibe, expectations, and what kind of roommate you want." rows={5} className="rounded-[24px] bg-white" />
                 </div>
 
+                {/* Show form-level errors */}
+                {form.formState.errors.root && (
+                  <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>
+                )}
+
                 <Button type="submit" className="w-full" disabled={loading} size="lg">
                   {loading ? "Creating listing..." : "Create listing"}
                 </Button>
@@ -217,4 +228,3 @@ export default function CreateListingPage() {
     </div>
   );
 }
-

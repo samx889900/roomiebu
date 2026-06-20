@@ -17,20 +17,11 @@ export const listingSchema = z
 
     // Flat fields
     location: z.string().max(200).optional(),
-    minBudget: z.number().min(0).optional(),
-    maxBudget: z.number().min(0).optional(),
+    minBudget: z.number().min(0).optional().nullable(),
+    maxBudget: z.number().min(0).optional().nullable(),
     propertyType: z.enum(["APARTMENT", "BUILDER_FLOOR", "INDEPENDENT_HOUSE"]).optional(),
     furnishedStatus: z.enum(["FURNISHED", "SEMI_FURNISHED", "UNFURNISHED"]).optional(),
   })
-  .refine(
-    (data) => {
-      if (data.accommodationType === "HOSTEL") {
-        return !!data.occupancyType;
-      }
-      return true;
-    },
-    { message: "Occupancy type is required for hostel listings", path: ["occupancyType"] }
-  )
   .refine(
     (data) => {
       if (data.minBudget && data.maxBudget) {
