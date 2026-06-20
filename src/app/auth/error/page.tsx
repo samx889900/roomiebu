@@ -15,12 +15,12 @@ const errorMessages: Record<string, { title: string; message: string; icon: Reac
   },
   Banned: {
     title: "Account banned",
-    message: "Your account has been banned. Contact the admin team if you believe this is a mistake.",
+    message: "Your account has been banned. Contact the admin team if you believe this is a mistake on @bu.confess instagram.",
     icon: <Ban className="h-10 w-10 text-destructive" />,
   },
   Suspended: {
     title: "Account suspended",
-    message: "Your account is temporarily suspended. Contact the admin team for more context.",
+    message: "Your account is temporarily suspended. Contact the admin team if you believe this is a mistake on @bu.confess instagram.",
     icon: <AlertTriangle className="h-10 w-10 text-amber-500" />,
   },
 };
