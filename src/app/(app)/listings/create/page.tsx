@@ -89,7 +89,7 @@ export default function CreateListingPage() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2">
                   <Label>Title</Label>
-                  <Input {...form.register("title")} placeholder="Looking for a roommate in BH-3" />
+                  <Input {...form.register("title")} placeholder="Looking for a roommate in hostel/flat" />
                   {form.formState.errors.title && <p className="text-xs text-destructive">{form.formState.errors.title.message}</p>}
                 </div>
 
@@ -155,7 +155,7 @@ export default function CreateListingPage() {
                       </div>
                       <div className="space-y-2">
                         <Label>Hostel block <span className="text-muted-foreground font-normal">(if allotted any, else NA)</span></Label>
-                        <Input {...form.register("hostelBlock")} placeholder="BH-3" />
+                        <Input {...form.register("hostelBlock")} placeholder="C1 or D1" />
                       </div>
                     </div>
                   </div>
