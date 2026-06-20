@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, BookOpen, Moon, Sparkles, Pencil, Save } from "lucide-react";
+import { Mail, Phone, BookOpen, Moon, Sparkles, Pencil, Save, LogOut } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { enumToLabel, getInitials } from "@/lib/utils";
 import { updateProfile } from "./actions";
 import { toast } from "sonner";
+import { signOut } from "next-auth/react";
 
 export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; profile?: any /* eslint-disable-line @typescript-eslint/no-explicit-any */; } }) {
   const [editing, setEditing] = useState(false);
@@ -65,17 +66,29 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
           <h1 className="text-2xl font-bold">Your Profile</h1>
           <p className="text-muted-foreground">View and manage your profile information</p>
         </div>
-        <Button
-          variant={editing ? "default" : "outline"}
-          onClick={editing ? handleSave : () => setEditing(true)}
-          disabled={loading}
-        >
-          {editing ? (
-            <><Save className="w-4 h-4 mr-2" />{loading ? "Saving..." : "Save"}</>
-          ) : (
-            <><Pencil className="w-4 h-4 mr-2" />Edit</>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={editing ? "default" : "outline"}
+            onClick={editing ? handleSave : () => setEditing(true)}
+            disabled={loading}
+          >
+            {editing ? (
+              <><Save className="w-4 h-4 mr-2" />{loading ? "Saving..." : "Save"}</>
+            ) : (
+              <><Pencil className="w-4 h-4 mr-2" />Edit</>
+            )}
+          </Button>
+          {!editing && (
+            <Button
+              variant="destructive"
+              onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+              disabled={loading}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
           )}
-        </Button>
+        </div>
       </div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
