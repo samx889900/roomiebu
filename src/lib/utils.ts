@@ -59,9 +59,9 @@ export function getInitials(name: string): string {
 
 export function formatBudget(min?: number | null, max?: number | null): string {
   if (!min && !max) return "Not specified";
-  if (min && max) return `?${min.toLocaleString()} - ?${max.toLocaleString()}`;
-  if (min) return `?${min.toLocaleString()}+`;
-  return `Up to ?${max!.toLocaleString()}`;
+  if (min && max) return `₹${min.toLocaleString()} - ₹${max.toLocaleString()}`;
+  if (min) return `₹${min.toLocaleString()}+`;
+  return `Up to ₹${max!.toLocaleString()}`;
 }
 
 export function enumToLabel(value: string): string {
