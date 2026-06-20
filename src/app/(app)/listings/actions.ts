@@ -58,17 +58,19 @@ export async function updateListing(id: string, data: Partial<ListingFormData>) 
   const isAdmin = session.user.role === "ADMIN";
   if (!isOwner && !isAdmin) throw new Error("Unauthorized");
 
-  // Clean NaN values
-  const minBudget = data.minBudget !== undefined ? (isNaN(data.minBudget as number) ? null : data.minBudget) : undefined;
-  const maxBudget = data.maxBudget !== undefined ? (isNaN(data.maxBudget as number) ? null : data.maxBudget) : undefined;
+  // Clean NaN/null values for number fields
+  const numberRequired = data.numberRequired != null && !isNaN(Number(data.numberRequired)) ? Number(data.numberRequired) : listing.numberRequired;
+  const spotsFilled = data.spotsFilled != null && !isNaN(Number(data.spotsFilled)) ? Number(data.spotsFilled) : listing.spotsFilled;
+  const minBudget = data.minBudget !== undefined ? (data.minBudget == null || isNaN(Number(data.minBudget)) ? null : Number(data.minBudget)) : undefined;
+  const maxBudget = data.maxBudget !== undefined ? (data.maxBudget == null || isNaN(Number(data.maxBudget)) ? null : Number(data.maxBudget)) : undefined;
 
   await prisma.listing.update({
     where: { id },
     data: {
       title: data.title,
       accommodationType: data.accommodationType,
-      numberRequired: data.numberRequired,
-      spotsFilled: data.spotsFilled,
+      numberRequired,
+      spotsFilled,
       genderPreference: data.genderPreference,
       currentStatus: data.currentStatus,
       moveInDate: data.moveInDate ? new Date(data.moveInDate) : null,

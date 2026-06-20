@@ -219,7 +219,41 @@ export function ListingDetail({ listing, userId, currentUserProfile }: ListingDe
                         <span className="text-muted-foreground">Drinking</span>
                         <p className="font-medium">{enumToLabel(profile.drinking)}</p>
                       </div>
+                      {profile.vaping && (
+                        <div className="rounded-lg bg-muted/50 p-2">
+                          <span className="text-muted-foreground">Vaping</span>
+                          <p className="font-medium">{enumToLabel(profile.vaping)}</p>
+                        </div>
+                      )}
+                      {profile.studyEnvironment && (
+                        <div className="rounded-lg bg-muted/50 p-2">
+                          <span className="text-muted-foreground">Study Env</span>
+                          <p className="font-medium">{enumToLabel(profile.studyEnvironment)}</p>
+                        </div>
+                      )}
+                      {profile.guestsPreference && (
+                        <div className="rounded-lg bg-muted/50 p-2">
+                          <span className="text-muted-foreground">Guests</span>
+                          <p className="font-medium">{enumToLabel(profile.guestsPreference)}</p>
+                        </div>
+                      )}
                     </div>
+                    {profile.otherHabits && (
+                      <div className="text-xs">
+                        <p className="font-medium text-foreground mb-1">Other Habits</p>
+                        <p className="text-muted-foreground">{profile.otherHabits}</p>
+                      </div>
+                    )}
+                    {profile.languages && profile.languages.length > 0 && (
+                      <div className="text-xs">
+                        <p className="font-medium text-foreground mb-1.5">Languages</p>
+                        <div className="flex flex-wrap gap-1">
+                          {profile.languages.map((lang: string) => (
+                            <Badge key={lang} variant="secondary" className="text-[10px] px-1.5 py-0">{lang}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {profile.aboutMe && (
                       <div className="text-xs text-muted-foreground">
                         <p className="font-medium text-foreground mb-1">About</p>

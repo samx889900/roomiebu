@@ -68,7 +68,15 @@ export function EditListingClient({ listing }: { listing: any }) {
                 submitLabel="Save changes" 
                 initialData={{
                   ...listing,
-                  moveInDate: initialMoveInDate
+                  moveInDate: initialMoveInDate,
+                  minBudget: listing.minBudget ?? undefined,
+                  maxBudget: listing.maxBudget ?? undefined,
+                  propertyType: listing.propertyType ?? undefined,
+                  furnishedStatus: listing.furnishedStatus ?? undefined,
+                  occupancyType: listing.occupancyType ?? undefined,
+                  hostelBlock: listing.hostelBlock ?? undefined,
+                  location: listing.location ?? undefined,
+                  description: listing.description ?? undefined,
                 }}
               />
             </CardContent>
