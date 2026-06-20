@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+// Helper: coerce NaN from empty number inputs to undefined
+const optionalNumber = z.preprocess(
+  (val) => (val === "" || val === null || val === undefined || (typeof val === "number" && isNaN(val)) ? undefined : Number(val)),
+  z.number().min(0).optional()
+);
+
 export const listingSchema = z
   .object({
     title: z.string().min(3, "Title must be at least 3 characters").max(100),
@@ -17,8 +23,8 @@ export const listingSchema = z
 
     // Flat fields
     location: z.string().max(200).optional(),
-    minBudget: z.number().min(0).optional().nullable(),
-    maxBudget: z.number().min(0).optional().nullable(),
+    minBudget: optionalNumber,
+    maxBudget: optionalNumber,
     propertyType: z.enum(["APARTMENT", "BUILDER_FLOOR", "INDEPENDENT_HOUSE"]).optional(),
     furnishedStatus: z.enum(["FURNISHED", "SEMI_FURNISHED", "UNFURNISHED"]).optional(),
   })

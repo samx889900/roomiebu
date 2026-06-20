@@ -42,22 +42,25 @@ export default function CreateListingPage() {
       if (data.accommodationType === "HOSTEL") {
         data.occupancyType = "TRIPLE";
       }
-      // Clean up NaN values from empty number inputs
-      if (data.minBudget !== undefined && isNaN(data.minBudget as number)) {
-        data.minBudget = undefined;
-      }
-      if (data.maxBudget !== undefined && isNaN(data.maxBudget as number)) {
-        data.maxBudget = undefined;
-      }
       await createListing(data);
       toast.success("Listing created!");
       router.push("/my-listings");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to create listing";
       toast.error(message);
-      console.error(error);
+      console.error("Create listing error:", error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  function onFormError(errors: Record<string, unknown>) {
+    console.error("Form validation errors:", errors);
+    const firstError = Object.values(errors)[0] as { message?: string } | undefined;
+    if (firstError?.message) {
+      toast.error(firstError.message);
+    } else {
+      toast.error("Please fill in all required fields");
     }
   }
 
@@ -86,7 +89,7 @@ export default function CreateListingPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit, onFormError)} className="space-y-6">
                 <div className="space-y-2">
                   <Label>Title</Label>
                   <Input {...form.register("title")} placeholder="Looking for a roommate in hostel/flat" />

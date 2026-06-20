@@ -295,7 +295,7 @@ export function ListingFeed({ listings, total, pages, currentPage, userId, curre
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium text-foreground">{listing.user?.name}</p>
                           <p className="truncate text-xs text-muted-foreground">
-                            {listing.user?.profile?.course} â€¢ {listing.user?.profile?.year}
+                            {listing.user?.profile?.course} • {listing.user?.profile?.year}
                           </p>
                         </div>
                       </div>

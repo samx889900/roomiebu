@@ -1,4 +1,4 @@
-﻿import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 import { NotificationType } from "@prisma/client";
 
@@ -49,7 +49,7 @@ export async function createNotification(params: CreateNotificationParams) {
               </a>
             </div>
             <p style="color: #999; font-size: 12px; margin-top: 30px;">
-              Bennett University â€¢ RoomieBU
+              Bennett University • RoomieBU
             </p>
           </div>
         `,
@@ -57,7 +57,7 @@ export async function createNotification(params: CreateNotificationParams) {
     }
   } catch (error) {
     console.error("Failed to send email notification:", error);
-    // Don't throw â€” email failure shouldn't block in-app notification
+    // Don't throw — email failure shouldn't block in-app notification
   }
 
   return notification;
@@ -76,7 +76,7 @@ export async function notifyInterestAccepted(interestedUserId: string, ownerName
   return createNotification({
     userId: interestedUserId,
     type: "INTEREST_ACCEPTED",
-    title: "Interest Accepted! ðŸŽ‰",
+    title: "Interest Accepted! 🎉",
     message: `${ownerName} accepted your interest in "${listingTitle}". You can now view their contact details.`,
   });
 }
@@ -86,7 +86,7 @@ export async function notifyInterestRejected(interestedUserId: string, listingTi
     userId: interestedUserId,
     type: "INTEREST_REJECTED",
     title: "Interest Update",
-    message: `Your interest in "${listingTitle}" was not accepted. Keep looking â€” your perfect match is out there!`,
+    message: `Your interest in "${listingTitle}" was not accepted. Keep looking — your perfect match is out there!`,
   });
 }
 

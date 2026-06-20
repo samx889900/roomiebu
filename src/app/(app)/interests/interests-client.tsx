@@ -91,7 +91,7 @@ export function InterestsClient({ received, sent, currentUserProfile }: { receiv
                           />
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {interest.interestedUser?.profile?.course} â€¢ {interest.interestedUser?.profile?.year}
+                          {interest.interestedUser?.profile?.course} • {interest.interestedUser?.profile?.year}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           Interested in: <Link href={`/listings/${interest.listing.id}`} className="text-primary hover:underline">{interest.listing.title}</Link>
@@ -142,7 +142,7 @@ export function InterestsClient({ received, sent, currentUserProfile }: { receiv
                           {interest.listing.title}
                         </Link>
                         <p className="text-sm text-muted-foreground mt-1">
-                          by {interest.listing.user?.name} â€¢ {formatRelativeDate(interest.createdAt)}
+                          by {interest.listing.user?.name} • {formatRelativeDate(interest.createdAt)}
                         </p>
                       </div>
                       <Badge variant="outline" className={statusColors[interest.status]}>

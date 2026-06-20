@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { List, Trash2, RotateCcw } from "lucide-react";
@@ -41,7 +41,7 @@ export function AdminListingsClient({ listings }: { listings: any[] /* eslint-di
                       <Badge variant="outline" className="text-[10px]">{enumToLabel(listing.accommodationType)}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      by {listing.user?.name} â€¢ {listing._count.interests} interests â€¢ {listing._count.matches} matches â€¢ {formatRelativeDate(listing.createdAt)}
+                      by {listing.user?.name} • {listing._count.interests} interests • {listing._count.matches} matches • {formatRelativeDate(listing.createdAt)}
                     </p>
                   </div>
                   <div className="flex gap-1.5">

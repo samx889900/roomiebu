@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { Bookmark, X } from "lucide-react";
@@ -53,7 +53,7 @@ export function SavedClient({ saved }: { saved: any[] /* eslint-disable-line @ty
                       <Badge variant="outline" className="text-[10px]">{remaining} spot{remaining !== 1 ? "s" : ""}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      by {listing.user?.name} â€¢ {formatRelativeDate(listing.createdAt)}
+                      by {listing.user?.name} • {formatRelativeDate(listing.createdAt)}
                     </p>
                   </CardContent>
                 </Card>

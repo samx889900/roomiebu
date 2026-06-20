@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { Users, Shield, Ban, RotateCcw } from "lucide-react";
@@ -42,7 +42,7 @@ export function UsersClient({ users }: { users: any[] /* eslint-disable-line @ty
                     </div>
                     <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     <p className="text-[10px] text-muted-foreground">
-                      {user._count.listings} listings â€¢ {user._count.matchesAsA + user._count.matchesAsB} matches â€¢ Joined {formatDate(user.createdAt)}
+                      {user._count.listings} listings • {user._count.matchesAsA + user._count.matchesAsB} matches • Joined {formatDate(user.createdAt)}
                     </p>
                   </div>
                   <div className="flex gap-1.5">

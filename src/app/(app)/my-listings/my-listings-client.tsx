@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { List, Plus, Eye, Pencil, Trash2, XCircle } from "lucide-react";
@@ -83,11 +83,11 @@ export function MyListingsClient({ listings }: { listings: any[] /* eslint-disab
                         </div>
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
                           <span>{enumToLabel(listing.accommodationType)}</span>
-                          <span>â€¢</span>
+                          <span>•</span>
                           <span>{remaining} spot{remaining !== 1 ? "s" : ""} remaining</span>
-                          <span>â€¢</span>
+                          <span>•</span>
                           <span>{listing._count.interests} interest{listing._count.interests !== 1 ? "s" : ""}</span>
-                          <span>â€¢</span>
+                          <span>•</span>
                           <span>{formatRelativeDate(listing.createdAt)}</span>
                         </div>
                       </div>
