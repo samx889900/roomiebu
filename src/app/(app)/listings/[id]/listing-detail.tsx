@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Building2, Home, MapPin, Users, Calendar, Heart, Bookmark, Flag,
-  ArrowLeft, Clock, Bed, DollarSign, Sofa,
+  ArrowLeft, Clock, Bed, DollarSign, Sofa, Pencil
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -56,10 +56,18 @@ export function ListingDetail({ listing, userId, currentUserProfile }: ListingDe
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Back */}
-      <Button render={<Link href="/listings" />} variant="ghost" className="gap-2">
-        <ArrowLeft className="w-4 h-4" />
-        Back to Feed
-      </Button>
+      <div className="flex items-center justify-between">
+        <Button render={<Link href="/listings" />} variant="ghost" className="gap-2">
+          <ArrowLeft className="w-4 h-4" />
+          Back to Feed
+        </Button>
+        {(isOwn || currentUserProfile?.user?.role === "ADMIN") && (
+          <Button render={<Link href={`/listings/${listing.id}/edit`} />} variant="outline" className="gap-2">
+            <Pencil className="w-4 h-4" />
+            Edit Listing
+          </Button>
+        )}
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main Content */}

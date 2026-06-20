@@ -52,7 +52,15 @@ export async function updateListing(id: string, data: Partial<ListingFormData>) 
   if (!session?.user?.id) throw new Error("Unauthorized");
 
   const listing = await prisma.listing.findUnique({ where: { id } });
-  if (!listing || listing.userId !== session.user.id) throw new Error("Not found");
+  if (!listing) throw new Error("Not found");
+  
+  const isOwner = listing.userId === session.user.id;
+  const isAdmin = session.user.role === "ADMIN";
+  if (!isOwner && !isAdmin) throw new Error("Unauthorized");
+
+  // Clean NaN values
+  const minBudget = data.minBudget !== undefined ? (isNaN(data.minBudget as number) ? null : data.minBudget) : undefined;
+  const maxBudget = data.maxBudget !== undefined ? (isNaN(data.maxBudget as number) ? null : data.maxBudget) : undefined;
 
   await prisma.listing.update({
     where: { id },
@@ -63,15 +71,15 @@ export async function updateListing(id: string, data: Partial<ListingFormData>) 
       spotsFilled: data.spotsFilled,
       genderPreference: data.genderPreference,
       currentStatus: data.currentStatus,
-      moveInDate: data.moveInDate ? new Date(data.moveInDate) : undefined,
-      description: data.description,
-      occupancyType: data.occupancyType,
-      hostelBlock: data.hostelBlock,
-      location: data.location,
-      minBudget: data.minBudget,
-      maxBudget: data.maxBudget,
-      propertyType: data.propertyType,
-      furnishedStatus: data.furnishedStatus,
+      moveInDate: data.moveInDate ? new Date(data.moveInDate) : null,
+      description: data.description || null,
+      occupancyType: data.accommodationType === "HOSTEL" ? "TRIPLE" : data.occupancyType,
+      hostelBlock: data.hostelBlock || null,
+      location: data.location || null,
+      minBudget,
+      maxBudget,
+      propertyType: data.propertyType || null,
+      furnishedStatus: data.furnishedStatus || null,
     },
   });
 
@@ -85,7 +93,11 @@ export async function deleteListing(id: string) {
   if (!session?.user?.id) throw new Error("Unauthorized");
 
   const listing = await prisma.listing.findUnique({ where: { id } });
-  if (!listing || listing.userId !== session.user.id) throw new Error("Not found");
+  if (!listing) throw new Error("Not found");
+  
+  const isOwner = listing.userId === session.user.id;
+  const isAdmin = session.user.role === "ADMIN";
+  if (!isOwner && !isAdmin) throw new Error("Unauthorized");
 
   // Soft delete
   await prisma.listing.update({
@@ -101,8 +113,15 @@ export async function closeListing(id: string) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
 
+  const listing = await prisma.listing.findUnique({ where: { id } });
+  if (!listing) throw new Error("Not found");
+  
+  const isOwner = listing.userId === session.user.id;
+  const isAdmin = session.user.role === "ADMIN";
+  if (!isOwner && !isAdmin) throw new Error("Unauthorized");
+
   await prisma.listing.update({
-    where: { id, userId: session.user.id },
+    where: { id },
     data: { status: "CLOSED" },
   });
 

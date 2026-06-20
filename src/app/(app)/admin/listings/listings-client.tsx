@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { List, Trash2, RotateCcw } from "lucide-react";
+import { List, Trash2, RotateCcw, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { enumToLabel, formatRelativeDate } from "@/lib/utils";
 import { adminRemoveListing, adminRestoreListing } from "../actions";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const statusColors: Record<string, string> = {
   ACTIVE: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
@@ -50,9 +51,14 @@ export function AdminListingsClient({ listings }: { listings: any[] /* eslint-di
                         <RotateCcw className="w-3 h-3" /> Restore
                       </Button>
                     ) : (
-                      <Button size="sm" variant="ghost" className="text-destructive gap-1" onClick={async () => { await adminRemoveListing(listing.id, "Removed by admin"); toast.success("Removed"); }}>
-                        <Trash2 className="w-3 h-3" /> Remove
-                      </Button>
+                      <>
+                        <Button render={<Link href={`/listings/${listing.id}/edit`} />} size="sm" variant="outline" className="gap-1">
+                          <Pencil className="w-3 h-3" /> Edit
+                        </Button>
+                        <Button size="sm" variant="ghost" className="text-destructive gap-1" onClick={async () => { await adminRemoveListing(listing.id, "Removed by admin"); toast.success("Removed"); }}>
+                          <Trash2 className="w-3 h-3" /> Remove
+                        </Button>
+                      </>
                     )}
                   </div>
                 </CardContent>

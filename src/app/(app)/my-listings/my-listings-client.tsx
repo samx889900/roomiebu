@@ -97,6 +97,9 @@ export function MyListingsClient({ listings }: { listings: any[] /* eslint-disab
                         </Button>
                         {listing.status === "ACTIVE" && (
                           <>
+                            <Button render={<Link href={`/listings/${listing.id}/edit`} />} variant="ghost" size="icon">
+                              <Pencil className="w-4 h-4" />
+                            </Button>
                             <Button variant="ghost" size="icon" onClick={() => handleClose(listing.id)}>
                               <XCircle className="w-4 h-4" />
                             </Button>
