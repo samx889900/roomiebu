@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Flag, Check, Ban, Shield } from "lucide-react";
@@ -10,7 +10,7 @@ import { enumToLabel, formatRelativeDate } from "@/lib/utils";
 import { resolveReport, suspendUser, banUser } from "../actions";
 import { toast } from "sonner";
 
-export function ReportsClient({ reports }: { reports: any[] }) {
+export function ReportsClient({ reports }: { reports: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ }) {
   async function handleResolve(id: string) {
     try {
       await resolveReport(id, "Resolved by admin");
@@ -96,3 +96,4 @@ export function ReportsClient({ reports }: { reports: any[] }) {
     </div>
   );
 }
+

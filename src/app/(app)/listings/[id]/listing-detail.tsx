@@ -14,17 +14,21 @@ import { Separator } from "@/components/ui/separator";
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { ReportDialog } from "@/components/shared/report-dialog";
 import { enumToLabel, formatDate, formatBudget, getRemainingSpots, getInitials } from "@/lib/utils";
+import { calculateCompatibility } from "@/lib/compatibility";
 import { expressInterest } from "@/app/(app)/interests/actions";
 import { saveListing } from "@/app/(app)/saved/actions";
 import { toast } from "sonner";
 import Link from "next/link";
 
 interface ListingDetailProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   listing: any;
   userId?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  currentUserProfile?: any;
 }
 
-export function ListingDetail({ listing, userId }: ListingDetailProps) {
+export function ListingDetail({ listing, userId, currentUserProfile }: ListingDetailProps) {
   const [reportOpen, setReportOpen] = useState(false);
   const isOwn = listing.userId === userId;
   const remaining = getRemainingSpots(listing.numberRequired, listing.spotsFilled);
@@ -34,6 +38,7 @@ export function ListingDetail({ listing, userId }: ListingDetailProps) {
     try {
       await expressInterest(listing.id);
       toast.success("Interest expressed!", { description: "The listing owner will be notified." });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error.message || "Failed to express interest");
     }
@@ -70,7 +75,11 @@ export function ListingDetail({ listing, userId }: ListingDetailProps) {
                       Posted {formatDate(listing.createdAt)}
                     </div>
                   </div>
-                  <CompatibilityBadge score={75} />
+                  {listing.user?.profile && currentUserProfile && !isOwn && (
+                    <CompatibilityBadge 
+                      score={calculateCompatibility(currentUserProfile, listing.user.profile, listing)} 
+                    />
+                  )}
                 </div>
 
                 <div className="flex flex-wrap gap-2">

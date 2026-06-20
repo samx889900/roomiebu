@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { enumToLabel, formatRelativeDate, getInitials } from "@/lib/utils";
+import { calculateCompatibility } from "@/lib/compatibility";
 import { acceptInterest, rejectInterest } from "./actions";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -20,12 +21,12 @@ const statusColors: Record<string, string> = {
   REJECTED: "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
-export function InterestsClient({ received, sent }: { received: any[]; sent: any[] }) {
+export function InterestsClient({ received, sent, currentUserProfile }: { received: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */; sent: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */; currentUserProfile?: any /* eslint-disable-line @typescript-eslint/no-explicit-any */ }) {
   async function handleAccept(id: string) {
     try {
       await acceptInterest(id);
       toast.success("Interest accepted! Contact details shared.");
-    } catch (error: any) {
+    } catch (error: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) {
       toast.error(error.message || "Failed to accept");
     }
   }
@@ -79,10 +80,18 @@ export function InterestsClient({ received, sent }: { received: any[]; sent: any
                           <Badge variant="outline" className={statusColors[interest.status]}>
                             {interest.status}
                           </Badge>
-                          <CompatibilityBadge score={72} size="sm" showLabel={false} />
+                          <CompatibilityBadge 
+                            score={
+                              currentUserProfile && interest.interestedUser?.profile
+                                ? calculateCompatibility(currentUserProfile, interest.interestedUser.profile, interest.listing)
+                                : undefined
+                            } 
+                            size="sm" 
+                            showLabel={false} 
+                          />
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {interest.interestedUser?.profile?.course} • {interest.interestedUser?.profile?.year}
+                          {interest.interestedUser?.profile?.course} â€¢ {interest.interestedUser?.profile?.year}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           Interested in: <Link href={`/listings/${interest.listing.id}`} className="text-primary hover:underline">{interest.listing.title}</Link>
@@ -90,9 +99,9 @@ export function InterestsClient({ received, sent }: { received: any[]; sent: any
                         <div className="flex gap-2 mt-2 text-xs text-muted-foreground">
                           {interest.interestedUser?.profile && (
                             <>
-                              <span>🚬 {enumToLabel(interest.interestedUser.profile.smoking)}</span>
-                              <span>🍺 {enumToLabel(interest.interestedUser.profile.drinking)}</span>
-                              <span>😴 {enumToLabel(interest.interestedUser.profile.sleepSchedule)}</span>
+                              <span>ðŸš¬ {enumToLabel(interest.interestedUser.profile.smoking)}</span>
+                              <span>ðŸº {enumToLabel(interest.interestedUser.profile.drinking)}</span>
+                              <span>ðŸ˜´ {enumToLabel(interest.interestedUser.profile.sleepSchedule)}</span>
                             </>
                           )}
                         </div>
@@ -133,7 +142,7 @@ export function InterestsClient({ received, sent }: { received: any[]; sent: any
                           {interest.listing.title}
                         </Link>
                         <p className="text-sm text-muted-foreground mt-1">
-                          by {interest.listing.user?.name} • {formatRelativeDate(interest.createdAt)}
+                          by {interest.listing.user?.name} â€¢ {formatRelativeDate(interest.createdAt)}
                         </p>
                       </div>
                       <Badge variant="outline" className={statusColors[interest.status]}>
@@ -150,3 +159,4 @@ export function InterestsClient({ received, sent }: { received: any[]; sent: any
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 import { NotificationType } from "@prisma/client";
 
@@ -19,7 +19,7 @@ export async function createNotification(params: CreateNotificationParams) {
       type: params.type,
       title: params.title,
       message: params.message,
-      metadata: (params.metadata as any) || undefined,
+      metadata: (params.metadata as any /* eslint-disable-line @typescript-eslint/no-explicit-any */) || undefined,
     },
   });
 
@@ -49,7 +49,7 @@ export async function createNotification(params: CreateNotificationParams) {
               </a>
             </div>
             <p style="color: #999; font-size: 12px; margin-top: 30px;">
-              Bennett University • RoomieBU
+              Bennett University â€¢ RoomieBU
             </p>
           </div>
         `,
@@ -57,7 +57,7 @@ export async function createNotification(params: CreateNotificationParams) {
     }
   } catch (error) {
     console.error("Failed to send email notification:", error);
-    // Don't throw — email failure shouldn't block in-app notification
+    // Don't throw â€” email failure shouldn't block in-app notification
   }
 
   return notification;
@@ -76,7 +76,7 @@ export async function notifyInterestAccepted(interestedUserId: string, ownerName
   return createNotification({
     userId: interestedUserId,
     type: "INTEREST_ACCEPTED",
-    title: "Interest Accepted! 🎉",
+    title: "Interest Accepted! ðŸŽ‰",
     message: `${ownerName} accepted your interest in "${listingTitle}". You can now view their contact details.`,
   });
 }
@@ -86,7 +86,7 @@ export async function notifyInterestRejected(interestedUserId: string, listingTi
     userId: interestedUserId,
     type: "INTEREST_REJECTED",
     title: "Interest Update",
-    message: `Your interest in "${listingTitle}" was not accepted. Keep looking — your perfect match is out there!`,
+    message: `Your interest in "${listingTitle}" was not accepted. Keep looking â€” your perfect match is out there!`,
   });
 }
 
@@ -107,3 +107,4 @@ export async function notifyListingReported(userId: string, listingTitle: string
     message: `Your listing "${listingTitle}" has been reported. Our team will review it.`,
   });
 }
+

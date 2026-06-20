@@ -25,22 +25,22 @@ export function getCompatibilityTier(score: number): {
 } {
   if (score >= 80) {
     return {
-      label: "Excellent Match",
-      color: "text-emerald-400",
-      bgColor: "bg-emerald-500/10 border-emerald-500/20",
+      label: "Excellent match",
+      color: "text-emerald-700",
+      bgColor: "bg-emerald-50 border-emerald-200",
     };
   }
   if (score >= 60) {
     return {
-      label: "Good Match",
-      color: "text-amber-400",
-      bgColor: "bg-amber-500/10 border-amber-500/20",
+      label: "Good match",
+      color: "text-amber-700",
+      bgColor: "bg-amber-50 border-amber-200",
     };
   }
   return {
-    label: "Low Match",
-    color: "text-red-400",
-    bgColor: "bg-red-500/10 border-red-500/20",
+    label: "Low match",
+    color: "text-rose-700",
+    bgColor: "bg-rose-50 border-rose-200",
   };
 }
 
@@ -59,9 +59,9 @@ export function getInitials(name: string): string {
 
 export function formatBudget(min?: number | null, max?: number | null): string {
   if (!min && !max) return "Not specified";
-  if (min && max) return `₹${min.toLocaleString()} - ₹${max.toLocaleString()}`;
-  if (min) return `₹${min.toLocaleString()}+`;
-  return `Up to ₹${max!.toLocaleString()}`;
+  if (min && max) return `?${min.toLocaleString()} - ?${max.toLocaleString()}`;
+  if (min) return `?${min.toLocaleString()}+`;
+  return `Up to ?${max!.toLocaleString()}`;
 }
 
 export function enumToLabel(value: string): string {

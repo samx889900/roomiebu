@@ -1,7 +1,6 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import { Suspense } from "react";
 import { AlertTriangle, ArrowLeft, Ban, ShieldX } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,19 +9,19 @@ import { APP_NAME } from "@/lib/constants";
 
 const errorMessages: Record<string, { title: string; message: string; icon: React.ReactNode }> = {
   AccessDenied: {
-    title: "Access Denied",
+    title: "Access denied",
     message: "Only Bennett University students with @bennett.edu.in emails can access this platform.",
-    icon: <ShieldX className="w-10 h-10 text-destructive" />,
+    icon: <ShieldX className="h-10 w-10 text-destructive" />,
   },
   Banned: {
-    title: "Account Banned",
-    message: "Your account has been banned. Contact the admin team if you believe this is an error.",
-    icon: <Ban className="w-10 h-10 text-destructive" />,
+    title: "Account banned",
+    message: "Your account has been banned. Contact the admin team if you believe this is a mistake.",
+    icon: <Ban className="h-10 w-10 text-destructive" />,
   },
   Suspended: {
-    title: "Account Suspended",
-    message: "Your account has been temporarily suspended. Contact the admin team for more information.",
-    icon: <AlertTriangle className="w-10 h-10 text-amber-400" />,
+    title: "Account suspended",
+    message: "Your account is temporarily suspended. Contact the admin team for more context.",
+    icon: <AlertTriangle className="h-10 w-10 text-amber-500" />,
   },
 };
 
@@ -31,45 +30,27 @@ function ErrorContent() {
   const errorType = searchParams.get("error") || "Default";
 
   const errorInfo = errorMessages[errorType] || {
-    title: "Authentication Error",
-    message: "An unexpected error occurred during authentication. Please try again.",
-    icon: <AlertTriangle className="w-10 h-10 text-destructive" />,
+    title: "Authentication error",
+    message: "An unexpected authentication issue occurred. Please try again.",
+    icon: <AlertTriangle className="h-10 w-10 text-destructive" />,
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
-        <div className="glass-strong rounded-2xl p-8 text-center">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200 }}
-            className="flex justify-center mb-6"
-          >
-            <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center">
-              {errorInfo.icon}
-            </div>
-          </motion.div>
-
-          <h1 className="text-2xl font-bold mb-2">{errorInfo.title}</h1>
-          <p className="text-muted-foreground text-sm mb-8">{errorInfo.message}</p>
-
-          <div className="flex flex-col gap-3">
-            <Button render={<Link href="/auth/signin" />} className="gradient-primary">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Sign In
-            </Button>
-          </div>
+    <div className="page-shell hero-wash flex min-h-screen items-center justify-center p-4">
+      <div className="surface-panel w-full max-w-lg p-8 text-center sm:p-10">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+          {errorInfo.icon}
         </div>
-
-        <p className="text-center mt-6 text-xs text-muted-foreground/40">
-          {APP_NAME} • Bennett University
-        </p>
-      </motion.div>
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">{APP_NAME}</p>
+        <h1 className="mt-4 text-3xl font-semibold tracking-[-0.04em]">{errorInfo.title}</h1>
+        <p className="mt-3 text-sm leading-7 text-muted-foreground">{errorInfo.message}</p>
+        <div className="mt-8 flex justify-center">
+          <Button render={<Link href="/auth/signin" />} size="lg">
+            <ArrowLeft className="h-4 w-4" />
+            Back to sign in
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -78,8 +59,8 @@ export default function AuthErrorPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <div className="page-shell flex min-h-screen items-center justify-center">
+          <div className="text-muted-foreground">Loading...</div>
         </div>
       }
     >

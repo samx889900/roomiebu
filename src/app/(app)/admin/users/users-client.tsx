@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Users, Shield, Ban, RotateCcw } from "lucide-react";
@@ -11,7 +11,7 @@ import { getInitials, formatDate } from "@/lib/utils";
 import { suspendUser, banUser, restoreUser } from "../actions";
 import { toast } from "sonner";
 
-export function UsersClient({ users }: { users: any[] }) {
+export function UsersClient({ users }: { users: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ }) {
   return (
     <div>
       <div className="mb-6">
@@ -42,7 +42,7 @@ export function UsersClient({ users }: { users: any[] }) {
                     </div>
                     <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     <p className="text-[10px] text-muted-foreground">
-                      {user._count.listings} listings • {user._count.matchesAsA + user._count.matchesAsB} matches • Joined {formatDate(user.createdAt)}
+                      {user._count.listings} listings â€¢ {user._count.matchesAsA + user._count.matchesAsB} matches â€¢ Joined {formatDate(user.createdAt)}
                     </p>
                   </div>
                   <div className="flex gap-1.5">
@@ -70,3 +70,4 @@ export function UsersClient({ users }: { users: any[] }) {
     </div>
   );
 }
+

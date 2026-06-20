@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
 import { ArrowLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,7 +38,7 @@ export default function CreateListingPage() {
     setLoading(true);
     try {
       await createListing(data);
-      toast.success("Listing created!");
+      toast.success("Listing created");
       router.push("/my-listings");
     } catch (error) {
       toast.error("Failed to create listing");
@@ -49,174 +49,172 @@ export default function CreateListingPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6">
       <Button render={<Link href="/listings" />} variant="ghost" className="gap-2">
-        <ArrowLeft className="w-4 h-4" />Back
+        <ArrowLeft className="h-4 w-4" />
+        Back to listings
       </Button>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Plus className="w-5 h-5" />
-              Create New Listing
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Title */}
-              <div className="space-y-2">
-                <Label>Title *</Label>
-                <Input {...form.register("title")} placeholder="e.g., Looking for a roommate in BH-3" />
-                {form.formState.errors.title && (
-                  <p className="text-xs text-destructive">{form.formState.errors.title.message}</p>
-                )}
-              </div>
+      <div className="surface-panel p-6 sm:p-8">
+        <div className="mb-8 max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Create listing</p>
+          <h1 className="section-heading mt-3">Post a roommate or flatmate listing that feels trustworthy.</h1>
+          <p className="section-copy mt-4">
+            Keep it clear, specific, and student-friendly. The better your details, the better your incoming matches.
+          </p>
+        </div>
 
-              {/* Type + Gender + Urgency */}
-              <div className="grid gap-4 sm:grid-cols-3">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="border-border/70 bg-white shadow-none">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Plus className="h-5 w-5 text-primary" />
+                Listing details
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2">
-                  <Label>Accommodation *</Label>
-                  <Select
-                    defaultValue="HOSTEL"
-                    onValueChange={(v: any) => form.setValue("accommodationType", v as ListingFormData["accommodationType"])}
-                  >
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="HOSTEL">Hostel</SelectItem>
-                      <SelectItem value="FLAT">Flat</SelectItem>
-                      <SelectItem value="NOT_SURE">Not Sure</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label>Title</Label>
+                  <Input {...form.register("title")} placeholder="Looking for a roommate in BH-3" />
+                  {form.formState.errors.title && <p className="text-xs text-destructive">{form.formState.errors.title.message}</p>}
                 </div>
-                <div className="space-y-2">
-                  <Label>Gender Pref *</Label>
-                  <Select
-                    defaultValue="ANY"
-                    onValueChange={(v: any) => form.setValue("genderPreference", v as ListingFormData["genderPreference"])}
-                  >
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="MALE">Male</SelectItem>
-                      <SelectItem value="FEMALE">Female</SelectItem>
-                      <SelectItem value="ANY">Any</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Urgency</Label>
-                  <Select
-                    defaultValue="JUST_EXPLORING"
-                    onValueChange={(v: any) => form.setValue("currentStatus", v as ListingFormData["currentStatus"])}
-                  >
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="LOOKING_URGENTLY">Urgently</SelectItem>
-                      <SelectItem value="WITHIN_1_MONTH">Within 1 Month</SelectItem>
-                      <SelectItem value="JUST_EXPLORING">Just Exploring</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
 
-              {/* Spots */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Total Spots Needed *</Label>
-                  <Input type="number" min={1} max={10} {...form.register("numberRequired", { valueAsNumber: true })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Spots Already Filled</Label>
-                  <Input type="number" min={0} {...form.register("spotsFilled", { valueAsNumber: true })} />
-                </div>
-              </div>
-
-              {/* Move-in Date */}
-              <div className="space-y-2">
-                <Label>Move-in Date</Label>
-                <Input type="date" {...form.register("moveInDate")} />
-              </div>
-
-              {/* Hostel Fields */}
-              {accommodationType === "HOSTEL" && (
-                <div className="grid gap-4 sm:grid-cols-2 p-4 rounded-lg border border-border bg-muted/20">
-                  <div className="sm:col-span-2 text-sm font-medium text-muted-foreground">Hostel Details</div>
+                <div className="grid gap-4 md:grid-cols-3">
                   <div className="space-y-2">
-                    <Label>Occupancy Type *</Label>
-                    <Select onValueChange={(v: any) => form.setValue("occupancyType", v as ListingFormData["occupancyType"])}>
-                      <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                    <Label>Accommodation</Label>
+                    <Select defaultValue="HOSTEL" onValueChange={(v: string | null) => { if (v) form.setValue("accommodationType", v as "HOSTEL" | "FLAT" | "NOT_SURE"); }}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="SINGLE">Single</SelectItem>
-                        <SelectItem value="DOUBLE">Double</SelectItem>
-                        <SelectItem value="TRIPLE">Triple</SelectItem>
+                        <SelectItem value="HOSTEL">Hostel</SelectItem>
+                        <SelectItem value="FLAT">Flat</SelectItem>
+                        <SelectItem value="NOT_SURE">Not sure</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Hostel Block</Label>
-                    <Input {...form.register("hostelBlock")} placeholder="e.g., BH-3" />
+                    <Label>Gender preference</Label>
+                    <Select defaultValue="ANY" onValueChange={(v: string | null) => { if (v) form.setValue("genderPreference", v as ListingFormData["genderPreference"]); }}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="MALE">Male</SelectItem>
+                        <SelectItem value="FEMALE">Female</SelectItem>
+                        <SelectItem value="ANY">Any</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                </div>
-              )}
-
-              {/* Flat Fields */}
-              {accommodationType === "FLAT" && (
-                <div className="space-y-4 p-4 rounded-lg border border-border bg-muted/20">
-                  <div className="text-sm font-medium text-muted-foreground">Flat Details</div>
                   <div className="space-y-2">
-                    <Label>Location</Label>
-                    <Input {...form.register("location")} placeholder="e.g., Sector 62, Noida" />
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label>Min Budget (₹)</Label>
-                      <Input type="number" {...form.register("minBudget", { valueAsNumber: true })} placeholder="5000" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Max Budget (₹)</Label>
-                      <Input type="number" {...form.register("maxBudget", { valueAsNumber: true })} placeholder="15000" />
-                    </div>
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label>Property Type</Label>
-                      <Select onValueChange={(v: any) => form.setValue("propertyType", v as ListingFormData["propertyType"])}>
-                        <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="APARTMENT">Apartment</SelectItem>
-                          <SelectItem value="BUILDER_FLOOR">Builder Floor</SelectItem>
-                          <SelectItem value="INDEPENDENT_HOUSE">Independent House</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Furnished Status</Label>
-                      <Select onValueChange={(v: any) => form.setValue("furnishedStatus", v as ListingFormData["furnishedStatus"])}>
-                        <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="FURNISHED">Furnished</SelectItem>
-                          <SelectItem value="SEMI_FURNISHED">Semi Furnished</SelectItem>
-                          <SelectItem value="UNFURNISHED">Unfurnished</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    <Label>Urgency</Label>
+                    <Select defaultValue="JUST_EXPLORING" onValueChange={(v: string | null) => { if (v) form.setValue("currentStatus", v as ListingFormData["currentStatus"]); }}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="LOOKING_URGENTLY">Looking urgently</SelectItem>
+                        <SelectItem value="WITHIN_1_MONTH">Within 1 month</SelectItem>
+                        <SelectItem value="JUST_EXPLORING">Just exploring</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
-              )}
 
-              {/* Description */}
-              <div className="space-y-2">
-                <Label>Description</Label>
-                <Textarea {...form.register("description")} placeholder="Describe what you're looking for..." rows={4} />
-              </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>Total spots needed</Label>
+                    <Input type="number" min={1} max={10} {...form.register("numberRequired", { valueAsNumber: true })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Spots already filled</Label>
+                    <Input type="number" min={0} {...form.register("spotsFilled", { valueAsNumber: true })} />
+                  </div>
+                </div>
 
-              <Button type="submit" className="w-full gradient-primary" disabled={loading} size="lg">
-                {loading ? "Creating..." : "Create Listing"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </motion.div>
+                <div className="space-y-2">
+                  <Label>Move-in date</Label>
+                  <Input type="date" {...form.register("moveInDate")} />
+                </div>
+
+                {accommodationType === "HOSTEL" && (
+                  <div className="rounded-[24px] bg-[#fff7f5] p-5">
+                    <p className="mb-4 text-sm font-semibold text-foreground">Hostel details</p>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label>Occupancy type</Label>
+                        <Select onValueChange={(v: string | null) => { if (v) form.setValue("occupancyType", v as ListingFormData["occupancyType"]); }}>
+                          <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="SINGLE">Single</SelectItem>
+                            <SelectItem value="DOUBLE">Double</SelectItem>
+                            <SelectItem value="TRIPLE">Triple</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Hostel block</Label>
+                        <Input {...form.register("hostelBlock")} placeholder="BH-3" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {accommodationType === "FLAT" && (
+                  <div className="rounded-[24px] bg-[#fff7f5] p-5">
+                    <p className="mb-4 text-sm font-semibold text-foreground">Flat details</p>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Location</Label>
+                        <Input {...form.register("location")} placeholder="Sector 62, Noida" />
+                      </div>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label>Min budget (â‚¹)</Label>
+                          <Input type="number" {...form.register("minBudget", { valueAsNumber: true })} placeholder="5000" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Max budget (â‚¹)</Label>
+                          <Input type="number" {...form.register("maxBudget", { valueAsNumber: true })} placeholder="15000" />
+                        </div>
+                      </div>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label>Property type</Label>
+                          <Select onValueChange={(v: string | null) => { if (v) form.setValue("propertyType", v as ListingFormData["propertyType"]); }}>
+                            <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="APARTMENT">Apartment</SelectItem>
+                              <SelectItem value="BUILDER_FLOOR">Builder floor</SelectItem>
+                              <SelectItem value="INDEPENDENT_HOUSE">Independent house</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Furnished status</Label>
+                          <Select onValueChange={(v: string | null) => { if (v) form.setValue("furnishedStatus", v as ListingFormData["furnishedStatus"]); }}>
+                            <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="FURNISHED">Furnished</SelectItem>
+                              <SelectItem value="SEMI_FURNISHED">Semi furnished</SelectItem>
+                              <SelectItem value="UNFURNISHED">Unfurnished</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label>Description</Label>
+                  <Textarea {...form.register("description")} placeholder="Describe the room, vibe, expectations, and what kind of roommate you want." rows={5} className="rounded-[24px] bg-white" />
+                </div>
+
+                <Button type="submit" className="w-full" disabled={loading} size="lg">
+                  {loading ? "Creating listing..." : "Create listing"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
     </div>
   );
 }
+

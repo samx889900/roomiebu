@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Bookmark, X } from "lucide-react";
@@ -11,7 +11,7 @@ import { unsaveListing } from "./actions";
 import { toast } from "sonner";
 import Link from "next/link";
 
-export function SavedClient({ saved }: { saved: any[] }) {
+export function SavedClient({ saved }: { saved: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ }) {
   async function handleUnsave(listingId: string) {
     try {
       await unsaveListing(listingId);
@@ -53,7 +53,7 @@ export function SavedClient({ saved }: { saved: any[] }) {
                       <Badge variant="outline" className="text-[10px]">{remaining} spot{remaining !== 1 ? "s" : ""}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      by {listing.user?.name} • {formatRelativeDate(listing.createdAt)}
+                      by {listing.user?.name} â€¢ {formatRelativeDate(listing.createdAt)}
                     </p>
                   </CardContent>
                 </Card>
@@ -65,3 +65,4 @@ export function SavedClient({ saved }: { saved: any[] }) {
     </div>
   );
 }
+

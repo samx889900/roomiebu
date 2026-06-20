@@ -2,10 +2,20 @@
 
 import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import {
-  Search, SlidersHorizontal, Building2, Home, MapPin, Users,
-  Heart, Bookmark, Clock, Filter, X, Plus,
+  Search,
+  SlidersHorizontal,
+  Building2,
+  Home,
+  MapPin,
+  Users,
+  Heart,
+  Bookmark,
+  Clock,
+  Filter,
+  X,
+  Plus,
+  ArrowUpRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,39 +24,41 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { cn, enumToLabel, formatRelativeDate, getRemainingSpots, getInitials, formatBudget } from "@/lib/utils";
+import { calculateCompatibility } from "@/lib/compatibility";
 import { expressInterest } from "@/app/(app)/interests/actions";
 import { saveListing } from "@/app/(app)/saved/actions";
 import { toast } from "sonner";
 import Link from "next/link";
 
 interface ListingFeedProps {
-  listings: any[];
+  listings: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */;
   total: number;
   pages: number;
   currentPage: number;
   userId?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  currentUserProfile?: any;
 }
 
 const typeIcons: Record<string, React.ReactNode> = {
-  HOSTEL: <Building2 className="w-3.5 h-3.5" />,
-  FLAT: <Home className="w-3.5 h-3.5" />,
-  NOT_SURE: <MapPin className="w-3.5 h-3.5" />,
+  HOSTEL: <Building2 className="h-3.5 w-3.5" />,
+  FLAT: <Home className="h-3.5 w-3.5" />,
+  NOT_SURE: <MapPin className="h-3.5 w-3.5" />,
 };
 
 const statusColors: Record<string, string> = {
-  LOOKING_URGENTLY: "bg-red-500/10 text-red-400 border-red-500/20",
-  WITHIN_1_MONTH: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  JUST_EXPLORING: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  LOOKING_URGENTLY: "bg-rose-50 text-rose-700 border-rose-200",
+  WITHIN_1_MONTH: "bg-amber-50 text-amber-700 border-amber-200",
+  JUST_EXPLORING: "bg-sky-50 text-sky-700 border-sky-200",
 };
 
-export function ListingFeed({ listings, total, pages, currentPage, userId }: ListingFeedProps) {
+export function ListingFeed({ listings, total, pages, currentPage, userId, currentUserProfile }: ListingFeedProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [search, setSearch] = useState(searchParams.get("q") || "");
 
   function updateFilters(key: string, value: string | null) {
@@ -67,8 +79,8 @@ export function ListingFeed({ listings, total, pages, currentPage, userId }: Lis
   async function handleInterest(listingId: string) {
     try {
       await expressInterest(listingId);
-      toast.success("Interest expressed!", { description: "The listing owner will be notified." });
-    } catch (error: any) {
+      toast.success("Interest sent", { description: "The listing owner will review your request." });
+    } catch (error: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) {
       toast.error(error.message || "Failed to express interest");
     }
   }
@@ -76,7 +88,7 @@ export function ListingFeed({ listings, total, pages, currentPage, userId }: Lis
   async function handleSave(listingId: string) {
     try {
       await saveListing(listingId);
-      toast.success("Listing saved!");
+      toast.success("Listing saved");
     } catch {
       toast.error("Failed to save listing");
     }
@@ -84,64 +96,54 @@ export function ListingFeed({ listings, total, pages, currentPage, userId }: Lis
 
   return (
     <div className="space-y-6">
-      {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="surface-subtle flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search listings..."
+            placeholder="Search by title, area, or description"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            className="pl-9"
+            className="rounded-full pl-11"
           />
         </div>
-        <Select
-          defaultValue={searchParams.get("sort") || "newest"}
-          onValueChange={(v: string | null) => updateFilters("sort", v)}
-        >
-          <SelectTrigger className="w-full sm:w-[180px]">
+        <Select defaultValue={searchParams.get("sort") || "newest"} onValueChange={(v: string | null) => updateFilters("sort", v)}>
+          <SelectTrigger className="h-12 w-full rounded-full bg-white sm:w-[190px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="newest">Newest First</SelectItem>
-            <SelectItem value="oldest">Oldest First</SelectItem>
+            <SelectItem value="newest">Newest first</SelectItem>
+            <SelectItem value="oldest">Oldest first</SelectItem>
             <SelectItem value="alphabetical">Alphabetical</SelectItem>
           </SelectContent>
         </Select>
         <Sheet>
-          <SheetTrigger render={<Button variant="outline" className="gap-2" />}>
-            <SlidersHorizontal className="w-4 h-4" />
+          <SheetTrigger render={<Button variant="outline" className="gap-2 bg-white" />}>
+            <SlidersHorizontal className="h-4 w-4" />
             Filters
           </SheetTrigger>
-          <SheetContent className="bg-card border-border overflow-y-auto">
+          <SheetContent className="overflow-y-auto bg-white">
             <SheetHeader>
               <SheetTitle className="flex items-center gap-2">
-                <Filter className="w-5 h-5" />
-                Filter Listings
+                <Filter className="h-5 w-5" />
+                Filter listings
               </SheetTitle>
             </SheetHeader>
-            <div className="space-y-6 mt-6">
+            <div className="space-y-6 px-6 pb-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Accommodation Type</label>
-                <Select
-                  defaultValue={searchParams.get("type") || ""}
-                  onValueChange={(v: string | null) => updateFilters("type", v)}
-                >
+                <label className="text-sm font-medium">Accommodation type</label>
+                <Select defaultValue={searchParams.get("type") || ""} onValueChange={(v: string | null) => updateFilters("type", v)}>
                   <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="HOSTEL">Hostel</SelectItem>
                     <SelectItem value="FLAT">Flat</SelectItem>
-                    <SelectItem value="NOT_SURE">Not Sure</SelectItem>
+                    <SelectItem value="NOT_SURE">Not sure</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Gender Preference</label>
-                <Select
-                  defaultValue={searchParams.get("gender") || ""}
-                  onValueChange={(v: string | null) => updateFilters("gender", v)}
-                >
+                <label className="text-sm font-medium">Gender preference</label>
+                <Select defaultValue={searchParams.get("gender") || ""} onValueChange={(v: string | null) => updateFilters("gender", v)}>
                   <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="MALE">Male</SelectItem>
@@ -173,12 +175,12 @@ export function ListingFeed({ listings, total, pages, currentPage, userId }: Lis
                 </Select>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Sleep Schedule</label>
+                <label className="text-sm font-medium">Sleep schedule</label>
                 <Select onValueChange={(v: string | null) => updateFilters("sleep", v)}>
                   <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="MORNING_PERSON">Morning Person</SelectItem>
-                    <SelectItem value="NIGHT_PERSON">Night Person</SelectItem>
+                    <SelectItem value="MORNING_PERSON">Morning person</SelectItem>
+                    <SelectItem value="NIGHT_PERSON">Night person</SelectItem>
                     <SelectItem value="DEPENDS">Depends</SelectItem>
                   </SelectContent>
                 </Select>
@@ -188,170 +190,148 @@ export function ListingFeed({ listings, total, pages, currentPage, userId }: Lis
                 <Select onValueChange={(v: string | null) => updateFilters("status", v)}>
                   <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="LOOKING_URGENTLY">Looking Urgently</SelectItem>
-                    <SelectItem value="WITHIN_1_MONTH">Within 1 Month</SelectItem>
-                    <SelectItem value="JUST_EXPLORING">Just Exploring</SelectItem>
+                    <SelectItem value="LOOKING_URGENTLY">Looking urgently</SelectItem>
+                    <SelectItem value="WITHIN_1_MONTH">Within 1 month</SelectItem>
+                    <SelectItem value="JUST_EXPLORING">Just exploring</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <Button
-                variant="ghost"
-                className="w-full"
-                onClick={() => {
-                  startTransition(() => router.push("/listings"));
-                }}
-              >
-                <X className="w-4 h-4 mr-2" />
-                Clear All Filters
+              <Button variant="ghost" className="w-full" onClick={() => startTransition(() => router.push("/listings"))}>
+                <X className="mr-2 h-4 w-4" />
+                Clear filters
               </Button>
             </div>
           </SheetContent>
         </Sheet>
-        <Button render={<Link href="/listings/create" />} className="gradient-primary gap-2">
-          <Plus className="w-4 h-4" />
-          Create Listing
+        <Button render={<Link href="/listings/create" />} className="gap-2">
+          <Plus className="h-4 w-4" />
+          Create listing
         </Button>
       </div>
 
-      {/* Results Count */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          {total} listing{total !== 1 ? "s" : ""} found
-        </p>
+        <p className="text-sm text-muted-foreground">{total} listing{total !== 1 ? "s" : ""} available</p>
       </div>
 
-      {/* Listing Grid */}
       {listings.length === 0 ? (
         <EmptyState
           icon={Search}
           title="No listings found"
-          description="Try adjusting your filters or create a new listing to get started."
-          actionLabel="Create Listing"
+          description="Try adjusting the filters or create a listing to get discovered faster."
+          actionLabel="Create listing"
           actionHref="/listings/create"
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {listings.map((listing, i) => {
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {listings.map((listing) => {
             const remaining = getRemainingSpots(listing.numberRequired, listing.spotsFilled);
             const isOwn = listing.userId === userId;
 
             return (
-              <motion.div
-                key={listing.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <Card className="group hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 bg-card">
-                  <CardContent className="p-5 space-y-4">
-                    {/* Header */}
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <Link href={`/listings/${listing.id}`} className="hover:underline">
-                          <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
-                            {listing.title}
-                          </h3>
+              <Card key={listing.id} className="overflow-hidden border-border/70 bg-white">
+                <CardContent className="space-y-5 p-0">
+                  <div className="rounded-b-[28px] bg-[#fff7f5] p-5">
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <Link href={`/listings/${listing.id}`} className="block text-lg font-semibold tracking-[-0.02em] transition hover:text-primary">
+                          {listing.title}
                         </Link>
-                        <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
-                          <Clock className="w-3 h-3" />
+                        <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
+                          <Clock className="h-3.5 w-3.5" />
                           {formatRelativeDate(listing.createdAt)}
-                        </div>
+                        </p>
                       </div>
-                      <CompatibilityBadge score={75} size="sm" showLabel={false} />
+                      <CompatibilityBadge 
+                        score={
+                          currentUserProfile && listing.user?.profile && !isOwn
+                            ? calculateCompatibility(currentUserProfile, listing.user.profile, listing)
+                            : undefined
+                        } 
+                        size="sm" 
+                        showLabel={false} 
+                      />
                     </div>
 
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5">
-                      <Badge variant="outline" className="text-[10px] gap-1">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline" className="gap-1 bg-white">
                         {typeIcons[listing.accommodationType]}
                         {enumToLabel(listing.accommodationType)}
                       </Badge>
-                      <Badge variant="outline" className="text-[10px]">
-                        <Users className="w-3 h-3 mr-1" />
-                        {remaining} spot{remaining !== 1 ? "s" : ""}
+                      <Badge variant="outline" className="bg-white">
+                        <Users className="mr-1 h-3.5 w-3.5" />
+                        {remaining} spot{remaining !== 1 ? "s" : ""} left
                       </Badge>
-                      <Badge
-                        variant="outline"
-                        className={cn("text-[10px]", statusColors[listing.currentStatus])}
-                      >
+                      <Badge variant="outline" className={cn("bg-white", statusColors[listing.currentStatus])}>
                         {enumToLabel(listing.currentStatus)}
                       </Badge>
                     </div>
+                  </div>
 
-                    {/* Location / Budget */}
-                    {listing.location && (
-                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <MapPin className="w-3 h-3" />
-                        {listing.location}
-                        {listing.minBudget || listing.maxBudget
-                          ? ` • ${formatBudget(listing.minBudget, listing.maxBudget)}`
-                          : ""}
+                  <div className="space-y-4 px-5 pb-5">
+                    {listing.location ? (
+                      <div className="rounded-[20px] bg-muted px-4 py-3 text-sm text-muted-foreground">
+                        <p className="flex items-center gap-2 text-foreground">
+                          <MapPin className="h-4 w-4 text-primary" />
+                          {listing.location}
+                        </p>
+                        {(listing.minBudget || listing.maxBudget) && <p className="mt-1">{formatBudget(listing.minBudget, listing.maxBudget)}</p>}
+                      </div>
+                    ) : (
+                      <div className="rounded-[20px] bg-muted px-4 py-3 text-sm text-muted-foreground">
+                        Best for students still exploring their living arrangement preferences.
                       </div>
                     )}
 
-                    {/* Description */}
-                    {listing.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-2">
-                        {listing.description}
-                      </p>
-                    )}
+                    {listing.description && <p className="text-sm leading-6 text-muted-foreground line-clamp-3">{listing.description}</p>}
 
-                    <Separator />
-
-                    {/* User + Actions */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-7 w-7">
+                    <div className="flex items-center justify-between gap-3 border-t border-border/70 pt-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Avatar className="h-11 w-11">
                           <AvatarImage src={listing.user?.image || ""} />
-                          <AvatarFallback className="bg-primary/10 text-primary text-[10px]">
+                          <AvatarFallback className="bg-primary/10 text-primary text-xs">
                             {listing.user?.name ? getInitials(listing.user.name) : "?"}
                           </AvatarFallback>
                         </Avatar>
-                        <div>
-                          <p className="text-xs font-medium">{listing.user?.name}</p>
-                          <p className="text-[10px] text-muted-foreground">
-                            {listing.user?.profile?.course} • {listing.user?.profile?.year}
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium text-foreground">{listing.user?.name}</p>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {listing.user?.profile?.course} â€¢ {listing.user?.profile?.year}
                           </p>
                         </div>
                       </div>
-                      {!isOwn && (
-                        <div className="flex gap-1.5">
-                          <Button
-                            size="sm"
-                            className="h-8 text-xs gradient-primary"
-                            onClick={() => handleInterest(listing.id)}
-                          >
-                            <Heart className="w-3 h-3 mr-1" />
+                      {!isOwn ? (
+                        <div className="flex items-center gap-2">
+                          <Button size="sm" onClick={() => handleInterest(listing.id)}>
+                            <Heart className="h-3.5 w-3.5" />
                             Interested
                           </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 w-8 p-0"
-                            onClick={() => handleSave(listing.id)}
-                          >
-                            <Bookmark className="w-3.5 h-3.5" />
+                          <Button size="icon-sm" variant="outline" onClick={() => handleSave(listing.id)} className="bg-white">
+                            <Bookmark className="h-3.5 w-3.5" />
                           </Button>
                         </div>
+                      ) : (
+                        <Button render={<Link href={`/listings/${listing.id}`} />} size="sm" variant="outline" className="bg-white">
+                          View
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        </Button>
                       )}
                     </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                  </div>
+                </CardContent>
+              </Card>
             );
           })}
         </div>
       )}
 
-      {/* Pagination */}
       {pages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-4">
+        <div className="flex items-center justify-center gap-2 pt-2">
           {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
             <Button
               key={p}
               variant={p === currentPage ? "default" : "outline"}
               size="sm"
-              className={p === currentPage ? "gradient-primary" : ""}
+              className={p !== currentPage ? "bg-white" : ""}
               onClick={() => updateFilters("page", p.toString())}
             >
               {p}
@@ -362,3 +342,4 @@ export function ListingFeed({ listings, total, pages, currentPage, userId }: Lis
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Bell, Heart, Check, X, AlertTriangle, CheckCheck } from "lucide-react";
@@ -18,7 +18,7 @@ const typeIcons: Record<string, React.ReactNode> = {
   LISTING_REPORTED: <AlertTriangle className="w-4 h-4 text-red-400" />,
 };
 
-export function NotificationsClient({ notifications }: { notifications: any[] }) {
+export function NotificationsClient({ notifications }: { notifications: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ }) {
   const unread = notifications.filter((n) => !n.isRead);
 
   async function handleMarkAll() {
@@ -85,3 +85,4 @@ export function NotificationsClient({ notifications }: { notifications: any[] })
     </div>
   );
 }
+

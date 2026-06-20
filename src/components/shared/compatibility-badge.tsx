@@ -4,12 +4,13 @@ import { motion } from "framer-motion";
 import { cn, getCompatibilityTier } from "@/lib/utils";
 
 interface CompatibilityBadgeProps {
-  score: number;
+  score?: number;
   size?: "sm" | "md" | "lg";
   showLabel?: boolean;
 }
 
 export function CompatibilityBadge({ score, size = "md", showLabel = true }: CompatibilityBadgeProps) {
+  if (score === undefined || score === null) return null;
   const { label, color, bgColor } = getCompatibilityTier(score);
 
   return (

@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { UserCircle, Mail, Phone, BookOpen, GraduationCap, Moon, Sparkles, Pencil, Save } from "lucide-react";
+import { Mail, Phone, BookOpen, Moon, Sparkles, Pencil, Save } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,7 @@ import { enumToLabel, getInitials } from "@/lib/utils";
 import { updateProfile } from "./actions";
 import { toast } from "sonner";
 
-export function ProfileClient({ user }: { user: any }) {
+export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; profile?: any /* eslint-disable-line @typescript-eslint/no-explicit-any */; } }) {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const profile = user?.profile;
@@ -48,7 +48,6 @@ export function ProfileClient({ user }: { user: any }) {
         </div>
         <Button
           variant={editing ? "default" : "outline"}
-          className={editing ? "gradient-primary" : ""}
           onClick={editing ? handleSave : () => setEditing(true)}
           disabled={loading}
         >
@@ -62,8 +61,8 @@ export function ProfileClient({ user }: { user: any }) {
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         {/* Header Card */}
-        <Card className="overflow-hidden">
-          <div className="h-24 gradient-primary" />
+        <Card className="overflow-hidden bg-white shadow-none border-border/70">
+          <div className="h-24 bg-muted" />
           <CardContent className="relative pb-6">
             <Avatar className="h-20 w-20 absolute -top-10 left-6 ring-4 ring-background">
               <AvatarImage src={user?.image || ""} />
@@ -86,28 +85,28 @@ export function ProfileClient({ user }: { user: any }) {
           <Card>
             <CardHeader><CardTitle className="text-sm flex items-center gap-2"><BookOpen className="w-4 h-4" />Academic</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <div><span className="text-xs text-muted-foreground">Course</span><p className="font-medium">{profile?.course || "—"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Year</span><p className="font-medium">{profile?.year || "—"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Gender</span><p className="font-medium">{profile?.gender ? enumToLabel(profile.gender) : "—"}</p></div>
+              <div><span className="text-xs text-muted-foreground">Course</span><p className="font-medium">{profile?.course || "â€”"}</p></div>
+              <div><span className="text-xs text-muted-foreground">Year</span><p className="font-medium">{profile?.year || "â€”"}</p></div>
+              <div><span className="text-xs text-muted-foreground">Gender</span><p className="font-medium">{profile?.gender ? enumToLabel(profile.gender) : "â€”"}</p></div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Sparkles className="w-4 h-4" />Lifestyle</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <div><span className="text-xs text-muted-foreground">Smoking</span><p className="font-medium">{profile ? enumToLabel(profile.smoking) : "—"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Drinking</span><p className="font-medium">{profile ? enumToLabel(profile.drinking) : "—"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Vaping</span><p className="font-medium">{profile ? enumToLabel(profile.vaping) : "—"}</p></div>
+              <div><span className="text-xs text-muted-foreground">Smoking</span><p className="font-medium">{profile ? enumToLabel(profile.smoking) : "â€”"}</p></div>
+              <div><span className="text-xs text-muted-foreground">Drinking</span><p className="font-medium">{profile ? enumToLabel(profile.drinking) : "â€”"}</p></div>
+              <div><span className="text-xs text-muted-foreground">Vaping</span><p className="font-medium">{profile ? enumToLabel(profile.vaping) : "â€”"}</p></div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Moon className="w-4 h-4" />Preferences</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <div><span className="text-xs text-muted-foreground">Sleep Schedule</span><p className="font-medium">{profile ? enumToLabel(profile.sleepSchedule) : "—"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Cleanliness</span><p className="font-medium">{profile?.cleanlinessLevel || "—"}/5</p></div>
-              <div><span className="text-xs text-muted-foreground">Study Environment</span><p className="font-medium">{profile ? enumToLabel(profile.studyEnvironment) : "—"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Guests</span><p className="font-medium">{profile ? enumToLabel(profile.guestsPreference) : "—"}</p></div>
+              <div><span className="text-xs text-muted-foreground">Sleep Schedule</span><p className="font-medium">{profile ? enumToLabel(profile.sleepSchedule) : "â€”"}</p></div>
+              <div><span className="text-xs text-muted-foreground">Cleanliness</span><p className="font-medium">{profile?.cleanlinessLevel || "â€”"}/5</p></div>
+              <div><span className="text-xs text-muted-foreground">Study Environment</span><p className="font-medium">{profile ? enumToLabel(profile.studyEnvironment) : "â€”"}</p></div>
+              <div><span className="text-xs text-muted-foreground">Guests</span><p className="font-medium">{profile ? enumToLabel(profile.guestsPreference) : "â€”"}</p></div>
             </CardContent>
           </Card>
 
@@ -136,7 +135,7 @@ export function ProfileClient({ user }: { user: any }) {
                       ))}
                     </div>
                   </div>
-                  <div><span className="text-xs text-muted-foreground">Accommodation</span><p className="font-medium">{profile ? enumToLabel(profile.accommodationType) : "—"}</p></div>
+                  <div><span className="text-xs text-muted-foreground">Accommodation</span><p className="font-medium">{profile ? enumToLabel(profile.accommodationType) : "â€”"}</p></div>
                 </>
               )}
             </CardContent>
@@ -146,3 +145,4 @@ export function ProfileClient({ user }: { user: any }) {
     </div>
   );
 }
+

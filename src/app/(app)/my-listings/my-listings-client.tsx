@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { List, Plus, Eye, Pencil, Trash2, XCircle } from "lucide-react";
@@ -19,7 +19,7 @@ const statusColors: Record<string, string> = {
   DELETED: "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
-export function MyListingsClient({ listings }: { listings: any[] }) {
+export function MyListingsClient({ listings }: { listings: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ }) {
   async function handleDelete(id: string) {
     try {
       await deleteListing(id);
@@ -83,11 +83,11 @@ export function MyListingsClient({ listings }: { listings: any[] }) {
                         </div>
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
                           <span>{enumToLabel(listing.accommodationType)}</span>
-                          <span>•</span>
+                          <span>â€¢</span>
                           <span>{remaining} spot{remaining !== 1 ? "s" : ""} remaining</span>
-                          <span>•</span>
+                          <span>â€¢</span>
                           <span>{listing._count.interests} interest{listing._count.interests !== 1 ? "s" : ""}</span>
-                          <span>•</span>
+                          <span>â€¢</span>
                           <span>{formatRelativeDate(listing.createdAt)}</span>
                         </div>
                       </div>
@@ -117,3 +117,4 @@ export function MyListingsClient({ listings }: { listings: any[] }) {
     </div>
   );
 }
+

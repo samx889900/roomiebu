@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -82,7 +82,7 @@ export function ReportDialog({ open, onOpenChange, targetType, targetId }: Repor
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label>Reason</Label>
-            <Select onValueChange={(v: any) => form.setValue("reason", v as ReportForm["reason"])}>
+            <Select onValueChange={(v: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => form.setValue("reason", v as ReportForm["reason"])}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a reason" />
               </SelectTrigger>
@@ -121,3 +121,4 @@ export function ReportDialog({ open, onOpenChange, targetType, targetId }: Repor
     </Dialog>
   );
 }
+

@@ -92,11 +92,11 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="border-b border-border glass-strong">
+      <div className="border-b border-border bg-white">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-white" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-primary text-white">
+              <Building2 className="w-5 h-5" />
             </div>
             <span className="text-lg font-bold text-gradient">{APP_NAME}</span>
           </div>
@@ -127,9 +127,9 @@ export default function OnboardingPage() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 200 }}
-                    className="w-20 h-20 rounded-3xl gradient-primary flex items-center justify-center mx-auto glow-primary"
+                    className="mx-auto flex h-20 w-20 items-center justify-center rounded-[24px] bg-primary/10"
                   >
-                    <Sparkles className="w-10 h-10 text-white" />
+                    <Sparkles className="w-10 h-10 text-primary" />
                   </motion.div>
                   <h1 className="text-3xl font-bold">Welcome to {APP_NAME}! 🎉</h1>
                   <p className="text-muted-foreground max-w-md mx-auto">
@@ -156,7 +156,7 @@ export default function OnboardingPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Gender *</Label>
-                      <Select onValueChange={(v: any) => form.setValue("gender", v as ProfileFormData["gender"])}>
+                      <Select onValueChange={(v: string | null) => { if (v) form.setValue("gender", v as ProfileFormData["gender"]); }}>
                         <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="MALE">Male</SelectItem>
@@ -171,7 +171,7 @@ export default function OnboardingPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Course *</Label>
-                      <Select onValueChange={(v: any) => form.setValue("course", v)}>
+                      <Select onValueChange={(v: string | null) => { if (v) form.setValue("course", v); }}>
                         <SelectTrigger><SelectValue placeholder="Select course" /></SelectTrigger>
                         <SelectContent>
                           {COURSE_OPTIONS.map((c) => (
@@ -182,7 +182,7 @@ export default function OnboardingPage() {
                     </div>
                     <div className="space-y-2 sm:col-span-2">
                       <Label>Year *</Label>
-                      <Select onValueChange={(v: any) => form.setValue("year", v)}>
+                      <Select onValueChange={(v: string | null) => { if (v) form.setValue("year", v); }}>
                         <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
                         <SelectContent>
                           {YEAR_OPTIONS.map((y) => (
@@ -207,7 +207,7 @@ export default function OnboardingPage() {
                       <Label className="capitalize">{habit}</Label>
                       <Select
                         defaultValue="NEVER"
-                        onValueChange={(v: any) => form.setValue(habit, v as ProfileFormData["smoking"])}
+                        onValueChange={(v: string | null) => { if (v) form.setValue(habit, v as ProfileFormData["smoking"]); }}
                       >
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
@@ -236,7 +236,7 @@ export default function OnboardingPage() {
                     <Label>Sleep Schedule</Label>
                     <Select
                       defaultValue="DEPENDS"
-                      onValueChange={(v: any) => form.setValue("sleepSchedule", v as ProfileFormData["sleepSchedule"])}
+                      onValueChange={(v: string | null) => { if (v) form.setValue("sleepSchedule", v as ProfileFormData["sleepSchedule"]); }}
                     >
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -253,7 +253,7 @@ export default function OnboardingPage() {
                       min={1}
                       max={5}
                       step={1}
-                      onValueChange={(v: any) => form.setValue("cleanlinessLevel", v[0])}
+                      onValueChange={(v: number | readonly number[]) => form.setValue("cleanlinessLevel", Array.isArray(v) || (v as any).length ? (v as any)[0] : v)}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
                       <span>Relaxed</span>
@@ -264,7 +264,7 @@ export default function OnboardingPage() {
                     <Label>Study Environment</Label>
                     <Select
                       defaultValue="DOESNT_MATTER"
-                      onValueChange={(v: any) => form.setValue("studyEnvironment", v as ProfileFormData["studyEnvironment"])}
+                      onValueChange={(v: string | null) => { if (v) form.setValue("studyEnvironment", v as ProfileFormData["studyEnvironment"]); }}
                     >
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -278,7 +278,7 @@ export default function OnboardingPage() {
                     <Label>Guests Preference</Label>
                     <Select
                       defaultValue="OCCASIONALLY"
-                      onValueChange={(v: any) => form.setValue("guestsPreference", v as ProfileFormData["guestsPreference"])}
+                      onValueChange={(v: string | null) => { if (v) form.setValue("guestsPreference", v as ProfileFormData["guestsPreference"]); }}
                     >
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -341,23 +341,26 @@ export default function OnboardingPage() {
                       { value: "HOSTEL", label: "Hostel", emoji: "🏫", desc: "On-campus housing" },
                       { value: "FLAT", label: "Flat", emoji: "🏠", desc: "Off-campus apartment" },
                       { value: "NOT_SURE", label: "Not Sure", emoji: "🤔", desc: "Open to both" },
-                    ].map((option) => (
-                      <motion.div
-                        key={option.value}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => form.setValue("accommodationType", option.value as ProfileFormData["accommodationType"])}
-                        className={`cursor-pointer rounded-xl border-2 p-6 text-center transition-all ${
-                          form.watch("accommodationType") === option.value
-                            ? "border-primary bg-primary/5 glow-primary"
-                            : "border-border hover:border-primary/30"
-                        }`}
-                      >
-                        <div className="text-4xl mb-3">{option.emoji}</div>
-                        <h3 className="font-semibold mb-1">{option.label}</h3>
-                        <p className="text-xs text-muted-foreground">{option.desc}</p>
-                      </motion.div>
-                    ))}
+                    ].map((option) => {
+                      const isSelected = form.watch("accommodationType") === option.value;
+                      return (
+                        <motion.div
+                          key={option.value}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => form.setValue("accommodationType", option.value as ProfileFormData["accommodationType"])}
+                          className={`cursor-pointer rounded-2xl border-2 p-6 text-center transition-all ${
+                            isSelected
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:border-primary/30"
+                          }`}
+                        >
+                          <div className="text-4xl mb-3">{option.emoji}</div>
+                          <h3 className="font-semibold mb-1">{option.label}</h3>
+                          <p className="text-xs text-muted-foreground">{option.desc}</p>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -420,7 +423,7 @@ export default function OnboardingPage() {
             </Button>
 
             {step < totalSteps - 1 ? (
-              <Button onClick={nextStep} className="gap-2 gradient-primary">
+              <Button onClick={nextStep} className="gap-2" size="lg">
                 Continue
                 <ArrowRight className="w-4 h-4" />
               </Button>
@@ -428,7 +431,8 @@ export default function OnboardingPage() {
               <Button
                 onClick={onSubmit}
                 disabled={loading}
-                className="gap-2 gradient-accent glow-accent"
+                className="gap-2"
+                size="lg"
               >
                 {loading ? "Setting up..." : "Complete Profile ✨"}
               </Button>

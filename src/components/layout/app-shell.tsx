@@ -11,8 +11,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Desktop Sidebar */}
+    <div className="page-shell">
       <div className="hidden lg:block">
         <Sidebar
           collapsed={sidebarCollapsed}
@@ -20,22 +19,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         />
       </div>
 
-      {/* Mobile Sidebar */}
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <SheetContent side="left" className="p-0 w-[260px] bg-sidebar border-border">
+        <SheetContent side="left" className="w-[300px] border-r border-border bg-white p-0">
           <Sidebar collapsed={false} onToggle={() => setMobileMenuOpen(false)} />
         </SheetContent>
       </Sheet>
 
-      {/* Main Content */}
       <div
         className={cn(
-          "transition-all duration-200 ease-in-out",
-          sidebarCollapsed ? "lg:ml-[72px]" : "lg:ml-[260px]"
+          "transition-all duration-300 ease-out",
+          sidebarCollapsed ? "lg:ml-[104px]" : "lg:ml-[308px]"
         )}
       >
         <Header onMobileMenuToggle={() => setMobileMenuOpen(true)} />
-        <main className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">{children}</main>
+        <main className="content-wrap pb-10 pt-6 md:pt-8">{children}</main>
       </div>
     </div>
   );

@@ -6,7 +6,6 @@ import { Bell, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { getInitials } from "@/lib/utils";
 import { useNotificationStore } from "@/store/use-notification-store";
 
@@ -19,42 +18,46 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
   const unreadCount = useNotificationStore((s) => s.unreadCount);
 
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-border glass-strong">
-      <div className="flex items-center justify-between h-full px-4 md:px-6">
-        {/* Left: Mobile menu + Search */}
-        <div className="flex items-center gap-3 flex-1">
+    <header className="sticky top-0 z-30 border-b border-border/70 topbar-blur">
+      <div className="content-wrap flex h-20 items-center gap-4">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={onMobileMenuToggle}
-            className="lg:hidden h-9 w-9"
+            className="lg:hidden"
           >
             <Menu className="w-5 h-5" />
           </Button>
-          <div className="hidden sm:flex relative max-w-md flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search listings, people..."
-              className="pl-9 bg-muted/30 border-border/50 h-9"
-            />
+          <div className="hidden flex-1 md:block">
+            <div className="relative max-w-xl">
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search listings, areas, lifestyles..."
+                className="h-12 rounded-full border-border bg-white pl-11 shadow-none"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Right: Notifications + Profile */}
         <div className="flex items-center gap-2">
-          <Button render={<Link href="/notifications" />} variant="ghost" size="icon" className="relative h-9 w-9">
-            <Bell className="w-5 h-5" />
+          <Button render={<Link href="/notifications" />} variant="outline" size="icon" className="relative bg-white">
+            <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary" />
+              <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-primary" />
             )}
           </Button>
-          <Link href="/profile">
-            <Avatar className="h-8 w-8 ring-2 ring-primary/20 hover:ring-primary/40 transition-all cursor-pointer">
+          <Link href="/profile" className="surface-subtle flex items-center gap-3 px-2 py-1.5 pr-3 transition hover:border-foreground/10">
+            <Avatar className="h-10 w-10">
               <AvatarImage src={session?.user?.image || ""} />
               <AvatarFallback className="bg-primary/10 text-primary text-xs">
                 {session?.user?.name ? getInitials(session.user.name) : "?"}
               </AvatarFallback>
             </Avatar>
+            <div className="hidden text-left sm:block">
+              <p className="max-w-28 truncate text-sm font-medium text-foreground">{session?.user?.name}</p>
+              <p className="max-w-28 truncate text-xs text-muted-foreground">{session?.user?.role === "ADMIN" ? "Admin" : "Student"}</p>
+            </div>
           </Link>
         </div>
       </div>

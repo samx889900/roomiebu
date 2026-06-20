@@ -7,18 +7,39 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const token = searchParams.get("token");
+  const email = searchParams.get("email");
 
-  if (!token) {
-    return NextResponse.json({ error: "No token provided" }, { status: 400 });
+  if (!email) {
+    return NextResponse.json({ error: "No email provided" }, { status: 400 });
   }
 
+  const { prisma } = await import("@/lib/prisma");
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  const sessionToken = require("crypto").randomUUID();
+  const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+  await prisma.session.create({
+    data: {
+      sessionToken,
+      userId: user.id,
+      expires,
+    },
+  });
+
   const cookieStore = await cookies();
-  cookieStore.set("next-auth.session-token", token, {
+  const isSecure = request.url.startsWith("https://");
+  const cookieName = isSecure ? "__Secure-authjs.session-token" : "authjs.session-token";
+  
+  cookieStore.set(cookieName, sessionToken, {
     path: "/",
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production"
+    secure: isSecure,
   });
 
   return NextResponse.redirect(new URL("/", request.url));

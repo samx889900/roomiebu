@@ -8,9 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { formatDate, getInitials, enumToLabel } from "@/lib/utils";
+import { calculateCompatibility } from "@/lib/compatibility";
 import Link from "next/link";
 
-export function MatchesClient({ matches, userId }: { matches: any[]; userId: string }) {
+export function MatchesClient({ matches, userId }: { matches: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */; userId: string }) {
   return (
     <div>
       <div className="mb-6">
@@ -30,7 +31,9 @@ export function MatchesClient({ matches, userId }: { matches: any[]; userId: str
         <div className="grid gap-4 sm:grid-cols-2">
           {matches.map((match, i) => {
             const otherUser = match.userAId === userId ? match.userB : match.userA;
+            const currentUser = match.userAId === userId ? match.userA : match.userB;
             const otherProfile = otherUser?.profile;
+            const currentProfile = currentUser?.profile;
 
             return (
               <motion.div
@@ -55,7 +58,14 @@ export function MatchesClient({ matches, userId }: { matches: any[]; userId: str
                           {otherProfile?.course} • {otherProfile?.year}
                         </p>
                       </div>
-                      <CompatibilityBadge score={78} size="sm" />
+                      <CompatibilityBadge 
+                        score={
+                          currentProfile && otherProfile
+                            ? calculateCompatibility(currentProfile, otherProfile, match.listing)
+                            : undefined
+                        } 
+                        size="sm" 
+                      />
                     </div>
 
                     {/* Contact Details — REVEALED */}
@@ -74,7 +84,7 @@ export function MatchesClient({ matches, userId }: { matches: any[]; userId: str
                     {/* Listing info */}
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <Link href={`/listings/${match.listing?.id}`} className="hover:text-primary transition-colors">
-                        📋 {match.listing?.title}
+                        ðŸ“‹ {match.listing?.title}
                       </Link>
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
@@ -91,3 +101,4 @@ export function MatchesClient({ matches, userId }: { matches: any[]; userId: str
     </div>
   );
 }
+

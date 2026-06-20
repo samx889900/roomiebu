@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { List, Trash2, RotateCcw } from "lucide-react";
@@ -18,7 +18,7 @@ const statusColors: Record<string, string> = {
   DELETED: "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
-export function AdminListingsClient({ listings }: { listings: any[] }) {
+export function AdminListingsClient({ listings }: { listings: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ }) {
   return (
     <div>
       <div className="mb-6">
@@ -41,7 +41,7 @@ export function AdminListingsClient({ listings }: { listings: any[] }) {
                       <Badge variant="outline" className="text-[10px]">{enumToLabel(listing.accommodationType)}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      by {listing.user?.name} • {listing._count.interests} interests • {listing._count.matches} matches • {formatRelativeDate(listing.createdAt)}
+                      by {listing.user?.name} â€¢ {listing._count.interests} interests â€¢ {listing._count.matches} matches â€¢ {formatRelativeDate(listing.createdAt)}
                     </p>
                   </div>
                   <div className="flex gap-1.5">
@@ -64,3 +64,4 @@ export function AdminListingsClient({ listings }: { listings: any[] }) {
     </div>
   );
 }
+
