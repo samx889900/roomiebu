@@ -228,12 +228,12 @@ export function ListingFeed({ listings, total, pages, currentPage, userId, curre
             const isOwn = listing.userId === userId;
 
             return (
-              <Card key={listing.id} className="overflow-hidden border-border/70 bg-white">
+              <Card key={listing.id} className="group relative overflow-hidden border-border/70 bg-white transition-all hover:border-border hover:shadow-sm">
                 <CardContent className="space-y-5 p-0">
                   <div className="rounded-b-[28px] bg-[#fff7f5] p-5">
                     <div className="mb-4 flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <Link href={`/listings/${listing.id}`} className="block text-lg font-semibold tracking-[-0.02em] transition hover:text-primary">
+                        <Link href={`/listings/${listing.id}`} className="block text-lg font-semibold tracking-[-0.02em] transition group-hover:text-primary after:absolute after:inset-0">
                           {listing.title}
                         </Link>
                         <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
@@ -301,16 +301,16 @@ export function ListingFeed({ listings, total, pages, currentPage, userId, curre
                       </div>
                       {!isOwn ? (
                         <div className="flex items-center gap-2">
-                          <Button size="sm" onClick={() => handleInterest(listing.id)}>
+                          <Button size="sm" className="relative z-10" onClick={() => handleInterest(listing.id)}>
                             <Heart className="h-3.5 w-3.5" />
                             Interested
                           </Button>
-                          <Button size="icon-sm" variant="outline" onClick={() => handleSave(listing.id)} className="bg-white">
+                          <Button size="icon-sm" variant="outline" onClick={() => handleSave(listing.id)} className="relative z-10 bg-white">
                             <Bookmark className="h-3.5 w-3.5" />
                           </Button>
                         </div>
                       ) : (
-                        <Button render={<Link href={`/listings/${listing.id}`} />} size="sm" variant="outline" className="bg-white">
+                        <Button render={<Link href={`/listings/${listing.id}`} />} size="sm" variant="outline" className="relative z-10 bg-white">
                           View
                           <ArrowUpRight className="h-3.5 w-3.5" />
                         </Button>
