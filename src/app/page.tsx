@@ -1,11 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Building2, Users, Heart, Shield, ArrowRight, Search, Sparkles, MapPin } from "lucide-react";
+import { Building2, Users, Heart, Shield, ArrowRight, Search, Sparkles, MapPin, Lock, GraduationCap, ShieldCheck, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { signIn } from "next-auth/react";
 import { APP_NAME } from "@/lib/constants";
+import Link from "next/link";
 
 const features = [
   {
@@ -172,6 +173,148 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Trust Signals */}
+      <section className="border-t border-border/70">
+        <div className="content-wrap py-12 sm:py-14">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: GraduationCap,
+                title: "Bennett University verified",
+                desc: "Only @bennett.edu.in accounts can access the platform.",
+              },
+              {
+                icon: Lock,
+                title: "Microsoft secure login",
+                desc: "Authentication powered by Microsoft Entra ID — no passwords stored.",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Student-only platform",
+                desc: "Every user is a verified Bennett student. No external sign-ups.",
+              },
+              {
+                icon: Eye,
+                title: "Privacy focused",
+                desc: "Contact details are shared only after mutual match. No tracking or ads.",
+              },
+            ].map((signal, index) => (
+              <motion.div
+                key={signal.title}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.06 }}
+                className="flex items-start gap-3.5 rounded-2xl border border-border/60 bg-white/60 p-4"
+              >
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f0fdf4] text-emerald-600">
+                  <signal.icon className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{signal.title}</p>
+                  <p className="mt-0.5 text-xs leading-5 text-muted-foreground">{signal.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border/70 bg-white/60">
+        <div className="content-wrap py-10 sm:py-12">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Brand */}
+            <div className="space-y-3 sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-primary text-white">
+                  <Building2 className="h-4.5 w-4.5" />
+                </div>
+                <span className="text-base font-semibold tracking-[-0.03em]">{APP_NAME}</span>
+              </div>
+              <p className="text-sm leading-6 text-muted-foreground max-w-xs">
+                A roommate matching platform built exclusively for Bennett University students.
+                Find compatible hostel roommates and flatmates with ease.
+              </p>
+            </div>
+
+            {/* Platform */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                Platform
+              </h4>
+              <ul className="space-y-2">
+                <li>
+                  <button
+                    onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/listings" })}
+                    className="text-sm text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    Sign in
+                  </button>
+                </li>
+                <li>
+                  <Link href="/contact" className="text-sm text-foreground/70 hover:text-foreground transition-colors">
+                    Contact Support
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                Legal
+              </h4>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/privacy" className="text-sm text-foreground/70 hover:text-foreground transition-colors">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="text-sm text-foreground/70 hover:text-foreground transition-colors">
+                    Terms of Service
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Info */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                About
+              </h4>
+              <ul className="space-y-2 text-sm text-foreground/70">
+                <li>Bennett University Student Platform</li>
+                <li>Greater Noida, Uttar Pradesh</li>
+                <li>
+                  <a href="mailto:roomiebu@buconfess.in" className="hover:text-foreground transition-colors">
+                    roomiebu@buconfess.in
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 sm:flex-row">
+            <p className="text-xs text-muted-foreground">
+              &copy; {new Date().getFullYear()} {APP_NAME}. Built by Bennett University students.
+            </p>
+            <div className="flex items-center gap-4">
+              <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                Privacy
+              </Link>
+              <Link href="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                Terms
+              </Link>
+              <Link href="/contact" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                Contact
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
