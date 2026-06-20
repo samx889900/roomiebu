@@ -184,7 +184,7 @@ export async function getListings(params: GetListingsParams = {}) {
       case "oldest":
         return { createdAt: "asc" as const };
       case "alphabetical":
-        return { title: "asc" as const };
+        return { user: { name: "asc" as const } };
       default:
         return { createdAt: "desc" as const };
     }
