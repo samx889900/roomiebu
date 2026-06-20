@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Phone, Mail, Calendar } from "lucide-react";
+import { Users, Phone, Mail, Calendar, ClipboardList } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -69,22 +69,22 @@ export function MatchesClient({ matches, userId }: { matches: any[] /* eslint-di
                     </div>
 
                     {/* Contact Details — REVEALED */}
-                    <div className="rounded-lg bg-accent/5 border border-accent/20 p-3 space-y-2">
-                      <p className="text-xs font-semibold text-accent uppercase tracking-wider">Contact Details</p>
+                    <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 space-y-2">
+                      <p className="text-xs font-semibold text-primary uppercase tracking-wider">Contact Details</p>
                       <div className="flex items-center gap-2 text-sm">
-                        <Phone className="w-4 h-4 text-accent" />
+                        <Phone className="w-4 h-4 text-primary" />
                         <span>{otherProfile?.phone || "Not provided"}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <Mail className="w-4 h-4 text-accent" />
+                        <Mail className="w-4 h-4 text-primary" />
                         <span>{otherUser?.email}</span>
                       </div>
                     </div>
 
                     {/* Listing info */}
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <Link href={`/listings/${match.listing?.id}`} className="hover:text-primary transition-colors">
-                        ðŸ“‹ {match.listing?.title}
+                      <Link href={`/listings/${match.listing?.id}`} className="hover:text-primary transition-colors flex items-center gap-1">
+                        <ClipboardList className="w-3 h-3" /> {match.listing?.title}
                       </Link>
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />

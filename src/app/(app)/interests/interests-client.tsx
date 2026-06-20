@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart, Send, Check, X, Clock } from "lucide-react";
+import { Heart, Send, Check, X, Clock, CigaretteOff, Beer, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -99,9 +99,9 @@ export function InterestsClient({ received, sent, currentUserProfile }: { receiv
                         <div className="flex gap-2 mt-2 text-xs text-muted-foreground">
                           {interest.interestedUser?.profile && (
                             <>
-                              <span>ðŸš¬ {enumToLabel(interest.interestedUser.profile.smoking)}</span>
-                              <span>ðŸº {enumToLabel(interest.interestedUser.profile.drinking)}</span>
-                              <span>ðŸ˜´ {enumToLabel(interest.interestedUser.profile.sleepSchedule)}</span>
+                              <span className="flex items-center gap-1"><CigaretteOff className="w-3 h-3" /> {enumToLabel(interest.interestedUser.profile.smoking)}</span>
+                              <span className="flex items-center gap-1"><Beer className="w-3 h-3" /> {enumToLabel(interest.interestedUser.profile.drinking)}</span>
+                              <span className="flex items-center gap-1"><Moon className="w-3 h-3" /> {enumToLabel(interest.interestedUser.profile.sleepSchedule)}</span>
                             </>
                           )}
                         </div>
