@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { enumToLabel, getInitials } from "@/lib/utils";
 import { updateProfile } from "./actions";
 import { toast } from "sonner";
@@ -18,24 +17,44 @@ import { toast } from "sonner";
 export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; profile?: any /* eslint-disable-line @typescript-eslint/no-explicit-any */; } }) {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const profile = user?.profile;
+  const profile = user?.profile || {};
 
   const [formData, setFormData] = useState({
-    phone: profile?.phone || "",
-    aboutMe: profile?.aboutMe || "",
-    otherHabits: profile?.otherHabits || "",
+    phone: profile.phone || "",
+    aboutMe: profile.aboutMe || "",
+    otherHabits: profile.otherHabits || "",
+    course: profile.course || "",
+    year: profile.year || "",
+    gender: profile.gender || "MALE",
+    smoking: profile.smoking || "NEVER",
+    drinking: profile.drinking || "NEVER",
+    vaping: profile.vaping || "NEVER",
+    sleepSchedule: profile.sleepSchedule || "DEPENDS",
+    cleanlinessLevel: profile.cleanlinessLevel?.toString() || "3",
+    studyEnvironment: profile.studyEnvironment || "DOESNT_MATTER",
+    guestsPreference: profile.guestsPreference || "OCCASIONALLY",
+    accommodationType: profile.accommodationType || "NOT_SURE",
   });
 
   async function handleSave() {
     setLoading(true);
     try {
-      await updateProfile(formData);
+      await updateProfile({
+        ...formData,
+        cleanlinessLevel: parseInt(formData.cleanlinessLevel, 10),
+      });
       toast.success("Profile updated!");
       setEditing(false);
     } catch {
       toast.error("Failed to update profile");
     } finally {
       setLoading(false);
+    }
+  }
+
+  function handleSelectChange(field: string, value: string | null) {
+    if (value) {
+      setFormData((prev) => ({ ...prev, [field]: value }));
     }
   }
 
@@ -85,28 +104,133 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
           <Card>
             <CardHeader><CardTitle className="text-sm flex items-center gap-2"><BookOpen className="w-4 h-4" />Academic</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <div><span className="text-xs text-muted-foreground">Course</span><p className="font-medium">{profile?.course || "â€”"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Year</span><p className="font-medium">{profile?.year || "â€”"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Gender</span><p className="font-medium">{profile?.gender ? enumToLabel(profile.gender) : "â€”"}</p></div>
+              {editing ? (
+                <>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Course</span><Input value={formData.course} onChange={(e) => setFormData({ ...formData, course: e.target.value })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Year</span><Input value={formData.year} onChange={(e) => setFormData({ ...formData, year: e.target.value })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Gender</span>
+                    <Select value={formData.gender} onValueChange={(v) => handleSelectChange("gender", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="MALE">Male</SelectItem>
+                        <SelectItem value="FEMALE">Female</SelectItem>
+                        <SelectItem value="OTHER">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div><span className="text-xs text-muted-foreground">Course</span><p className="font-medium">{profile?.course || "—"}</p></div>
+                  <div><span className="text-xs text-muted-foreground">Year</span><p className="font-medium">{profile?.year || "—"}</p></div>
+                  <div><span className="text-xs text-muted-foreground">Gender</span><p className="font-medium">{profile?.gender ? enumToLabel(profile.gender) : "—"}</p></div>
+                </>
+              )}
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Sparkles className="w-4 h-4" />Lifestyle</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <div><span className="text-xs text-muted-foreground">Smoking</span><p className="font-medium">{profile ? enumToLabel(profile.smoking) : "â€”"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Drinking</span><p className="font-medium">{profile ? enumToLabel(profile.drinking) : "â€”"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Vaping</span><p className="font-medium">{profile ? enumToLabel(profile.vaping) : "â€”"}</p></div>
+              {editing ? (
+                <>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Smoking</span>
+                    <Select value={formData.smoking} onValueChange={(v) => handleSelectChange("smoking", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NEVER">Never</SelectItem>
+                        <SelectItem value="OCCASIONALLY">Occasionally</SelectItem>
+                        <SelectItem value="REGULARLY">Regularly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Drinking</span>
+                    <Select value={formData.drinking} onValueChange={(v) => handleSelectChange("drinking", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NEVER">Never</SelectItem>
+                        <SelectItem value="OCCASIONALLY">Occasionally</SelectItem>
+                        <SelectItem value="REGULARLY">Regularly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Vaping</span>
+                    <Select value={formData.vaping} onValueChange={(v) => handleSelectChange("vaping", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NEVER">Never</SelectItem>
+                        <SelectItem value="OCCASIONALLY">Occasionally</SelectItem>
+                        <SelectItem value="REGULARLY">Regularly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div><span className="text-xs text-muted-foreground">Smoking</span><p className="font-medium">{profile?.smoking ? enumToLabel(profile.smoking) : "—"}</p></div>
+                  <div><span className="text-xs text-muted-foreground">Drinking</span><p className="font-medium">{profile?.drinking ? enumToLabel(profile.drinking) : "—"}</p></div>
+                  <div><span className="text-xs text-muted-foreground">Vaping</span><p className="font-medium">{profile?.vaping ? enumToLabel(profile.vaping) : "—"}</p></div>
+                </>
+              )}
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Moon className="w-4 h-4" />Preferences</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <div><span className="text-xs text-muted-foreground">Sleep Schedule</span><p className="font-medium">{profile ? enumToLabel(profile.sleepSchedule) : "â€”"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Cleanliness</span><p className="font-medium">{profile?.cleanlinessLevel || "â€”"}/5</p></div>
-              <div><span className="text-xs text-muted-foreground">Study Environment</span><p className="font-medium">{profile ? enumToLabel(profile.studyEnvironment) : "â€”"}</p></div>
-              <div><span className="text-xs text-muted-foreground">Guests</span><p className="font-medium">{profile ? enumToLabel(profile.guestsPreference) : "â€”"}</p></div>
+              {editing ? (
+                <>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Sleep Schedule</span>
+                    <Select value={formData.sleepSchedule} onValueChange={(v) => handleSelectChange("sleepSchedule", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="MORNING_PERSON">Morning Person</SelectItem>
+                        <SelectItem value="NIGHT_PERSON">Night Person</SelectItem>
+                        <SelectItem value="DEPENDS">Depends</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Cleanliness</span>
+                    <Select value={formData.cleanlinessLevel} onValueChange={(v) => handleSelectChange("cleanlinessLevel", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 - Messy</SelectItem>
+                        <SelectItem value="2">2 - Relaxed</SelectItem>
+                        <SelectItem value="3">3 - Moderate</SelectItem>
+                        <SelectItem value="4">4 - Clean</SelectItem>
+                        <SelectItem value="5">5 - Spotless</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Study Environment</span>
+                    <Select value={formData.studyEnvironment} onValueChange={(v) => handleSelectChange("studyEnvironment", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SILENT">Silent</SelectItem>
+                        <SelectItem value="MODERATE">Moderate</SelectItem>
+                        <SelectItem value="DOESNT_MATTER">Doesn't Matter</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Guests</span>
+                    <Select value={formData.guestsPreference} onValueChange={(v) => handleSelectChange("guestsPreference", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NEVER">Never</SelectItem>
+                        <SelectItem value="OCCASIONALLY">Occasionally</SelectItem>
+                        <SelectItem value="FREQUENTLY">Frequently</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div><span className="text-xs text-muted-foreground">Sleep Schedule</span><p className="font-medium">{profile?.sleepSchedule ? enumToLabel(profile.sleepSchedule) : "—"}</p></div>
+                  <div><span className="text-xs text-muted-foreground">Cleanliness</span><p className="font-medium">{profile?.cleanlinessLevel || "—"}/5</p></div>
+                  <div><span className="text-xs text-muted-foreground">Study Environment</span><p className="font-medium">{profile?.studyEnvironment ? enumToLabel(profile.studyEnvironment) : "—"}</p></div>
+                  <div><span className="text-xs text-muted-foreground">Guests</span><p className="font-medium">{profile?.guestsPreference ? enumToLabel(profile.guestsPreference) : "—"}</p></div>
+                </>
+              )}
             </CardContent>
           </Card>
 
@@ -118,6 +242,17 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                   <div className="space-y-2">
                     <span className="text-xs text-muted-foreground">Phone</span>
                     <Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-xs text-muted-foreground">Accommodation Preference</span>
+                    <Select value={formData.accommodationType} onValueChange={(v) => handleSelectChange("accommodationType", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="HOSTEL">Hostel</SelectItem>
+                        <SelectItem value="FLAT">Flat</SelectItem>
+                        <SelectItem value="NOT_SURE">Not Sure</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="space-y-2">
                     <span className="text-xs text-muted-foreground">About Me</span>
@@ -135,7 +270,7 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                       ))}
                     </div>
                   </div>
-                  <div><span className="text-xs text-muted-foreground">Accommodation</span><p className="font-medium">{profile ? enumToLabel(profile.accommodationType) : "â€”"}</p></div>
+                  <div><span className="text-xs text-muted-foreground">Accommodation</span><p className="font-medium">{profile?.accommodationType ? enumToLabel(profile.accommodationType) : "—"}</p></div>
                 </>
               )}
             </CardContent>
@@ -145,4 +280,3 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
     </div>
   );
 }
-
