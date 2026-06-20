@@ -117,7 +117,7 @@ export default function HomePage() {
                         <Badge className="bg-[#fff1f3] text-primary">82% match</Badge>
                       </div>
                       <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-                        <div className="rounded-2xl bg-muted px-4 py-3">Budget: ?8,000 - ?12,000</div>
+                        <div className="rounded-2xl bg-muted px-4 py-3">Budget: ₹8,000 - ₹12,000</div>
                         <div className="rounded-2xl bg-muted px-4 py-3">Mood: Quiet weekdays, social weekends</div>
                         <div className="rounded-2xl bg-muted px-4 py-3">Move-in: Within 1 month</div>
                         <div className="rounded-2xl bg-muted px-4 py-3">Spots left: 2 of 3</div>
