@@ -11,8 +11,9 @@ import { AdminUserActions } from "./admin-user-actions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default async function AdminUserDetailPage({ params }: { params: { id: string } }) {
-  const user = await getAdminUserById(params.id);
+export default async function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const user = await getAdminUserById(resolvedParams.id);
   if (!user) notFound();
 
   const profile = user.profile;
