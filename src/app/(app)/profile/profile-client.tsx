@@ -14,6 +14,7 @@ import { enumToLabel, getInitials } from "@/lib/utils";
 import { updateProfile } from "./actions";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
+import { LANGUAGE_OPTIONS } from "@/lib/constants";
 
 export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; profile?: any /* eslint-disable-line @typescript-eslint/no-explicit-any */; } }) {
   const [editing, setEditing] = useState(false);
@@ -37,11 +38,45 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
     accommodationType: profile.accommodationType || "NOT_SURE",
   });
 
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>(() => {
+    const langs: string[] = profile.languages || [];
+    const hasCustom = langs.some(l => !LANGUAGE_OPTIONS.includes(l as any) && l !== "Other");
+    if (hasCustom) {
+      return [...langs.filter(l => LANGUAGE_OPTIONS.includes(l as any)), "Other"];
+    }
+    return langs;
+  });
+
+  const [customLanguage, setCustomLanguage] = useState(() => {
+    const langs: string[] = profile.languages || [];
+    const custom = langs.filter(l => !LANGUAGE_OPTIONS.includes(l as any) && l !== "Other");
+    return custom.join(", ");
+  });
+
+  const toggleLanguage = (lang: string) => {
+    const updated = selectedLanguages.includes(lang)
+      ? selectedLanguages.filter((l) => l !== lang)
+      : [...selectedLanguages, lang];
+    setSelectedLanguages(updated);
+  };
+
   async function handleSave() {
     setLoading(true);
     try {
+      let finalLanguages = [...selectedLanguages];
+      if (finalLanguages.includes("Other") && customLanguage.trim()) {
+        finalLanguages = finalLanguages.filter((l) => l !== "Other");
+        const customLangs = customLanguage.split(",").map(s => s.trim()).filter(Boolean);
+        customLangs.forEach(lang => {
+          if (!finalLanguages.includes(lang)) {
+            finalLanguages.push(lang);
+          }
+        });
+      }
+
       await updateProfile({
         ...formData,
+        languages: finalLanguages,
         cleanlinessLevel: parseInt(formData.cleanlinessLevel, 10),
       });
       toast.success("Profile updated!");
@@ -254,7 +289,14 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                 <>
                   <div className="space-y-2">
                     <span className="text-xs text-muted-foreground">Phone</span>
-                    <Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+                    <Input
+                      value={formData.phone}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, "");
+                        setFormData({ ...formData, phone: val });
+                      }}
+                      maxLength={15}
+                    />
                   </div>
                   <div className="space-y-2">
                     <span className="text-xs text-muted-foreground">Accommodation Preference</span>
@@ -266,6 +308,39 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                         <SelectItem value="NOT_SURE">Not Sure</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-xs text-muted-foreground">Languages</span>
+                    <div className="flex flex-wrap gap-2">
+                      {LANGUAGE_OPTIONS.map((lang) => (
+                        <Badge
+                          key={lang}
+                          variant={selectedLanguages.includes(lang) ? "default" : "outline"}
+                          className={`cursor-pointer transition-all ${
+                            selectedLanguages.includes(lang)
+                              ? "gradient-primary border-0"
+                              : "hover:bg-muted"
+                          }`}
+                          onClick={() => toggleLanguage(lang)}
+                        >
+                          {lang}
+                        </Badge>
+                      ))}
+                    </div>
+                    {selectedLanguages.includes("Other") && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        className="pt-2"
+                      >
+                        <Input
+                          placeholder="Type your language"
+                          value={customLanguage}
+                          onChange={(e) => setCustomLanguage(e.target.value)}
+                          className="max-w-xs"
+                        />
+                      </motion.div>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <span className="text-xs text-muted-foreground">About Me</span>

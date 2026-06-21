@@ -5,7 +5,7 @@ export const profileSchema = z.object({
     .string()
     .min(10, "Phone number must be at least 10 digits")
     .max(15, "Phone number is too long")
-    .regex(/^[+]?[\d\s-]+$/, "Invalid phone number format"),
+    .regex(/^\d+$/, "Phone number must contain only digits"),
   gender: z.enum(["MALE", "FEMALE", "OTHER"], { message: "Gender is required" }),
   dob: z.string().min(1, "Date of birth is required"),
   course: z.string().min(1, "Course is required"),

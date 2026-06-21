@@ -131,6 +131,7 @@ export const LANGUAGE_OPTIONS = [
   "Urdu",
   "Sanskrit",
   "Nepali",
+  "Haryanvi",
   "Other",
 ] as const;
 

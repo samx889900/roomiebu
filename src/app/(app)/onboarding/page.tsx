@@ -36,6 +36,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English"]);
+  const [customLanguage, setCustomLanguage] = useState("");
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -70,7 +71,14 @@ export default function OnboardingPage() {
     setLoading(true);
     try {
       const data = form.getValues();
-      data.languages = selectedLanguages;
+      let finalLanguages = [...selectedLanguages];
+      if (finalLanguages.includes("Other") && customLanguage.trim()) {
+        finalLanguages = finalLanguages.filter((l) => l !== "Other");
+        if (!finalLanguages.includes(customLanguage.trim())) {
+          finalLanguages.push(customLanguage.trim());
+        }
+      }
+      data.languages = finalLanguages;
       await completeOnboarding(data);
       toast.success("Profile completed! Welcome to " + APP_NAME);
       router.push("/listings");
@@ -149,7 +157,15 @@ export default function OnboardingPage() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label>Phone Number *</Label>
-                      <Input {...form.register("phone")} placeholder="+91 9876543210" />
+                      <Input
+                        {...form.register("phone", {
+                          onChange: (e) => {
+                            e.target.value = e.target.value.replace(/\D/g, "");
+                          },
+                        })}
+                        placeholder="9876543210"
+                        maxLength={15}
+                      />
                       {form.formState.errors.phone && (
                         <p className="text-xs text-destructive">{form.formState.errors.phone.message}</p>
                       )}
@@ -316,6 +332,20 @@ export default function OnboardingPage() {
                         </Badge>
                       ))}
                     </div>
+                    {selectedLanguages.includes("Other") && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        className="pt-2"
+                      >
+                        <Input
+                          placeholder="Type your language"
+                          value={customLanguage}
+                          onChange={(e) => setCustomLanguage(e.target.value)}
+                          className="max-w-xs"
+                        />
+                      </motion.div>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label>About Me ({(form.watch("aboutMe") || "").length}/300)</Label>

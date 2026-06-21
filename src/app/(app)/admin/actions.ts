@@ -168,13 +168,29 @@ export async function adminRestoreListing(listingId: string) {
 export async function getAdminUserById(id: string) {
   await requireAdmin();
 
-  return prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id },
     include: {
       profile: true,
-      _count: { select: { listings: true, matchesAsA: true, matchesAsB: true } },
+      _count: { 
+        select: { 
+          listings: true, 
+          matchesAsA: true, 
+          matchesAsB: true,
+          interests: true,
+          reportsAgainst: true
+        } 
+      },
     },
   });
+
+  if (!user) return null;
+
+  const interestsReceived = await prisma.listingInterest.count({
+    where: { listing: { userId: id } }
+  });
+
+  return { ...user, interestsReceived };
 }
 
 export async function getAdminUsers(search?: string) {
