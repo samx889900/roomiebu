@@ -43,7 +43,7 @@ export const metadata: Metadata = {
       "Find verified roommates and flatmates at Bennett University. Match with compatible students, discover hostel and flat listings, and find your ideal living partner through a secure student-only platform.",
     images: [
       {
-        url: "/previewimage.png",
+        url: "https://roomie.buconfess.in/previewimage.png",
         width: 1200,
         height: 630,
         alt: "RoomieBU Preview Image",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     title: "RoomieBU - Find Compatible Roommates at Bennett University",
     description:
       "Find verified roommates and flatmates at Bennett University. Match with compatible students, discover hostel and flat listings, and find your ideal living partner through a secure student-only platform.",
-    images: ["/previewimage.png"],
+    images: ["https://roomie.buconfess.in/previewimage.png"],
   },
   icons: {
     icon: "/icon.png",
