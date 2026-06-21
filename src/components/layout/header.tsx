@@ -47,14 +47,14 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
               <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-primary" />
             )}
           </Button>
-          <Link href="/profile" className="surface-subtle flex items-center gap-3 px-2 py-1.5 pr-3 transition hover:border-foreground/10">
-            <Avatar className="h-10 w-10">
+          <Link href="/profile" className="surface-subtle flex items-center gap-3 px-2 py-1.5 pr-3 transition hover:border-foreground/10 min-w-0 max-w-full">
+            <Avatar className="h-10 w-10 shrink-0">
               <AvatarImage src={session?.user?.image || ""} />
               <AvatarFallback className="bg-primary/10 text-primary text-xs">
                 {session?.user?.name ? getInitials(session.user.name) : "?"}
               </AvatarFallback>
             </Avatar>
-            <div className="hidden text-left sm:block">
+            <div className="hidden text-left sm:block min-w-0">
               <p className="max-w-28 truncate text-sm font-medium text-foreground">{session?.user?.name}</p>
               <p className="max-w-28 truncate text-xs text-muted-foreground">{session?.user?.role === "ADMIN" ? "Admin" : "Student"}</p>
             </div>

@@ -40,16 +40,16 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
 
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(() => {
     const langs: string[] = profile.languages || [];
-    const hasCustom = langs.some(l => !LANGUAGE_OPTIONS.includes(l as any) && l !== "Other");
+    const hasCustom = langs.some(l => !LANGUAGE_OPTIONS.includes(l as never) && l !== "Other");
     if (hasCustom) {
-      return [...langs.filter(l => LANGUAGE_OPTIONS.includes(l as any)), "Other"];
+      return [...langs.filter(l => LANGUAGE_OPTIONS.includes(l as never)), "Other"];
     }
     return langs;
   });
 
   const [customLanguage, setCustomLanguage] = useState(() => {
     const langs: string[] = profile.languages || [];
-    const custom = langs.filter(l => !LANGUAGE_OPTIONS.includes(l as any) && l !== "Other");
+    const custom = langs.filter(l => !LANGUAGE_OPTIONS.includes(l as never) && l !== "Other");
     return custom.join(", ");
   });
 
@@ -137,11 +137,11 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                 {user?.name ? getInitials(user.name) : "?"}
               </AvatarFallback>
             </Avatar>
-            <div className="ml-28 pt-2">
-              <h2 className="text-xl font-bold">{user?.name}</h2>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" />{user?.email}</span>
-                {profile?.phone && <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" />{profile.phone}</span>}
+            <div className="ml-28 pt-2 min-w-0">
+              <h2 className="text-xl font-bold truncate break-words">{user?.name}</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-muted-foreground mt-1 min-w-0">
+                <span className="flex items-center gap-1 min-w-0"><Mail className="w-3.5 h-3.5 shrink-0" /><span className="truncate">{user?.email}</span></span>
+                {profile?.phone && <span className="flex items-center gap-1 min-w-0"><Phone className="w-3.5 h-3.5 shrink-0" /><span className="truncate">{profile.phone}</span></span>}
               </div>
             </div>
           </CardContent>
@@ -256,7 +256,7 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                       <SelectContent>
                         <SelectItem value="SILENT">Silent</SelectItem>
                         <SelectItem value="MODERATE">Moderate</SelectItem>
-                        <SelectItem value="DOESNT_MATTER">Doesn't Matter</SelectItem>
+                        <SelectItem value="DOESNT_MATTER">Doesn&apos;t Matter</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -349,12 +349,12 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                 </>
               ) : (
                 <>
-                  <div><span className="text-xs text-muted-foreground">Bio</span><p className="text-sm">{profile?.aboutMe || "No bio yet"}</p></div>
-                  <div>
+                  <div className="min-w-0"><span className="text-xs text-muted-foreground">Bio</span><p className="text-sm break-words">{profile?.aboutMe || "No bio yet"}</p></div>
+                  <div className="min-w-0">
                     <span className="text-xs text-muted-foreground">Languages</span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {(profile?.languages || []).map((l: string) => (
-                        <Badge key={l} variant="secondary" className="text-xs">{l}</Badge>
+                        <Badge key={l} variant="secondary" className="text-xs max-w-full break-all whitespace-normal text-left">{l}</Badge>
                       ))}
                     </div>
                   </div>

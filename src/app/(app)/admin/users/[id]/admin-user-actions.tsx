@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Ban, ShieldAlert, ShieldCheck, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export function AdminUserActions({ user }: { user: any }) {
+export function AdminUserActions({ user }: { user: { id: string; isBanned: boolean; isSuspended: boolean } }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -34,7 +34,7 @@ export function AdminUserActions({ user }: { user: any }) {
         toast.success("User deleted permanently");
         router.push("/admin/users");
       }
-    } catch (error) {
+    } catch {
       toast.error(`Failed to ${action} user`);
       setLoading(false);
     } finally {

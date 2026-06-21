@@ -183,7 +183,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
                 Lifestyle & Preferences
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+            <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div><span className="text-xs text-muted-foreground">Smoking</span><p className="text-sm font-medium mt-1">{profile?.smoking ? enumToLabel(profile.smoking) : "—"}</p></div>
               <div><span className="text-xs text-muted-foreground">Drinking</span><p className="text-sm font-medium mt-1">{profile?.drinking ? enumToLabel(profile.drinking) : "—"}</p></div>
               <div><span className="text-xs text-muted-foreground">Sleep Schedule</span><p className="text-sm font-medium mt-1">{profile?.sleepSchedule ? enumToLabel(profile.sleepSchedule) : "—"}</p></div>

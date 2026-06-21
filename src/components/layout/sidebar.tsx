@@ -41,9 +41,10 @@ const iconMap: Record<string, React.ElementType> = {
 interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
+  isMobile?: boolean;
 }
 
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar({ collapsed, onToggle, isMobile }: SidebarProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
@@ -51,8 +52,13 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed left-5 top-5 z-40 flex h-[calc(100vh-2.5rem)] flex-col overflow-hidden rounded-[32px] border border-border/80 bg-white transition-all duration-300 air-shadow",
-        collapsed ? "w-[84px]" : "w-[288px]"
+        "z-40 flex flex-col overflow-hidden bg-white transition-all duration-300",
+        isMobile
+          ? "w-full h-[100dvh] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+          : cn(
+              "fixed left-5 top-5 h-[calc(100vh-2.5rem)] rounded-[32px] border border-border/80 air-shadow",
+              collapsed ? "w-[84px]" : "w-[288px]"
+            )
       )}
     >
       {/* Header */}

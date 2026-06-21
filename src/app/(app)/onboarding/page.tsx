@@ -269,7 +269,7 @@ export default function OnboardingPage() {
                       min={1}
                       max={5}
                       step={1}
-                      onValueChange={(v: number | readonly number[]) => form.setValue("cleanlinessLevel", Array.isArray(v) || (v as any).length ? (v as any)[0] : v)}
+                      onValueChange={(v: number[]) => form.setValue("cleanlinessLevel", v[0])}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
                       <span>Relaxed</span>
@@ -367,13 +367,15 @@ export default function OnboardingPage() {
                     <p className="text-muted-foreground">What type of accommodation are you looking for?</p>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-3">
-                    {[
-                      { value: "HOSTEL", label: "Hostel", emoji: "🏫", desc: "On-campus housing" },
-                      { value: "FLAT", label: "Flat", emoji: "🏠", desc: "Off-campus apartment" },
-                      { value: "NOT_SURE", label: "Not Sure", emoji: "🤔", desc: "Open to both" },
-                    ].map((option) => {
-                      const isSelected = form.watch("accommodationType") === option.value;
-                      return (
+                    {(() => {
+                      const currentAccommodationType = form.watch("accommodationType");
+                      return [
+                        { value: "HOSTEL", label: "Hostel", emoji: "🏫", desc: "On-campus housing" },
+                        { value: "FLAT", label: "Flat", emoji: "🏠", desc: "Off-campus apartment" },
+                        { value: "NOT_SURE", label: "Not Sure", emoji: "🤔", desc: "Open to both" },
+                      ].map((option) => {
+                        const isSelected = currentAccommodationType === option.value;
+                        return (
                         <motion.div
                           key={option.value}
                           whileHover={{ scale: 1.02 }}
@@ -390,7 +392,7 @@ export default function OnboardingPage() {
                           <p className="text-xs text-muted-foreground">{option.desc}</p>
                         </motion.div>
                       );
-                    })}
+                    })})()}
                   </div>
                 </div>
               )}

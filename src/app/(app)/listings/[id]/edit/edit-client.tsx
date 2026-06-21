@@ -13,7 +13,7 @@ import Link from "next/link";
 import { ListingForm } from "@/components/shared/listing-form";
 import { format } from "date-fns";
 
-export function EditListingClient({ listing }: { listing: any }) {
+export function EditListingClient({ listing }: { listing: { id: string; [key: string]: unknown } }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 

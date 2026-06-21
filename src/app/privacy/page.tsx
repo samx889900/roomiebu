@@ -213,7 +213,7 @@ export default function PrivacyPage() {
               <p>RoomieBU uses the following third-party services:</p>
               <ul className="list-disc pl-5 space-y-1">
                 <li>
-                  <strong>Microsoft Entra ID</strong> — for authentication. Microsoft's privacy
+                  <strong>Microsoft Entra ID</strong> — for authentication. Microsoft&apos;s privacy
                   policy applies to data processed through their sign-in service.
                 </li>
                 <li>

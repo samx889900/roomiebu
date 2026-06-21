@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 
 export async function GET(request: Request) {
   if (process.env.NODE_ENV !== "development") {
@@ -20,7 +21,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  const sessionToken = require("crypto").randomUUID();
+  const sessionToken = crypto.randomUUID();
   const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
   await prisma.session.create({

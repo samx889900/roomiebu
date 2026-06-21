@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +39,7 @@ export function ListingForm({ initialData, onSubmit, loading, submitLabel }: Lis
     },
   });
 
-  const accommodationType = form.watch("accommodationType");
+  const accommodationType = useWatch({ control: form.control, name: "accommodationType" });
 
   function onFormError(errors: Record<string, unknown>) {
     console.error("Form validation errors:", errors);

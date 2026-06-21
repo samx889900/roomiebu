@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import { Users, Phone, Mail, Calendar, ClipboardList } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { EmptyState } from "@/components/shared/empty-state";
-import { formatDate, getInitials, enumToLabel } from "@/lib/utils";
+import { formatDate, getInitials } from "@/lib/utils";
 import { calculateCompatibility } from "@/lib/compatibility";
 import Link from "next/link";
 

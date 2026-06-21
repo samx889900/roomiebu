@@ -80,7 +80,7 @@ function SignInContent() {
           </Button>
 
           <div className="mt-6 rounded-[24px] bg-muted p-4 text-sm leading-6 text-muted-foreground">
-            By signing in, you'll complete your roommate profile first, then browse listings and express interest when you find a good fit.
+            By signing in, you&apos;ll complete your roommate profile first, then browse listings and express interest when you find a good fit.
           </div>
         </div>
       </div>

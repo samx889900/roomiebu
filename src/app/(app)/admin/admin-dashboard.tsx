@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Users, List, BarChart3, Heart, Flag, TrendingUp } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 
 interface AdminDashboardProps {

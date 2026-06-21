@@ -34,10 +34,10 @@ export function AdminListingsClient({ listings }: { listings: any[] /* eslint-di
           {listings.map((listing, i) => (
             <motion.div key={listing.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
               <Card className={listing.status === "DELETED" ? "opacity-50" : ""}>
-                <CardContent className="p-4 flex items-center gap-4">
+                <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium truncate">{listing.title}</h3>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-medium truncate max-w-full">{listing.title}</h3>
                       <Badge variant="outline" className={statusColors[listing.status]}>{listing.status}</Badge>
                       <Badge variant="outline" className="text-[10px]">{enumToLabel(listing.accommodationType)}</Badge>
                     </div>
@@ -45,17 +45,17 @@ export function AdminListingsClient({ listings }: { listings: any[] /* eslint-di
                       by {listing.user?.name} • {listing._count.interests} interests • {listing._count.matches} matches • {formatRelativeDate(listing.createdAt)}
                     </p>
                   </div>
-                  <div className="flex gap-1.5">
+                  <div className="flex gap-1.5 sm:w-auto w-full">
                     {listing.status === "DELETED" ? (
-                      <Button size="sm" variant="outline" className="gap-1" onClick={async () => { await adminRestoreListing(listing.id); toast.success("Restored"); }}>
+                      <Button size="sm" variant="outline" className="gap-1 flex-1 sm:flex-none" onClick={async () => { await adminRestoreListing(listing.id); toast.success("Restored"); }}>
                         <RotateCcw className="w-3 h-3" /> Restore
                       </Button>
                     ) : (
                       <>
-                        <Button render={<Link href={`/listings/${listing.id}/edit`} />} size="sm" variant="outline" className="gap-1">
+                        <Button render={<Link href={`/listings/${listing.id}/edit`} />} size="sm" variant="outline" className="gap-1 flex-1 sm:flex-none">
                           <Pencil className="w-3 h-3" /> Edit
                         </Button>
-                        <Button size="sm" variant="ghost" className="text-destructive gap-1" onClick={async () => { await adminRemoveListing(listing.id, "Removed by admin"); toast.success("Removed"); }}>
+                        <Button size="sm" variant="ghost" className="text-destructive gap-1 flex-1 sm:flex-none justify-center bg-destructive/10 sm:bg-transparent" onClick={async () => { await adminRemoveListing(listing.id, "Removed by admin"); toast.success("Removed"); }}>
                           <Trash2 className="w-3 h-3" /> Remove
                         </Button>
                       </>

@@ -152,7 +152,7 @@ export default function HomePage() {
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">What changes with this experience</p>
           <h2 className="section-heading mt-3">A brighter, premium flow for student housing decisions.</h2>
           <p className="section-copy mt-4">
-            We're shifting RoomieBU toward a cleaner, more generous marketplace feel so listings, compatibility, and profile context are easier to trust at a glance.
+            We&apos;re shifting RoomieBU toward a cleaner, more generous marketplace feel so listings, compatibility, and profile context are easier to trust at a glance.
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
