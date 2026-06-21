@@ -262,16 +262,18 @@ export default function OnboardingPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <Label>Cleanliness Level: {form.watch("cleanlinessLevel")}/5</Label>
-                    <Slider
-                      defaultValue={[3]}
-                      min={1}
-                      max={5}
-                      step={1}
-                      onValueChange={(v) => form.setValue("cleanlinessLevel", (v as number[])[0])}
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
+                    <div className="px-2 py-4 sm:px-0 sm:py-2">
+                      <Slider
+                        defaultValue={[3]}
+                        min={1}
+                        max={5}
+                        step={1}
+                        onValueChange={(v) => form.setValue("cleanlinessLevel", (v as number[])[0])}
+                      />
+                    </div>
+                    <div className="flex justify-between text-xs text-muted-foreground px-1">
                       <span>Relaxed</span>
                       <span>Spotless</span>
                     </div>
