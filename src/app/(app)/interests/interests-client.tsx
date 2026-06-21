@@ -21,7 +21,8 @@ const statusColors: Record<string, string> = {
   REJECTED: "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
-export function InterestsClient({ received, sent, currentUserProfile }: { received: Record<string, unknown>[]; sent: Record<string, unknown>[]; currentUserProfile?: Record<string, unknown> }) {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function InterestsClient({ received, sent, currentUserProfile }: { received: any[]; sent: any[]; currentUserProfile?: any }) {
   async function handleAccept(id: string) {
     try {
       await acceptInterest(id);

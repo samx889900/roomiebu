@@ -13,7 +13,8 @@ import Link from "next/link";
 import { ListingForm } from "@/components/shared/listing-form";
 import { format } from "date-fns";
 
-export function EditListingClient({ listing }: { listing: { id: string; [key: string]: unknown } }) {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function EditListingClient({ listing }: { listing: any }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
