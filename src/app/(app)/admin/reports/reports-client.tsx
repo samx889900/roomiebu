@@ -1,6 +1,7 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Flag, Check, Ban, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -64,7 +65,12 @@ export function ReportsClient({ reports }: { reports: any[] /* eslint-disable-li
                         <p className="text-sm"><span className="text-muted-foreground">Target user:</span> {report.targetUser.name}</p>
                       )}
                       {report.targetListing && (
-                        <p className="text-sm"><span className="text-muted-foreground">Target listing:</span> {report.targetListing.title}</p>
+                        <div className="flex flex-col gap-1 mb-2">
+                          <p className="text-sm"><span className="text-muted-foreground">Target listing:</span> {report.targetListing.title}</p>
+                          <Link href={`/listings/${report.targetListing.id}`} target="_blank" className="text-primary hover:underline text-xs flex items-center w-fit">
+                            View Listing ↗
+                          </Link>
+                        </div>
                       )}
                       {report.notes && <p className="text-xs text-muted-foreground mt-2">{report.notes}</p>}
                       <p className="text-xs text-muted-foreground/60 mt-2">{formatRelativeDate(report.createdAt)}</p>
