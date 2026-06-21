@@ -42,11 +42,18 @@ export async function getSavedListings() {
   return prisma.savedListing.findMany({
     where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },
-    include: {
+    select: {
+      id: true,
+      createdAt: true,
       listing: {
-        include: {
-          user: { include: { profile: true } },
-          _count: { select: { interests: true } },
+        select: {
+          id: true,
+          title: true,
+          accommodationType: true,
+          numberRequired: true,
+          spotsFilled: true,
+          createdAt: true,
+          user: { select: { name: true } },
         },
       },
     },

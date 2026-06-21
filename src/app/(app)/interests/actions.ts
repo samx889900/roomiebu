@@ -160,10 +160,15 @@ export async function getSentInterests() {
   return prisma.listingInterest.findMany({
     where: { interestedUserId: session.user.id },
     orderBy: { createdAt: "desc" },
-    include: {
+    select: {
+      id: true,
+      status: true,
+      createdAt: true,
       listing: {
-        include: {
-          user: { include: { profile: true } },
+        select: {
+          id: true,
+          title: true,
+          user: { select: { name: true } },
         },
       },
     },

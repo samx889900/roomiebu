@@ -1,5 +1,6 @@
 "use client";
 
+import { useOptimistic, useTransition } from "react";
 import { motion } from "framer-motion";
 import { List, Plus, Eye, Pencil, Trash2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,16 @@ const statusColors: Record<string, string> = {
 };
 
 export function MyListingsClient({ listings }: { listings: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ }) {
+  const [, startTransition] = useTransition();
+  const [optimisticActions, addOptimisticAction] = useOptimistic<Record<string, string>, { id: string, status: string }>(
+    {},
+    (state, { id, status }) => ({ ...state, [id]: status })
+  );
+
   async function handleDelete(id: string) {
+    startTransition(() => {
+      addOptimisticAction({ id, status: "DELETED" });
+    });
     try {
       await deleteListing(id);
       toast.success("Listing deleted");
@@ -30,6 +40,9 @@ export function MyListingsClient({ listings }: { listings: any[] /* eslint-disab
   }
 
   async function handleClose(id: string) {
+    startTransition(() => {
+      addOptimisticAction({ id, status: "CLOSED" });
+    });
     try {
       await closeListing(id);
       toast.success("Listing closed");
@@ -62,6 +75,8 @@ export function MyListingsClient({ listings }: { listings: any[] /* eslint-disab
       ) : (
         <div className="space-y-4">
           {listings.map((listing, i) => {
+            const status = optimisticActions[listing.id] || listing.status;
+            if (status === "DELETED") return null;
             const remaining = getRemainingSpots(listing.numberRequired, listing.spotsFilled);
 
             return (
@@ -77,8 +92,8 @@ export function MyListingsClient({ listings }: { listings: any[] /* eslint-disab
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-semibold truncate">{listing.title}</h3>
-                          <Badge variant="outline" className={statusColors[listing.status]}>
-                            {listing.status}
+                          <Badge variant="outline" className={statusColors[status]}>
+                            {status}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -95,7 +110,7 @@ export function MyListingsClient({ listings }: { listings: any[] /* eslint-disab
                         <Button render={<Link href={`/listings/${listing.id}`} />} variant="ghost" size="icon">
                           <Eye className="w-4 h-4" />
                         </Button>
-                        {listing.status === "ACTIVE" && (
+                        {status === "ACTIVE" && (
                           <>
                             <Button render={<Link href={`/listings/${listing.id}/edit`} />} variant="ghost" size="icon">
                               <Pencil className="w-4 h-4" />

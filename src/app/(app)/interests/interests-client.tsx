@@ -1,5 +1,6 @@
 "use client";
 
+import { useOptimistic, useTransition } from "react";
 import { motion } from "framer-motion";
 import { Heart, Send, Check, X, Clock, CigaretteOff, Beer, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,16 @@ const statusColors: Record<string, string> = {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function InterestsClient({ received, sent, currentUserProfile }: { received: any[]; sent: any[]; currentUserProfile?: any }) {
+  const [, startTransition] = useTransition();
+  const [optimisticHandled, addOptimisticHandled] = useOptimistic<Record<string, string>, { id: string, status: string }>(
+    {},
+    (state, { id, status }) => ({ ...state, [id]: status })
+  );
+
   async function handleAccept(id: string) {
+    startTransition(() => {
+      addOptimisticHandled({ id, status: "ACCEPTED" });
+    });
     try {
       await acceptInterest(id);
       toast.success("Interest accepted! Contact details shared.");
@@ -33,6 +43,9 @@ export function InterestsClient({ received, sent, currentUserProfile }: { receiv
   }
 
   async function handleReject(id: string) {
+    startTransition(() => {
+      addOptimisticHandled({ id, status: "REJECTED" });
+    });
     try {
       await rejectInterest(id);
       toast.success("Interest declined");
@@ -78,8 +91,8 @@ export function InterestsClient({ received, sent, currentUserProfile }: { receiv
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-semibold">{interest.interestedUser?.name}</h3>
-                          <Badge variant="outline" className={statusColors[interest.status]}>
-                            {interest.status}
+                          <Badge variant="outline" className={statusColors[optimisticHandled[interest.id] || interest.status]}>
+                            {optimisticHandled[interest.id] || interest.status}
                           </Badge>
                           <CompatibilityBadge 
                             score={
@@ -111,7 +124,7 @@ export function InterestsClient({ received, sent, currentUserProfile }: { receiv
                           {formatRelativeDate(interest.createdAt)}
                         </p>
                       </div>
-                      {interest.status === "PENDING" && (
+                      {(optimisticHandled[interest.id] || interest.status) === "PENDING" && (
                         <div className="flex gap-2">
                           <Button size="sm" className="gradient-accent gap-1" onClick={() => handleAccept(interest.id)}>
                             <Check className="w-3 h-3" /> Accept

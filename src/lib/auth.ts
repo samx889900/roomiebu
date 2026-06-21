@@ -25,17 +25,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return true;
     },
     async session({ session, user }) {
-      if (session.user) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-          select: { id: true, role: true, isOnboarded: true, isSuspended: true, isBanned: true },
-        });
-        if (dbUser) {
-          session.user.id = dbUser.id;
-          session.user.role = dbUser.role;
-          session.user.isOnboarded = dbUser.isOnboarded;
-          session.user.isSuspended = dbUser.isSuspended;
-          session.user.isBanned = dbUser.isBanned;
+      if (session.user && user) {
+        // The 'user' parameter here comes directly from the Prisma Adapter's database fetch
+        // which retrieves all columns for the User table.
+        const adapterUser = user as any;
+        
+        // We still do a fallback DB fetch just in case the adapter strips fields in future Auth.js versions
+        if (adapterUser.role !== undefined) {
+          session.user.id = adapterUser.id;
+          session.user.role = adapterUser.role;
+          session.user.isOnboarded = adapterUser.isOnboarded;
+          session.user.isSuspended = adapterUser.isSuspended;
+          session.user.isBanned = adapterUser.isBanned;
+        } else {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { id: true, role: true, isOnboarded: true, isSuspended: true, isBanned: true },
+          });
+          if (dbUser) {
+            session.user.id = dbUser.id;
+            session.user.role = dbUser.role;
+            session.user.isOnboarded = dbUser.isOnboarded;
+            session.user.isSuspended = dbUser.isSuspended;
+            session.user.isBanned = dbUser.isBanned;
+          }
         }
       }
       return session;
@@ -75,6 +88,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   session: {
     strategy: "database",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60,   // 24 hours
   },
   debug: process.env.NODE_ENV === "development",
 });

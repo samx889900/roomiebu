@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
-import { useNotificationStore } from "@/store/use-notification-store";
+import { getUnreadCount } from "@/app/(app)/notifications/actions";
+import { useEffect, useState } from "react";
 
 interface HeaderProps {
   onMobileMenuToggle: () => void;
@@ -15,7 +16,13 @@ interface HeaderProps {
 
 export function Header({ onMobileMenuToggle }: HeaderProps) {
   const { data: session } = useSession();
-  const unreadCount = useNotificationStore((s) => s.unreadCount);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (session?.user) {
+      getUnreadCount().then(setUnreadCount);
+    }
+  }, [session?.user]);
 
   return (
     <header className="sticky top-0 z-30 border-b border-border/70 topbar-blur">

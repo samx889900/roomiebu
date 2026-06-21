@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useOptimistic } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Search,
@@ -61,6 +61,16 @@ export function ListingFeed({ listings, total, pages, currentPage, userId, curre
   const [, startTransition] = useTransition();
   const [search, setSearch] = useState(searchParams.get("q") || "");
 
+  const [optimisticSaves, addOptimisticSave] = useOptimistic<string[], string>(
+    [],
+    (state, listingId) => [...state, listingId]
+  );
+
+  const [optimisticInterests, addOptimisticInterest] = useOptimistic<string[], string>(
+    [],
+    (state, listingId) => [...state, listingId]
+  );
+
   function updateFilters(key: string, value: string | null) {
     const params = new URLSearchParams(searchParams.toString());
     if (value) {
@@ -77,6 +87,9 @@ export function ListingFeed({ listings, total, pages, currentPage, userId, curre
   }
 
   async function handleInterest(listingId: string) {
+    startTransition(() => {
+      addOptimisticInterest(listingId);
+    });
     try {
       await expressInterest(listingId);
       toast.success("Interest sent", { description: "The listing owner will review your request." });
@@ -86,6 +99,9 @@ export function ListingFeed({ listings, total, pages, currentPage, userId, curre
   }
 
   async function handleSave(listingId: string) {
+    startTransition(() => {
+      addOptimisticSave(listingId);
+    });
     try {
       await saveListing(listingId);
       toast.success("Listing saved");
@@ -301,12 +317,22 @@ export function ListingFeed({ listings, total, pages, currentPage, userId, curre
                       </div>
                       {!isOwn ? (
                         <div className="flex items-center gap-2">
-                          <Button size="sm" className="relative z-10" onClick={() => handleInterest(listing.id)}>
-                            <Heart className="h-3.5 w-3.5" />
-                            Interested
+                          <Button 
+                            size="sm" 
+                            className="relative z-10" 
+                            onClick={() => handleInterest(listing.id)}
+                            disabled={optimisticInterests.includes(listing.id)}
+                          >
+                            <Heart className={cn("h-3.5 w-3.5", optimisticInterests.includes(listing.id) && "fill-current text-rose-500")} />
+                            {optimisticInterests.includes(listing.id) ? "Interested" : "Interested"}
                           </Button>
-                          <Button size="icon-sm" variant="outline" onClick={() => handleSave(listing.id)} className="relative z-10 bg-white">
-                            <Bookmark className="h-3.5 w-3.5" />
+                          <Button 
+                            size="icon-sm" 
+                            variant="outline" 
+                            onClick={() => handleSave(listing.id)} 
+                            className="relative z-10 bg-white"
+                          >
+                            <Bookmark className={cn("h-3.5 w-3.5", optimisticSaves.includes(listing.id) && "fill-current text-primary")} />
                           </Button>
                         </div>
                       ) : (

@@ -220,9 +220,31 @@ export async function getAdminUsers(search?: string) {
         }
       : {},
     orderBy: { createdAt: "desc" },
-    include: {
-      profile: true,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      role: true,
+      isBanned: true,
+      isSuspended: true,
+      createdAt: true,
       _count: { select: { listings: true, matchesAsA: true, matchesAsB: true } },
+    },
+  });
+}
+
+export async function getAdminUserProfiles() {
+  await requireAdmin();
+
+  return prisma.user.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      profile: true,
     },
   });
 }

@@ -217,10 +217,37 @@ export async function getListings(params: GetListingsParams = {}) {
       orderBy,
       skip: (page - 1) * pageSize,
       take: pageSize,
-      include: {
+      select: {
+        id: true,
+        title: true,
+        accommodationType: true,
+        numberRequired: true,
+        spotsFilled: true,
+        genderPreference: true,
+        currentStatus: true,
+        moveInDate: true,
+        description: true,
+        location: true,
+        minBudget: true,
+        maxBudget: true,
+        createdAt: true,
+        status: true,
+        userId: true,
         user: {
-          include: {
-            profile: true,
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            profile: {
+              select: {
+                course: true,
+                year: true,
+                sleepSchedule: true,
+                cleanlinessLevel: true,
+                smoking: true,
+                drinking: true,
+              },
+            },
           },
         },
         _count: {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useOptimistic, useTransition } from "react";
 import { motion } from "framer-motion";
 import {
   Building2, Home, MapPin, Users, Calendar, Heart, Bookmark, Flag,
@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { ReportDialog } from "@/components/shared/report-dialog";
-import { enumToLabel, formatDate, formatBudget, getRemainingSpots, getInitials } from "@/lib/utils";
+import { cn, enumToLabel, formatDate, formatBudget, getRemainingSpots, getInitials } from "@/lib/utils";
 import { calculateCompatibility } from "@/lib/compatibility";
 import { expressInterest } from "@/app/(app)/interests/actions";
 import { saveListing } from "@/app/(app)/saved/actions";
@@ -30,11 +30,17 @@ interface ListingDetailProps {
 
 export function ListingDetail({ listing, userId, currentUserProfile }: ListingDetailProps) {
   const [reportOpen, setReportOpen] = useState(false);
+  const [, startTransition] = useTransition();
+  const [isOptimisticallyInterested, setOptimisticallyInterested] = useOptimistic(false);
+  const [isOptimisticallySaved, setOptimisticallySaved] = useOptimistic(false);
   const isOwn = listing.userId === userId;
   const remaining = getRemainingSpots(listing.numberRequired, listing.spotsFilled);
   const profile = listing.user?.profile;
 
   async function handleInterest() {
+    startTransition(() => {
+      setOptimisticallyInterested(true);
+    });
     try {
       await expressInterest(listing.id);
       toast.success("Interest expressed!", { description: "The listing owner will be notified." });
@@ -45,6 +51,9 @@ export function ListingDetail({ listing, userId, currentUserProfile }: ListingDe
   }
 
   async function handleSave() {
+    startTransition(() => {
+      setOptimisticallySaved(true);
+    });
     try {
       await saveListing(listing.id);
       toast.success("Listing saved!");
@@ -159,13 +168,17 @@ export function ListingDetail({ listing, userId, currentUserProfile }: ListingDe
                   <>
                     <Separator />
                     <div className="flex gap-3">
-                      <Button className="flex-1 gradient-primary gap-2" onClick={handleInterest}>
-                        <Heart className="w-4 h-4" />
-                        I&apos;m Interested
+                      <Button 
+                        className="flex-1 gradient-primary gap-2" 
+                        onClick={handleInterest}
+                        disabled={isOptimisticallyInterested}
+                      >
+                        <Heart className={cn("w-4 h-4", isOptimisticallyInterested && "fill-current text-white")} />
+                        {isOptimisticallyInterested ? "Interest Sent" : "I'm Interested"}
                       </Button>
                       <Button variant="outline" className="gap-2" onClick={handleSave}>
-                        <Bookmark className="w-4 h-4" />
-                        Save
+                        <Bookmark className={cn("w-4 h-4", isOptimisticallySaved && "fill-current text-primary")} />
+                        {isOptimisticallySaved ? "Saved" : "Save"}
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => setReportOpen(true)}>
                         <Flag className="w-4 h-4 text-muted-foreground" />
