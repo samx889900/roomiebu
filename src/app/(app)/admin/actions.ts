@@ -162,7 +162,21 @@ export async function adminRestoreListing(listingId: string) {
     }),
   ]);
 
+  revalidatePath("/admin/users");
   revalidatePath("/admin/listings");
+}
+
+export async function deleteUser(id: string) {
+  await requireAdmin();
+
+  // Deleting the user will cascade delete their profile, listings, interests, matches, and notifications.
+  // It will set targetUserId to null in reports against them.
+  await prisma.user.delete({
+    where: { id },
+  });
+
+  revalidatePath("/admin/users");
+  revalidatePath("/admin/users/profiles");
 }
 
 export async function getAdminUserById(id: string) {

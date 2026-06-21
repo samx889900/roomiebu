@@ -2,15 +2,21 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { suspendUser, banUser, restoreUser } from "../../actions";
+import { suspendUser, banUser, restoreUser, deleteUser } from "../../actions";
 import { toast } from "sonner";
-import { Ban, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Ban, ShieldAlert, ShieldCheck, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function AdminUserActions({ user }: { user: any }) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleAction = async (action: "suspend" | "ban" | "restore") => {
-    if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+  const handleAction = async (action: "suspend" | "ban" | "restore" | "delete") => {
+    if (action === "delete") {
+      if (!confirm(`WARNING: Are you absolutely sure you want to PERMANENTLY DELETE this user? This action cannot be undone and will remove all their listings, interests, and profile data.`)) return;
+    } else {
+      if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+    }
 
     setLoading(true);
     try {
@@ -23,11 +29,18 @@ export function AdminUserActions({ user }: { user: any }) {
       } else if (action === "restore") {
         await restoreUser(user.id);
         toast.success("User restored successfully");
+      } else if (action === "delete") {
+        await deleteUser(user.id);
+        toast.success("User deleted permanently");
+        router.push("/admin/users");
       }
     } catch (error) {
       toast.error(`Failed to ${action} user`);
-    } finally {
       setLoading(false);
+    } finally {
+      if (action !== "delete") {
+        setLoading(false);
+      }
     }
   };
 
@@ -64,6 +77,18 @@ export function AdminUserActions({ user }: { user: any }) {
           </Button>
         </>
       )}
+      
+      <div className="border-t border-red-200 my-1 pt-3">
+        <Button 
+          variant="outline"
+          onClick={() => handleAction("delete")} 
+          disabled={loading}
+          className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          Delete User Permanently
+        </Button>
+      </div>
     </div>
   );
 }
