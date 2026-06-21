@@ -4,7 +4,7 @@ import { Building2, ArrowLeft, Mail, Bug, UserX, ShieldAlert, HelpCircle } from 
 import { APP_NAME } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Contact RoomieBU Support",
   description:
     "Get in touch with the RoomieBU team for support, bug reports, account deletion requests, or moderation appeals.",
 };

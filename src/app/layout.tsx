@@ -11,12 +11,78 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://roomie.buconfess.in"),
   title: {
-    default: `${APP_NAME} | Find Your Perfect Roommate`,
-    template: `%s | ${APP_NAME}`,
+    default: "RoomieBU - Find Compatible Roommates at Bennett University",
+    template: "%s | RoomieBU",
   },
-  description: APP_DESCRIPTION,
-  keywords: ["roommate", "flatmate", "Bennett University", "hostel", "accommodation"],
+  description:
+    "Find verified roommates and flatmates at Bennett University. Match with compatible students, discover hostel and flat listings, and find your ideal living partner through a secure student-only platform.",
+  keywords: [
+    "Bennett University roommate",
+    "Bennett University flatmate",
+    "Bennett roommate finder",
+    "Bennett hostel roommate",
+    "Bennett accommodation",
+    "Bennett University housing",
+    "student roommate platform",
+    "university roommate matching",
+    "roommate finder India",
+    "hostel roommate matching",
+  ],
+  authors: [{ name: "RoomieBU" }],
+  creator: "RoomieBU",
+  publisher: "RoomieBU",
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://roomie.buconfess.in",
+    siteName: "RoomieBU",
+    title: "RoomieBU - Find Compatible Roommates at Bennett University",
+    description:
+      "Find verified roommates and flatmates at Bennett University. Match with compatible students, discover hostel and flat listings, and find your ideal living partner through a secure student-only platform.",
+    images: [
+      {
+        url: "/previewimage.png",
+        width: 1200,
+        height: 630,
+        alt: "RoomieBU Preview Image",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RoomieBU - Find Compatible Roommates at Bennett University",
+    description:
+      "Find verified roommates and flatmates at Bennett University. Match with compatible students, discover hostel and flat listings, and find your ideal living partner through a secure student-only platform.",
+    images: ["/previewimage.png"],
+  },
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/apple-touch-icon.png",
+  },
+  alternates: {
+    canonical: "https://roomie.buconfess.in",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "RoomieBU",
+  description:
+    "Verified roommate and flatmate matching platform for Bennett University students.",
+  url: "https://roomie.buconfess.in",
+  publisher: {
+    "@type": "Organization",
+    name: "RoomieBU",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://roomie.buconfess.in/previewimage.png",
+    },
+    email: "roomiebu@buconfess.in",
+  },
 };
 
 export default function RootLayout({
@@ -32,6 +98,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="font-sans antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Providers>{children}</Providers>
       </body>
     </html>

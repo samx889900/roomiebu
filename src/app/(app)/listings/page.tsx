@@ -4,6 +4,13 @@ import { getListings } from "./actions";
 import { ListingFeed } from "./listing-feed";
 import { ListingCardSkeleton } from "@/components/shared/loading-skeleton";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Browse Verified Roommate Listings",
+  description: "Browse verified student listings, compare compatibility cues, and send interest when the fit feels right.",
+};
+
 interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>;
 }
