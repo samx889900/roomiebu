@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { APP_NAME } from "@/lib/constants";
 import Link from "next/link";
 import { SignInButton } from "@/components/shared/sign-in-button";
+import { ObfuscatedEmail } from "@/components/shared/obfuscated-email";
 
 const features = [
   {
@@ -162,6 +163,53 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Testimonial */}
+      <section className="border-t border-border/70 bg-[#fff7f5]/50">
+        <div className="content-wrap py-16 sm:py-20 text-center">
+          <div className="mx-auto max-w-3xl space-y-6">
+            <p className="text-xl sm:text-3xl font-medium tracking-tight text-foreground leading-snug">
+              "RoomieBU made finding a flatmate so much less stressful. I could see we both preferred a quiet study environment and early sleep schedule before we even talked. We matched, moved in last month, and it's been perfect."
+            </p>
+            <div className="flex flex-col items-center gap-1">
+              <p className="font-semibold text-foreground">Aarav Sharma</p>
+              <p className="text-sm text-muted-foreground">B.Tech CSE, 3rd Year • Sector 62 Flat Match</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="border-t border-border/70">
+        <div className="content-wrap py-16 sm:py-20">
+          <div className="mb-10 text-center">
+            <h2 className="section-heading">How RoomieBU Works</h2>
+            <p className="section-copy mt-4 mx-auto max-w-2xl">
+              Everything you need to know about finding your next roommate at Bennett.
+            </p>
+          </div>
+          <div className="mx-auto max-w-3xl space-y-8">
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold">How is the compatibility score calculated?</h3>
+              <p className="text-sm leading-6 text-muted-foreground">
+                Our algorithm compares your lifestyle preferences (like sleep schedule, cleanliness, and study habits) against the listing owner's profile. A higher percentage means a stronger potential match based on your daily routines.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold">What happens when I express interest?</h3>
+              <p className="text-sm leading-6 text-muted-foreground">
+                The listing owner receives a notification with your profile compatibility. If they accept your request, it becomes a "Mutual Match," and RoomieBU reveals both parties' contact details so you can discuss the move-in.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold">Is this open to non-Bennett students?</h3>
+              <p className="text-sm leading-6 text-muted-foreground">
+                No. RoomieBU strictly requires a verified @bennett.edu.in Microsoft account to sign in. This ensures a safe, student-only platform for everyone in our community.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Trust Signals */}
       <section className="border-t border-border/70">
         <div className="content-wrap py-12 sm:py-14">
@@ -271,9 +319,7 @@ export default function HomePage() {
                 <li>Bennett University Student Platform</li>
                 <li>Greater Noida, Uttar Pradesh</li>
                 <li>
-                  <a href="mailto:roomiebu@buconfess.in" className="hover:text-foreground transition-colors">
-                    roomiebu@buconfess.in
-                  </a>
+                  <ObfuscatedEmail />
                 </li>
               </ul>
             </div>
