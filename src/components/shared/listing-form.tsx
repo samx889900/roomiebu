@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,14 @@ export function ListingForm({ initialData, onSubmit, loading, submitLabel }: Lis
       furnishedStatus: initialData?.furnishedStatus,
     },
   });
+
+  useEffect(() => {
+    const fieldsToRegister: (keyof ListingFormData)[] = [
+      "accommodationType", "genderPreference", "currentStatus",
+      "propertyType", "furnishedStatus"
+    ];
+    fieldsToRegister.forEach(field => form.register(field));
+  }, [form]);
 
   const accommodationType = useWatch({ control: form.control, name: "accommodationType" });
 

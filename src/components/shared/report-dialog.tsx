@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -44,6 +44,10 @@ export function ReportDialog({ open, onOpenChange, targetType, targetId }: Repor
   const form = useForm<ReportForm>({
     resolver: zodResolver(reportSchema),
   });
+
+  useEffect(() => {
+    form.register("reason");
+  }, [form]);
 
   async function onSubmit(data: ReportForm) {
     setLoading(true);
