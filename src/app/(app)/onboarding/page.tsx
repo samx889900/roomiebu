@@ -276,10 +276,10 @@ export default function OnboardingPage() {
                     </Select>
                   </div>
                   <div className="space-y-4">
-                    <Label>Cleanliness Level: {form.watch("cleanlinessLevel")}/5</Label>
+                    <Label>Cleanliness Level: {form.watch("cleanlinessLevel") || 3}/5</Label>
                     <div className="px-2 py-4 sm:px-0 sm:py-2">
                       <Slider
-                        value={[form.watch("cleanlinessLevel")]}
+                        value={[form.watch("cleanlinessLevel") || 3]}
                         min={1}
                         max={5}
                         step={1}
