@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -53,6 +53,15 @@ export default function OnboardingPage() {
     },
   });
 
+  useEffect(() => {
+    const fieldsToRegister: (keyof ProfileFormData)[] = [
+      "gender", "course", "year", "smoking", "vaping", "drinking",
+      "sleepSchedule", "cleanlinessLevel", "studyEnvironment",
+      "guestsPreference", "accommodationType", "languages"
+    ];
+    fieldsToRegister.forEach((field) => form.register(field));
+  }, [form]);
+
   const totalSteps = STEPS.length;
   const progress = ((step + 1) / totalSteps) * 100;
 
@@ -67,10 +76,9 @@ export default function OnboardingPage() {
     form.setValue("languages", updated);
   };
 
-  async function onSubmit() {
+  const onSubmit = async (data: ProfileFormData) => {
     setLoading(true);
     try {
-      const data = form.getValues();
       let finalLanguages = [...selectedLanguages];
       if (finalLanguages.includes("Other") && customLanguage.trim()) {
         finalLanguages = finalLanguages.filter((l) => l !== "Other");
@@ -89,7 +97,12 @@ export default function OnboardingPage() {
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  const onInvalid = (errors: any) => {
+    console.error("Validation errors:", errors);
+    toast.error("Please fill all required fields correctly (e.g., gender, course, year).");
+  };
 
   const slideVariants = {
     enter: (direction: number) => ({ x: direction > 0 ? 300 : -300, opacity: 0 }),
@@ -463,7 +476,7 @@ export default function OnboardingPage() {
               </Button>
             ) : (
               <Button
-                onClick={onSubmit}
+                onClick={form.handleSubmit(onSubmit, onInvalid)}
                 disabled={loading}
                 className="gap-2"
                 size="lg"
