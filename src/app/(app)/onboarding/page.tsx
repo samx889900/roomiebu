@@ -309,7 +309,7 @@ export default function OnboardingPage() {
                         min={1}
                         max={5}
                         step={1}
-                        onValueChange={(v) => form.setValue("cleanlinessLevel", (v as number[])[0])}
+                        onValueChange={(v) => form.setValue("cleanlinessLevel", (v as number[])[0], { shouldValidate: true, shouldDirty: true, shouldTouch: true })}
                       />
                     </div>
                     <div className="flex justify-between text-xs text-muted-foreground px-1">
