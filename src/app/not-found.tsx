@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Home, Search, AlertCircle } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
@@ -19,18 +19,14 @@ export default function NotFound() {
         </p>
         
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button asChild variant="default">
-            <Link href="/">
-              <Home className="mr-2 h-4 w-4" />
-              Back to Home
-            </Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/listings">
-              <Search className="mr-2 h-4 w-4" />
-              Browse Listings
-            </Link>
-          </Button>
+          <Link href="/" className={buttonVariants({ variant: "default" })}>
+            <Home className="mr-2 h-4 w-4" />
+            Back to Home
+          </Link>
+          <Link href="/listings" className={buttonVariants({ variant: "outline" })}>
+            <Search className="mr-2 h-4 w-4" />
+            Browse Listings
+          </Link>
         </div>
       </div>
       
