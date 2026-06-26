@@ -172,7 +172,7 @@ export default function OnboardingPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Gender *</Label>
-                      <Select onValueChange={(v: string | null) => { if (v) form.setValue("gender", v as ProfileFormData["gender"]); }}>
+                      <Select value={form.watch("gender")} onValueChange={(v: string | null) => { if (v) form.setValue("gender", v as ProfileFormData["gender"]); }}>
                         <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="MALE">Male</SelectItem>
@@ -187,7 +187,7 @@ export default function OnboardingPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Course *</Label>
-                      <Select onValueChange={(v: string | null) => { if (v) form.setValue("course", v); }}>
+                      <Select value={form.watch("course")} onValueChange={(v: string | null) => { if (v) form.setValue("course", v); }}>
                         <SelectTrigger><SelectValue placeholder="Select course" /></SelectTrigger>
                         <SelectContent>
                           {COURSE_OPTIONS.map((c) => (
@@ -198,7 +198,7 @@ export default function OnboardingPage() {
                     </div>
                     <div className="space-y-2 sm:col-span-2">
                       <Label>Year *</Label>
-                      <Select onValueChange={(v: string | null) => { if (v) form.setValue("year", v); }}>
+                      <Select value={form.watch("year")} onValueChange={(v: string | null) => { if (v) form.setValue("year", v); }}>
                         <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
                         <SelectContent>
                           {YEAR_OPTIONS.map((y) => (
@@ -222,7 +222,7 @@ export default function OnboardingPage() {
                     <div key={habit} className="space-y-2">
                       <Label className="capitalize">{habit}</Label>
                       <Select
-                        defaultValue="NEVER"
+                        value={form.watch(habit)}
                         onValueChange={(v: string | null) => { if (v) form.setValue(habit, v as ProfileFormData["smoking"]); }}
                       >
                         <SelectTrigger><SelectValue /></SelectTrigger>
@@ -251,7 +251,7 @@ export default function OnboardingPage() {
                   <div className="space-y-2">
                     <Label>Sleep Schedule</Label>
                     <Select
-                      defaultValue="DEPENDS"
+                      value={form.watch("sleepSchedule")}
                       onValueChange={(v: string | null) => { if (v) form.setValue("sleepSchedule", v as ProfileFormData["sleepSchedule"]); }}
                     >
                       <SelectTrigger><SelectValue /></SelectTrigger>
@@ -266,7 +266,7 @@ export default function OnboardingPage() {
                     <Label>Cleanliness Level: {form.watch("cleanlinessLevel")}/5</Label>
                     <div className="px-2 py-4 sm:px-0 sm:py-2">
                       <Slider
-                        defaultValue={[3]}
+                        value={[form.watch("cleanlinessLevel")]}
                         min={1}
                         max={5}
                         step={1}
@@ -281,7 +281,7 @@ export default function OnboardingPage() {
                   <div className="space-y-2">
                     <Label>Study Environment</Label>
                     <Select
-                      defaultValue="DOESNT_MATTER"
+                      value={form.watch("studyEnvironment")}
                       onValueChange={(v: string | null) => { if (v) form.setValue("studyEnvironment", v as ProfileFormData["studyEnvironment"]); }}
                     >
                       <SelectTrigger><SelectValue /></SelectTrigger>
@@ -295,7 +295,7 @@ export default function OnboardingPage() {
                   <div className="space-y-2">
                     <Label>Guests Preference</Label>
                     <Select
-                      defaultValue="OCCASIONALLY"
+                      value={form.watch("guestsPreference")}
                       onValueChange={(v: string | null) => { if (v) form.setValue("guestsPreference", v as ProfileFormData["guestsPreference"]); }}
                     >
                       <SelectTrigger><SelectValue /></SelectTrigger>
