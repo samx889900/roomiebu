@@ -37,6 +37,7 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["English"]);
   const [customLanguage, setCustomLanguage] = useState("");
+  const [cleanliness, setCleanliness] = useState(3);
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -56,7 +57,7 @@ export default function OnboardingPage() {
   useEffect(() => {
     const fieldsToRegister: (keyof ProfileFormData)[] = [
       "gender", "course", "year", "smoking", "vaping", "drinking",
-      "sleepSchedule", "cleanlinessLevel", "studyEnvironment",
+      "sleepSchedule", "studyEnvironment",
       "guestsPreference", "accommodationType", "languages"
     ];
     fieldsToRegister.forEach((field) => form.register(field));
@@ -302,14 +303,18 @@ export default function OnboardingPage() {
                     </Select>
                   </div>
                   <div className="space-y-4">
-                    <Label>Cleanliness Level: {form.watch("cleanlinessLevel") || 3}/5</Label>
+                    <Label>Cleanliness Level: {cleanliness}/5</Label>
                     <div className="px-2 py-4 sm:px-0 sm:py-2">
                       <Slider
-                        defaultValue={[form.getValues("cleanlinessLevel") || 3]}
+                        value={[cleanliness]}
                         min={1}
                         max={5}
                         step={1}
-                        onValueChange={(v) => form.setValue("cleanlinessLevel", (v as number[])[0], { shouldValidate: true, shouldDirty: true, shouldTouch: true })}
+                        onValueChange={(v) => {
+                          const val = (v as number[])[0];
+                          setCleanliness(val);
+                          form.setValue("cleanlinessLevel", val);
+                        }}
                       />
                     </div>
                     <div className="flex justify-between text-xs text-muted-foreground px-1">
@@ -454,7 +459,7 @@ export default function OnboardingPage() {
                       { label: "Smoking", value: form.watch("smoking") },
                       { label: "Drinking", value: form.watch("drinking") },
                       { label: "Sleep", value: form.watch("sleepSchedule")?.replace(/_/g, " ") },
-                      { label: "Cleanliness", value: `${form.watch("cleanlinessLevel")}/5` },
+                      { label: "Cleanliness", value: `${cleanliness}/5` },
                       { label: "Study Env", value: form.watch("studyEnvironment")?.replace(/_/g, " ") },
                       { label: "Accommodation", value: form.watch("accommodationType")?.replace(/_/g, " ") },
                     ].map((item) => (
