@@ -1,12 +1,8 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Building2, Users, Heart, Shield, ArrowRight, Search, Sparkles, MapPin, Lock, GraduationCap, ShieldCheck, Eye } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { signIn } from "next-auth/react";
 import { APP_NAME } from "@/lib/constants";
 import Link from "next/link";
+import { SignInButton } from "@/components/shared/sign-in-button";
 
 const features = [
   {
@@ -52,13 +48,11 @@ export default function HomePage() {
                 <p className="text-xs text-muted-foreground">Roommate matching for Bennett University</p>
               </div>
             </div>
-            <Button onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/listings" })} size="lg">
-              Sign in
-            </Button>
+            <SignInButton size="lg">Sign in</SignInButton>
           </nav>
 
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="space-y-7">
+            <div className="space-y-7 animate-fade-in-up">
               <Badge variant="outline" className="border-primary/20 bg-white/90 px-4 py-1.5 text-primary">
                 <Sparkles className="mr-1 h-3.5 w-3.5" />
                 Bennett-exclusive roommate marketplace
@@ -77,14 +71,10 @@ export default function HomePage() {
                   <p className="text-sm font-semibold text-foreground">Start with your Bennett Microsoft account</p>
                   <p className="text-sm text-muted-foreground">Complete your profile, browse listings, and send interest in minutes.</p>
                 </div>
-                <Button
-                  onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/listings" })}
-                  size="lg"
-                  className="min-w-44"
-                >
+                <SignInButton size="lg" className="min-w-44">
                   Explore RoomieBU
                   <ArrowRight className="h-4 w-4" />
-                </Button>
+                </SignInButton>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
                 {stats.map((stat) => (
@@ -94,9 +84,9 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <div className="animate-fade-in-up" style={{ animationDelay: "100ms" }}>
               <div className="surface-panel overflow-hidden p-4 sm:p-5">
                 <div className="rounded-[24px] bg-[#fff7f5] p-5 sm:p-6">
                   <div className="mb-5 flex items-center justify-between">
@@ -142,7 +132,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -157,19 +147,17 @@ export default function HomePage() {
         </div>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {features.map((feature, index) => (
-            <motion.div
+            <div
               key={feature.title}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.08 }}
-              className="surface-panel p-6"
+              className="surface-panel p-6 animate-fade-in-up"
+              style={{ animationDelay: `${index * 80}ms` }}
             >
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff1f3] text-primary">
                 <feature.icon className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-semibold tracking-[-0.02em]">{feature.title}</h3>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">{feature.desc}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
@@ -200,12 +188,10 @@ export default function HomePage() {
                 desc: "Contact details are shared only after mutual match. No tracking or ads.",
               },
             ].map((signal, index) => (
-              <motion.div
+              <div
                 key={signal.title}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.06 }}
-                className="flex items-start gap-3.5 rounded-2xl border border-border/60 bg-white/60 p-4"
+                className="flex items-start gap-3.5 rounded-2xl border border-border/60 bg-white/60 p-4 animate-fade-in-up"
+                style={{ animationDelay: `${index * 60}ms` }}
               >
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f0fdf4] text-emerald-600">
                   <signal.icon className="h-4.5 w-4.5" />
@@ -214,7 +200,7 @@ export default function HomePage() {
                   <p className="text-sm font-semibold text-foreground">{signal.title}</p>
                   <p className="mt-0.5 text-xs leading-5 text-muted-foreground">{signal.desc}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -245,12 +231,9 @@ export default function HomePage() {
               </h4>
               <ul className="space-y-2">
                 <li>
-                  <button
-                    onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/listings" })}
-                    className="text-sm text-foreground/70 hover:text-foreground transition-colors cursor-pointer"
-                  >
+                  <SignInButton variant="link" className="text-sm text-foreground/70 hover:text-foreground transition-colors cursor-pointer p-0 h-auto">
                     Sign in
-                  </button>
+                  </SignInButton>
                 </li>
                 <li>
                   <Link href="/contact" className="text-sm text-foreground/70 hover:text-foreground transition-colors">
