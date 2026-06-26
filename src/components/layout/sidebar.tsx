@@ -96,14 +96,14 @@ export function Sidebar({ collapsed, onToggle, isMobile }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <ScrollArea className="flex-1 py-5">
+      <ScrollArea className="flex-1 py-5 min-h-0">
         <nav className={cn("space-y-1.5", collapsed ? "px-2" : "px-4")}>
           {NAV_ITEMS.map((item) => {
             const Icon = iconMap[item.icon] || LayoutGrid;
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
             return (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} onClick={() => { if (isMobile) onToggle(); }}>
                 <div
                   className={cn(
                     "flex items-center gap-3 rounded-full text-sm font-medium transition-all",
@@ -136,7 +136,7 @@ export function Sidebar({ collapsed, onToggle, isMobile }: SidebarProps) {
                 const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
                 return (
-                  <Link key={item.href} href={item.href}>
+                  <Link key={item.href} href={item.href} onClick={() => { if (isMobile) onToggle(); }}>
                     <div
                       className={cn(
                         "flex items-center gap-3 rounded-full text-sm font-medium transition-all",
