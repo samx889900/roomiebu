@@ -28,7 +28,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (session.user && user) {
         // The 'user' parameter here comes directly from the Prisma Adapter's database fetch
         // which retrieves all columns for the User table.
-        const adapterUser = user as any;
+        const adapterUser = user as unknown as Record<string, any>;
         
         // We still do a fallback DB fetch just in case the adapter strips fields in future Auth.js versions
         if (adapterUser.role !== undefined) {

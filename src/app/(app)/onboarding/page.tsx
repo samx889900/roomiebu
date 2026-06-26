@@ -99,7 +99,7 @@ export default function OnboardingPage() {
     }
   };
 
-  const onInvalid = (errors: any) => {
+  const onInvalid = (errors: unknown) => {
     console.error("Validation errors:", errors);
     toast.error("Please fill all required fields correctly (e.g., gender, course, year).");
   };
@@ -231,22 +231,48 @@ export default function OnboardingPage() {
                     <h2 className="text-2xl font-bold">Lifestyle</h2>
                     <p className="text-muted-foreground">Your habits help us find compatible matches</p>
                   </div>
-                  {(["smoking", "vaping", "drinking"] as const).map((habit) => (
-                    <div key={habit} className="space-y-2">
-                      <Label className="capitalize">{habit}</Label>
-                      <Select
-                        value={form.watch(habit)}
-                        onValueChange={(v: string | null) => { if (v) form.setValue(habit, v as ProfileFormData["smoking"]); }}
-                      >
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="NEVER">Never</SelectItem>
-                          <SelectItem value="OCCASIONALLY">Occasionally</SelectItem>
-                          <SelectItem value="REGULARLY">Regularly</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  ))}
+                  <div className="space-y-2">
+                    <Label>Smoking</Label>
+                    <Select
+                      value={form.watch("smoking")}
+                      onValueChange={(v: string | null) => { if (v) form.setValue("smoking", v as ProfileFormData["smoking"]); }}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NEVER">Never</SelectItem>
+                        <SelectItem value="OCCASIONALLY">Occasionally</SelectItem>
+                        <SelectItem value="REGULARLY">Regularly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Drinking</Label>
+                    <Select
+                      value={form.watch("drinking")}
+                      onValueChange={(v: string | null) => { if (v) form.setValue("drinking", v as ProfileFormData["drinking"]); }}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NEVER">Never</SelectItem>
+                        <SelectItem value="OCCASIONALLY">Occasionally</SelectItem>
+                        <SelectItem value="REGULARLY">Regularly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Vaping</Label>
+                    <Select
+                      value={form.watch("vaping")}
+                      onValueChange={(v: string | null) => { if (v) form.setValue("vaping", v as ProfileFormData["vaping"]); }}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NEVER">Never</SelectItem>
+                        <SelectItem value="OCCASIONALLY">Occasionally</SelectItem>
+                        <SelectItem value="REGULARLY">Regularly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="space-y-2">
                     <Label>Other Habits</Label>
                     <Input {...form.register("otherHabits")} placeholder="e.g., Gaming, Music..." />
