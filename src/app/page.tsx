@@ -2,6 +2,7 @@ import { Building2, Users, Heart, Shield, ArrowRight, Search, Sparkles, MapPin, 
 import { Badge } from "@/components/ui/badge";
 import { APP_NAME } from "@/lib/constants";
 import Link from "next/link";
+import Image from "next/image";
 import { SignInButton } from "@/components/shared/sign-in-button";
 import { ObfuscatedEmail } from "@/components/shared/obfuscated-email";
 
@@ -41,11 +42,11 @@ export default function HomePage() {
         <div className="content-wrap py-6 sm:py-8">
           <nav className="surface-subtle mb-10 flex items-center justify-between px-4 py-3 sm:px-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl gradient-primary text-white">
-                <Building2 className="h-6 w-6" />
+              <div className="flex items-center justify-center shrink-0">
+                <Image src="/logo.png" alt="RoomieBU" width={48} height={48} className="object-contain" priority />
               </div>
               <div>
-                <p className="text-lg font-semibold tracking-[-0.03em]">{APP_NAME}</p>
+                <p className="text-lg font-semibold tracking-[-0.03em]">Roomie<span className="text-primary">BU</span></p>
                 <p className="text-xs text-muted-foreground">Roommate matching for Bennett University</p>
               </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import {
@@ -71,10 +72,17 @@ export function Sidebar({ collapsed, onToggle, isMobile }: SidebarProps) {
           collapsed ? "justify-center" : "gap-3"
         )}>
           <div className={cn(
-            "flex items-center justify-center rounded-2xl gradient-primary text-white shrink-0",
+            "flex items-center justify-center shrink-0",
             collapsed ? "h-10 w-10" : "h-12 w-12"
           )}>
-            <Building2 className={cn(collapsed ? "h-5 w-5" : "h-6 w-6")} />
+            <Image 
+              src="/logo.png" 
+              alt="RoomieBU" 
+              width={48} 
+              height={48} 
+              className={cn("object-contain", collapsed ? "h-8 w-8" : "h-10 w-10")} 
+              priority 
+            />
           </div>
           {!collapsed && (
             <div className="min-w-0">
