@@ -86,7 +86,7 @@ export function Sidebar({ collapsed, onToggle, isMobile }: SidebarProps) {
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <p className="text-base font-semibold tracking-[-0.02em]">{APP_NAME}</p>
+              <p className="text-base font-semibold tracking-[-0.02em]">Roomie<span className="text-primary">BU</span></p>
               <p className="text-xs text-muted-foreground">Bennett roommate matching</p>
             </div>
           )}

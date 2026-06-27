@@ -262,10 +262,10 @@ export default function HomePage() {
             {/* Brand */}
             <div className="space-y-3 sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-primary text-white">
-                  <Building2 className="h-4.5 w-4.5" />
+                <div className="flex items-center justify-center shrink-0">
+                  <Image src="/logo.png" alt="RoomieBU" width={36} height={36} className="object-contain" />
                 </div>
-                <span className="text-base font-semibold tracking-[-0.03em]">{APP_NAME}</span>
+                <span className="text-base font-semibold tracking-[-0.03em]">Roomie<span className="text-primary">BU</span></span>
               </div>
               <p className="text-sm leading-6 text-muted-foreground max-w-xs">
                 A roommate matching platform built exclusively for Bennett University students.
@@ -329,7 +329,7 @@ export default function HomePage() {
           {/* Bottom bar */}
           <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 sm:flex-row">
             <p className="text-xs text-muted-foreground">
-              &copy; {new Date().getFullYear()} {APP_NAME}. Built by Bennett University students.
+              &copy; {new Date().getFullYear()} Roomie<span className="text-primary">BU</span>. Built by Bennett University students.
             </p>
             <div className="flex items-center gap-4">
               <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
