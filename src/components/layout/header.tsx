@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Bell, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ interface HeaderProps {
 export function Header({ onMobileMenuToggle }: HeaderProps) {
   const { data: session } = useSession();
   const [unreadCount, setUnreadCount] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     if (session?.user) {
@@ -37,13 +39,27 @@ export function Header({ onMobileMenuToggle }: HeaderProps) {
             <Menu className="w-5 h-5" />
           </Button>
           <div className="hidden flex-1 md:block">
-            <div className="relative max-w-xl">
+            <form 
+              className="relative max-w-xl"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const q = formData.get("q") as string;
+                if (q.trim()) {
+                  router.push(`/listings?q=${encodeURIComponent(q.trim())}`);
+                } else {
+                  router.push("/listings");
+                }
+              }}
+            >
               <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
+                name="q"
+                type="search"
                 placeholder="Search listings, areas, lifestyles..."
                 className="h-12 rounded-full border-border bg-white pl-11 shadow-none"
               />
-            </div>
+            </form>
           </div>
         </div>
 
