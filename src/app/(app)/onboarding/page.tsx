@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
+
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { profileSchema, type ProfileFormData } from "@/lib/validators/profile";
@@ -186,7 +186,7 @@ export default function OnboardingPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Gender *</Label>
-                      <Select value={form.watch("gender")} onValueChange={(v: string | null) => { if (v) form.setValue("gender", v as ProfileFormData["gender"]); }}>
+                      <Select value={form.watch("gender") ?? null} onValueChange={(v: string | null) => { if (v) form.setValue("gender", v as ProfileFormData["gender"]); }}>
                         <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="MALE">Male</SelectItem>
@@ -201,7 +201,7 @@ export default function OnboardingPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Course *</Label>
-                      <Select value={form.watch("course")} onValueChange={(v: string | null) => { if (v) form.setValue("course", v); }}>
+                      <Select value={form.watch("course") ?? null} onValueChange={(v: string | null) => { if (v) form.setValue("course", v); }}>
                         <SelectTrigger><SelectValue placeholder="Select course" /></SelectTrigger>
                         <SelectContent>
                           {COURSE_OPTIONS.map((c) => (
@@ -212,7 +212,7 @@ export default function OnboardingPage() {
                     </div>
                     <div className="space-y-2 sm:col-span-2">
                       <Label>Year *</Label>
-                      <Select value={form.watch("year")} onValueChange={(v: string | null) => { if (v) form.setValue("year", v); }}>
+                      <Select value={form.watch("year") ?? null} onValueChange={(v: string | null) => { if (v) form.setValue("year", v); }}>
                         <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
                         <SelectContent>
                           {YEAR_OPTIONS.map((y) => (
@@ -305,17 +305,50 @@ export default function OnboardingPage() {
                   <div className="space-y-4">
                     <Label>Cleanliness Level: {cleanliness}/5</Label>
                     <div className="px-2 py-4 sm:px-0 sm:py-2">
-                      <Slider
-                        value={[cleanliness]}
-                        min={1}
-                        max={5}
-                        step={1}
-                        onValueChange={(v) => {
-                          const val = (v as number[])[0];
-                          setCleanliness(val);
-                          form.setValue("cleanlinessLevel", val);
-                        }}
-                      />
+                      <div className="relative">
+                        <input
+                          type="range"
+                          min={1}
+                          max={5}
+                          step={1}
+                          value={cleanliness}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value, 10);
+                            setCleanliness(val);
+                            form.setValue("cleanlinessLevel", val);
+                          }}
+                          className="w-full h-2 rounded-full appearance-none cursor-pointer bg-muted accent-primary
+                            [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
+                            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
+                            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary
+                            [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer
+                            [&::-webkit-slider-thumb]:transition-shadow [&::-webkit-slider-thumb]:hover:shadow-lg
+                            [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5
+                            [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white
+                            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary
+                            [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:cursor-pointer
+                            [&::-moz-range-track]:bg-muted [&::-moz-range-track]:rounded-full [&::-moz-range-track]:h-2"
+                        />
+                        <div className="flex justify-between mt-2">
+                          {[1, 2, 3, 4, 5].map((n) => (
+                            <button
+                              key={n}
+                              type="button"
+                              onClick={() => {
+                                setCleanliness(n);
+                                form.setValue("cleanlinessLevel", n);
+                              }}
+                              className={`w-7 h-7 rounded-full text-xs font-medium transition-all ${
+                                n === cleanliness
+                                  ? "bg-primary text-white shadow-md scale-110"
+                                  : "bg-muted text-muted-foreground hover:bg-primary/10"
+                              }`}
+                            >
+                              {n}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                     <div className="flex justify-between text-xs text-muted-foreground px-1">
                       <span>Relaxed</span>
