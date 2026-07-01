@@ -28,9 +28,7 @@ export default async function ListingsPage({ searchParams }: PageProps) {
       )
     : null;
 
-  const page = parseInt(params.page || "1");
   const result = await getListings({
-    page,
     accommodationType: params.type,
     gender: params.gender,
     smoking: params.smoking,
@@ -82,8 +80,6 @@ export default async function ListingsPage({ searchParams }: PageProps) {
         <ListingFeed
           listings={result.listings}
           total={result.total}
-          pages={result.pages}
-          currentPage={page}
           userId={session?.user?.id}
           currentUserProfile={currentUser?.profile}
         />

@@ -132,8 +132,6 @@ export async function closeListing(id: string) {
 }
 
 interface GetListingsParams {
-  page?: number;
-  pageSize?: number;
   accommodationType?: string;
   gender?: string;
   smoking?: string;
@@ -151,8 +149,6 @@ interface GetListingsParams {
 
 export async function getListings(params: GetListingsParams = {}) {
   const {
-    page = 1,
-    pageSize = DEFAULT_PAGE_SIZE,
     accommodationType,
     gender,
     smoking,
@@ -215,8 +211,6 @@ export async function getListings(params: GetListingsParams = {}) {
     prisma.listing.findMany({
       where,
       orderBy,
-      skip: (page - 1) * pageSize,
-      take: pageSize,
       select: {
         id: true,
         title: true,
@@ -261,8 +255,6 @@ export async function getListings(params: GetListingsParams = {}) {
   return {
     listings,
     total,
-    pages: Math.ceil(total / pageSize),
-    page,
   };
 }
 

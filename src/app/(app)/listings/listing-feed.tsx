@@ -36,8 +36,6 @@ import Link from "next/link";
 interface ListingFeedProps {
   listings: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */;
   total: number;
-  pages: number;
-  currentPage: number;
   userId?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentUserProfile?: any;
@@ -55,7 +53,7 @@ const statusColors: Record<string, string> = {
   JUST_EXPLORING: "bg-sky-50 text-sky-700 border-sky-200",
 };
 
-export function ListingFeed({ listings, total, pages, currentPage, userId, currentUserProfile }: ListingFeedProps) {
+export function ListingFeed({ listings, total, userId, currentUserProfile }: ListingFeedProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
@@ -78,7 +76,6 @@ export function ListingFeed({ listings, total, pages, currentPage, userId, curre
     } else {
       params.delete(key);
     }
-    params.set("page", "1");
     startTransition(() => router.push(`/listings?${params.toString()}`));
   }
 
@@ -350,21 +347,6 @@ export function ListingFeed({ listings, total, pages, currentPage, userId, curre
         </div>
       )}
 
-      {pages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-2">
-          {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
-            <Button
-              key={p}
-              variant={p === currentPage ? "default" : "outline"}
-              size="sm"
-              className={p !== currentPage ? "bg-white" : ""}
-              onClick={() => updateFilters("page", p.toString())}
-            >
-              {p}
-            </Button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
