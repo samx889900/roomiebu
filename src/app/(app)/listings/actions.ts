@@ -28,6 +28,7 @@ export async function createListing(data: ListingFormData) {
       numberRequired: validated.numberRequired,
       spotsFilled: validated.spotsFilled,
       genderPreference: validated.genderPreference,
+      academicPreference: validated.academicPreference || "ANY",
       currentStatus: validated.currentStatus,
       moveInDate: validated.moveInDate ? new Date(validated.moveInDate) : null,
       description: validated.description || null,
@@ -72,6 +73,7 @@ export async function updateListing(id: string, data: Partial<ListingFormData>) 
       numberRequired,
       spotsFilled,
       genderPreference: data.genderPreference,
+      academicPreference: data.academicPreference,
       currentStatus: data.currentStatus,
       moveInDate: data.moveInDate ? new Date(data.moveInDate) : null,
       description: data.description || null,
@@ -145,6 +147,8 @@ interface GetListingsParams {
   currentStatus?: string;
   sortBy?: string;
   search?: string;
+  page?: number;
+  limit?: number;
 }
 
 export async function getListings(params: GetListingsParams = {}) {
@@ -162,6 +166,8 @@ export async function getListings(params: GetListingsParams = {}) {
     currentStatus,
     sortBy = "newest",
     search,
+    page = 1,
+    limit = 50,
   } = params;
 
   const where: Prisma.ListingWhereInput = {
@@ -211,6 +217,8 @@ export async function getListings(params: GetListingsParams = {}) {
     prisma.listing.findMany({
       where,
       orderBy,
+      take: limit,
+      skip: (page - 1) * limit,
       select: {
         id: true,
         title: true,
@@ -218,6 +226,7 @@ export async function getListings(params: GetListingsParams = {}) {
         numberRequired: true,
         spotsFilled: true,
         genderPreference: true,
+        academicPreference: true,
         currentStatus: true,
         moveInDate: true,
         description: true,

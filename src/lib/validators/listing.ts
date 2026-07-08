@@ -7,6 +7,7 @@ export const listingSchema = z
     numberRequired: z.number().min(1).max(10),
     spotsFilled: z.number().min(0),
     genderPreference: z.enum(["MALE", "FEMALE", "ANY"]),
+    academicPreference: z.enum(["ANY", "SAME_COURSE", "SAME_BATCH", "SENIOR", "JUNIOR"]).optional(),
     currentStatus: z.enum(["LOOKING_URGENTLY", "WITHIN_1_MONTH", "JUST_EXPLORING"]),
     moveInDate: z.string().optional(),
     description: z.string().max(1000).optional(),

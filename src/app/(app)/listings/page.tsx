@@ -40,6 +40,7 @@ export default async function ListingsPage({ searchParams }: PageProps) {
     currentStatus: params.status,
     sortBy: params.sort || "newest",
     search: params.q,
+    page: params.page ? parseInt(params.page) : 1,
   });
 
   return (

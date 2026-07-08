@@ -13,8 +13,9 @@ import Link from "next/link";
 import { ListingForm } from "@/components/shared/listing-form";
 import { format } from "date-fns";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export function EditListingClient({ listing }: { listing: any }) {
+import type { Listing } from "@prisma/client";
+
+export function EditListingClient({ listing }: { listing: Listing }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -69,6 +70,7 @@ export function EditListingClient({ listing }: { listing: any }) {
                 submitLabel="Save changes" 
                 initialData={{
                   ...listing,
+                  academicPreference: (listing.academicPreference || "ANY") as ListingFormData["academicPreference"],
                   moveInDate: initialMoveInDate,
                   minBudget: listing.minBudget ?? undefined,
                   maxBudget: listing.maxBudget ?? undefined,

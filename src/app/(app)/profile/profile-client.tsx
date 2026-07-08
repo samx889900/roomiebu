@@ -18,10 +18,12 @@ import { LANGUAGE_OPTIONS } from "@/lib/constants";
 import { getReadableProgramName } from "@/lib/academic/mapping";
 import { computeCurrentAcademicYear } from "@/lib/academic/year";
 
-export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; studentStatus?: string; profile?: any /* eslint-disable-line @typescript-eslint/no-explicit-any */; } }) {
+import type { Profile } from "@prisma/client";
+
+export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; studentStatus?: string; profile?: Profile | null; } }) {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const profile = user?.profile || {};
+  const profile = user?.profile || ({} as Partial<Profile>);
 
   const [formData, setFormData] = useState({
     phone: profile.phone || "",

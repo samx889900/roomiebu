@@ -63,6 +63,14 @@ enum GuestsPreference {
   FREQUENTLY
 }
 
+enum AcademicPreference {
+  ANY
+  SAME_COURSE
+  SAME_BATCH
+  SENIOR
+  JUNIOR
+}
+
 enum ListingStatus {
   ACTIVE
   FILLED
@@ -282,6 +290,7 @@ model Listing {
   numberRequired    Int                @default(1)
   spotsFilled       Int                @default(0)
   genderPreference  GenderPreference   @default(ANY)
+  academicPreference AcademicPreference? @default(ANY)
   currentStatus     UrgencyStatus      @default(JUST_EXPLORING)
   moveInDate        DateTime?
   description       String?            @db.Text
