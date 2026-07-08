@@ -11,6 +11,17 @@ export async function completeOnboarding(data: ProfileFormData) {
 
   const validated = profileSchema.parse(data);
 
+  const sessionUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+  
+  if (validated.customName && sessionUser?.studentStatus === "PENDING_VERIFICATION") {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { name: validated.customName },
+    });
+  }
+
+  const currentYear = new Date().getFullYear();
+
   await prisma.$transaction([
     prisma.profile.upsert({
       where: { userId: session.user.id },
@@ -18,9 +29,7 @@ export async function completeOnboarding(data: ProfileFormData) {
         userId: session.user.id,
         phone: validated.phone,
         gender: validated.gender,
-        dob: new Date(validated.dob),
-        course: validated.course,
-        year: validated.year,
+        dob: validated.dob ? new Date(validated.dob) : null,
         smoking: validated.smoking,
         vaping: validated.vaping,
         drinking: validated.drinking,
@@ -33,13 +42,14 @@ export async function completeOnboarding(data: ProfileFormData) {
         aboutMe: validated.aboutMe || null,
         profilePhoto: validated.profilePhoto || null,
         accommodationType: validated.accommodationType,
+        ...(sessionUser?.studentStatus === "PENDING_VERIFICATION" && validated.programCode
+          ? { programCode: validated.programCode.toLowerCase(), admissionYear: currentYear }
+          : {}),
       },
       update: {
         phone: validated.phone,
         gender: validated.gender,
-        dob: new Date(validated.dob),
-        course: validated.course,
-        year: validated.year,
+        dob: validated.dob ? new Date(validated.dob) : null,
         smoking: validated.smoking,
         vaping: validated.vaping,
         drinking: validated.drinking,
@@ -52,11 +62,17 @@ export async function completeOnboarding(data: ProfileFormData) {
         aboutMe: validated.aboutMe || null,
         profilePhoto: validated.profilePhoto || null,
         accommodationType: validated.accommodationType,
+        ...(sessionUser?.studentStatus === "PENDING_VERIFICATION" && validated.programCode
+          ? { programCode: validated.programCode.toLowerCase(), admissionYear: currentYear }
+          : {}),
       },
     }),
     prisma.user.update({
       where: { id: session.user.id },
-      data: { isOnboarded: true },
+      data: { 
+        isOnboarded: true,
+        isProfileComplete: true
+      },
     }),
   ]);
 

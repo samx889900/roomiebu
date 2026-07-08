@@ -10,6 +10,9 @@ interface AnalyticsProps {
     demand: { hostel: number; flat: number };
     gender: { male: number; female: number; other: number };
     topLocations: { location: string; count: number }[];
+    statusStats?: Record<string, number>;
+    programStats?: Record<string, number>;
+    batchStats?: Record<string, number>;
   };
 }
 
@@ -83,6 +86,75 @@ export function AnalyticsClient({ analytics }: AnalyticsProps) {
                     <div key={i} className="flex items-center justify-between">
                       <span className="text-sm">{loc.location}</span>
                       <span className="text-xs text-muted-foreground font-medium">{loc.count} listings</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+        {/* User Status */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+          <Card>
+            <CardHeader><CardTitle className="text-sm flex items-center gap-2"><UsersIcon className="w-4 h-4" />User Status</CardTitle></CardHeader>
+            <CardContent>
+              {Object.keys(analytics.statusStats || {}).length === 0 ? (
+                <p className="text-sm text-muted-foreground">No status data yet</p>
+              ) : (
+                <div className="space-y-3">
+                  {Object.entries(analytics.statusStats || {}).map(([status, count]) => (
+                    <div key={status} className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{status.replace(/_/g, " ")}</span>
+                      <span className="text-xs text-muted-foreground font-medium">{count as number} users</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Program Distribution */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+          <Card>
+            <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Building2 className="w-4 h-4" />Programs</CardTitle></CardHeader>
+            <CardContent>
+              {Object.keys(analytics.programStats || {}).length === 0 ? (
+                <p className="text-sm text-muted-foreground">No program data yet</p>
+              ) : (
+                <div className="space-y-3">
+                  {Object.entries(analytics.programStats || {})
+                    .sort(([,a], [,b]) => (b as number) - (a as number))
+                    .map(([program, count]) => (
+                    <div key={program} className="flex items-center justify-between">
+                      <span className="text-sm font-medium uppercase">{program}</span>
+                      <span className="text-xs text-muted-foreground font-medium">{count as number} users</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Batch Distribution */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+          <Card>
+            <CardHeader><CardTitle className="text-sm flex items-center gap-2"><UsersIcon className="w-4 h-4" />Admission Batches</CardTitle></CardHeader>
+            <CardContent>
+              {Object.keys(analytics.batchStats || {}).length === 0 ? (
+                <p className="text-sm text-muted-foreground">No batch data yet</p>
+              ) : (
+                <div className="space-y-3">
+                  {Object.entries(analytics.batchStats || {})
+                    .sort(([a], [b]) => Number(b) - Number(a))
+                    .map(([year, count]) => (
+                    <div key={year} className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Class of {year}</span>
+                      <span className="text-xs text-muted-foreground font-medium">{count as number} users</span>
                     </div>
                   ))}
                 </div>

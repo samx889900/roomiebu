@@ -1,15 +1,15 @@
 import { z } from "zod";
 
 export const profileSchema = z.object({
+  customName: z.string().min(2, "Name must be at least 2 characters").optional(),
+  programCode: z.string().optional(),
   phone: z
     .string()
     .min(10, "Phone number must be at least 10 digits")
     .max(15, "Phone number is too long")
     .regex(/^\d+$/, "Phone number must contain only digits"),
-  gender: z.enum(["MALE", "FEMALE", "OTHER"], { message: "Gender is required" }),
-  dob: z.string().min(1, "Date of birth is required"),
-  course: z.string().min(1, "Course is required"),
-  year: z.string().min(1, "Year is required"),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional(),
+  dob: z.string().optional(),
   smoking: z.enum(["NEVER", "OCCASIONALLY", "REGULARLY"]),
   vaping: z.enum(["NEVER", "OCCASIONALLY", "REGULARLY"]),
   drinking: z.enum(["NEVER", "OCCASIONALLY", "REGULARLY"]),

@@ -13,10 +13,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { enumToLabel, getInitials } from "@/lib/utils";
 import { updateProfile } from "./actions";
 import { toast } from "sonner";
-import { signOut } from "next-auth/react";
+import { signOut, signIn } from "next-auth/react";
 import { LANGUAGE_OPTIONS } from "@/lib/constants";
+import { getReadableProgramName } from "@/lib/academic/mapping";
+import { computeCurrentAcademicYear } from "@/lib/academic/year";
 
-export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; profile?: any /* eslint-disable-line @typescript-eslint/no-explicit-any */; } }) {
+export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; studentStatus?: string; profile?: any /* eslint-disable-line @typescript-eslint/no-explicit-any */; } }) {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const profile = user?.profile || {};
@@ -25,8 +27,6 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
     phone: profile.phone || "",
     aboutMe: profile.aboutMe || "",
     otherHabits: profile.otherHabits || "",
-    course: profile.course || "",
-    year: profile.year || "",
     gender: profile.gender || "MALE",
     smoking: profile.smoking || "NEVER",
     drinking: profile.drinking || "NEVER",
@@ -137,12 +137,37 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                 {user?.name ? getInitials(user.name) : "?"}
               </AvatarFallback>
             </Avatar>
-            <div className="ml-28 pt-2 min-w-0">
-              <h2 className="text-xl font-bold truncate break-words">{user?.name}</h2>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-muted-foreground mt-1 min-w-0">
-                <span className="flex items-center gap-1 min-w-0"><Mail className="w-3.5 h-3.5 shrink-0" /><span className="truncate">{user?.email}</span></span>
-                {profile?.phone && <span className="flex items-center gap-1 min-w-0"><Phone className="w-3.5 h-3.5 shrink-0" /><span className="truncate">{profile.phone}</span></span>}
+            <div className="ml-28 pt-2 min-w-0 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold truncate break-words flex items-center gap-2">
+                  {user?.name}
+                  {user?.studentStatus === "VERIFIED" ? (
+                    <Badge variant="outline" className="text-primary bg-primary/5 border-primary/20">Verified</Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-amber-600 bg-amber-50 border-amber-200">Fresher</Badge>
+                  )}
+                </h2>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-muted-foreground mt-1 min-w-0">
+                  <span className="flex items-center gap-1 min-w-0"><Mail className="w-3.5 h-3.5 shrink-0" /><span className="truncate">{user?.email}</span></span>
+                  {profile?.phone && <span className="flex items-center gap-1 min-w-0"><Phone className="w-3.5 h-3.5 shrink-0" /><span className="truncate">{profile.phone}</span></span>}
+                </div>
               </div>
+              {user?.studentStatus === "PENDING_VERIFICATION" && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="shrink-0"
+                  onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/profile" })}
+                >
+                  <svg className="h-4 w-4 mr-2" viewBox="0 0 21 21" fill="none">
+                    <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+                    <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+                    <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+                    <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+                  </svg>
+                  Link Microsoft Account
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -154,8 +179,6 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
             <CardContent className="space-y-3">
               {editing ? (
                 <>
-                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Course</span><Input value={formData.course} onChange={(e) => setFormData({ ...formData, course: e.target.value })} /></div>
-                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Year</span><Input value={formData.year} onChange={(e) => setFormData({ ...formData, year: e.target.value })} /></div>
                   <div className="space-y-1"><span className="text-xs text-muted-foreground">Gender</span>
                     <Select value={formData.gender} onValueChange={(v) => handleSelectChange("gender", v)}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
@@ -169,8 +192,12 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                 </>
               ) : (
                 <>
-                  <div><span className="text-xs text-muted-foreground">Course</span><p className="font-medium">{profile?.course || "—"}</p></div>
-                  <div><span className="text-xs text-muted-foreground">Year</span><p className="font-medium">{profile?.year || "—"}</p></div>
+                  {user?.studentStatus === "VERIFIED" && profile?.programCode && (
+                    <div><span className="text-xs text-muted-foreground">Program</span><p className="font-medium">{getReadableProgramName(profile.programCode)}</p></div>
+                  )}
+                  {user?.studentStatus === "VERIFIED" && profile?.admissionYear && (
+                    <div><span className="text-xs text-muted-foreground">Year</span><p className="font-medium">{computeCurrentAcademicYear(profile.admissionYear)} Year</p></div>
+                  )}
                   <div><span className="text-xs text-muted-foreground">Gender</span><p className="font-medium">{profile?.gender ? enumToLabel(profile.gender) : "—"}</p></div>
                 </>
               )}

@@ -12,6 +12,8 @@ declare module "next-auth" {
       isOnboarded: boolean;
       isSuspended: boolean;
       isBanned: boolean;
+      studentStatus: string;
+      isProfileComplete: boolean;
     };
   }
 
@@ -20,5 +22,7 @@ declare module "next-auth" {
     isOnboarded?: boolean;
     isSuspended?: boolean;
     isBanned?: boolean;
+    studentStatus?: string;
+    isProfileComplete?: boolean;
   }
 }

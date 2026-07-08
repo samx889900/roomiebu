@@ -11,6 +11,9 @@ import { AdminUserActions } from "./admin-user-actions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+import { getReadableProgramName } from "@/lib/academic/mapping";
+import { computeCurrentAcademicYear } from "@/lib/academic/year";
+
 export default async function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const user = await getAdminUserById(resolvedParams.id);
@@ -18,6 +21,9 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
 
   const profile = user.profile;
   const matchesCount = user._count.matchesAsA + user._count.matchesAsB;
+
+  const courseName = profile?.programCode ? getReadableProgramName(profile.programCode) : "—";
+  const yearName = profile?.admissionYear ? computeCurrentAcademicYear(profile.admissionYear) : "—";
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -103,7 +109,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
         </div>
 
         {/* Right Column */}
-        <div className="space-y-6 md:col-span-2">
+        <div className="space-y-6 md:grid-cols-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Academic Info */}
             <Card>
@@ -118,14 +124,14 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
                   <span className="text-xs text-muted-foreground">Course</span>
                   <div className="flex items-center gap-2 mt-1">
                     <BookOpen className="w-3.5 h-3.5 text-muted-foreground" />
-                    <p className="text-sm">{profile?.course || "—"}</p>
+                    <p className="text-sm">{courseName}</p>
                   </div>
                 </div>
                 <div>
                   <span className="text-xs text-muted-foreground">Year</span>
                   <div className="flex items-center gap-2 mt-1">
                     <GraduationCap className="w-3.5 h-3.5 text-muted-foreground" />
-                    <p className="text-sm">{profile?.year || "—"}</p>
+                    <p className="text-sm">{yearName}</p>
                   </div>
                 </div>
                 <div>

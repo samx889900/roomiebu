@@ -1,6 +1,5 @@
-import { Building2, Users, Heart, Shield, ArrowRight, Search, Sparkles, MapPin, Lock, GraduationCap, ShieldCheck, Eye } from "lucide-react";
+import { Users, Heart, Shield, ArrowRight, Search, Sparkles, MapPin, ShieldCheck, Eye, GraduationCap, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { APP_NAME } from "@/lib/constants";
 import Link from "next/link";
 import Image from "next/image";
 import { SignInButton } from "@/components/shared/sign-in-button";
@@ -169,7 +168,7 @@ export default function HomePage() {
         <div className="content-wrap py-16 sm:py-20 text-center">
           <div className="mx-auto max-w-3xl space-y-6">
             <p className="text-xl sm:text-3xl font-medium tracking-tight text-foreground leading-snug">
-              "RoomieBU made finding a flatmate so much less stressful. I could see we both preferred a quiet study environment and early sleep schedule before we even talked. We matched, moved in last month, and it's been perfect."
+              &quot;RoomieBU made finding a flatmate so much less stressful. I could see we both preferred a quiet study environment and early sleep schedule before we even talked. We matched, moved in last month, and it&apos;s been perfect.&quot;
             </p>
             <div className="flex flex-col items-center gap-1">
               <p className="font-semibold text-foreground">Aarav Sharma</p>
@@ -192,13 +191,13 @@ export default function HomePage() {
             <div className="space-y-2">
               <h3 className="text-lg font-semibold">How is the compatibility score calculated?</h3>
               <p className="text-sm leading-6 text-muted-foreground">
-                Our algorithm compares your lifestyle preferences (like sleep schedule, cleanliness, and study habits) against the listing owner's profile. A higher percentage means a stronger potential match based on your daily routines.
+                Our algorithm compares your lifestyle preferences (like sleep schedule, cleanliness, and study habits) against the listing owner&apos;s profile. A higher percentage means a stronger potential match based on your daily routines.
               </p>
             </div>
             <div className="space-y-2">
               <h3 className="text-lg font-semibold">What happens when I express interest?</h3>
               <p className="text-sm leading-6 text-muted-foreground">
-                The listing owner receives a notification with your profile compatibility. If they accept your request, it becomes a "Mutual Match," and RoomieBU reveals both parties' contact details so you can discuss the move-in.
+                The listing owner receives a notification with your profile compatibility. If they accept your request, it becomes a &quot;Mutual Match,&quot; and RoomieBU reveals both parties&apos; contact details so you can discuss the move-in.
               </p>
             </div>
             <div className="space-y-2">

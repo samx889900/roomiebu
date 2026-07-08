@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { listingSchema, type ListingFormData } from "@/lib/validators/listing";
 import { revalidatePath } from "next/cache";
-import { LISTING_EXPIRY_DAYS, DEFAULT_PAGE_SIZE } from "@/lib/constants";
+import { LISTING_EXPIRY_DAYS } from "@/lib/constants";
 import { Prisma } from "@prisma/client";
 
 export async function createListing(data: ListingFormData) {
@@ -137,8 +137,8 @@ interface GetListingsParams {
   smoking?: string;
   drinking?: string;
   sleepSchedule?: string;
-  course?: string;
-  year?: string;
+  programCode?: string;
+  admissionYear?: string;
   minBudget?: number;
   maxBudget?: number;
   location?: string;
@@ -154,8 +154,8 @@ export async function getListings(params: GetListingsParams = {}) {
     smoking,
     drinking,
     sleepSchedule,
-    course,
-    year,
+    programCode,
+    admissionYear,
     minBudget,
     maxBudget,
     location,
@@ -184,14 +184,14 @@ export async function getListings(params: GetListingsParams = {}) {
   }
 
   // Filter by listing owner's profile attributes
-  if (smoking || drinking || sleepSchedule || course || year) {
+  if (smoking || drinking || sleepSchedule || programCode || admissionYear) {
     where.user = {
       profile: {
         ...(smoking && { smoking: smoking as Prisma.EnumFrequencyLevelFilter }),
         ...(drinking && { drinking: drinking as Prisma.EnumFrequencyLevelFilter }),
         ...(sleepSchedule && { sleepSchedule: sleepSchedule as Prisma.EnumSleepScheduleFilter }),
-        ...(course && { course }),
-        ...(year && { year }),
+        ...(programCode && { programCode }),
+        ...(admissionYear && !isNaN(Number(admissionYear)) && { admissionYear: Number(admissionYear) }),
       },
     };
   }
@@ -234,8 +234,8 @@ export async function getListings(params: GetListingsParams = {}) {
             image: true,
             profile: {
               select: {
-                course: true,
-                year: true,
+                programCode: true,
+                admissionYear: true,
                 sleepSchedule: true,
                 cleanlinessLevel: true,
                 smoking: true,

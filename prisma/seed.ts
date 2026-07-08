@@ -28,8 +28,8 @@ async function main() {
           phone: "+91 9999999999",
           gender: "MALE",
           dob: new Date("2002-01-15"),
-          course: "B.Tech CSE",
-          year: "4th Year",
+          programCode: "CSE",
+          admissionYear: 2021,
           smoking: "NEVER",
           vaping: "NEVER",
           drinking: "NEVER",
@@ -50,23 +50,23 @@ async function main() {
   const sampleUsers = [
     {
       name: "Aarav Sharma", email: "aarav.sharma@bennett.edu.in",
-      profile: { phone: "+91 9876543210", gender: "MALE" as const, dob: new Date("2003-03-15"), course: "B.Tech CSE", year: "2nd Year", smoking: "NEVER" as const, vaping: "NEVER" as const, drinking: "OCCASIONALLY" as const, sleepSchedule: "NIGHT_PERSON" as const, cleanlinessLevel: 4, studyEnvironment: "SILENT" as const, guestsPreference: "OCCASIONALLY" as const, languages: ["English", "Hindi"], aboutMe: "Love coding and gaming. Looking for a chill roommate who respects quiet hours.", accommodationType: "HOSTEL" as const },
+      profile: { phone: "+91 9876543210", gender: "MALE" as const, dob: new Date("2003-03-15"), programCode: "CSE", admissionYear: 2023, smoking: "NEVER" as const, vaping: "NEVER" as const, drinking: "OCCASIONALLY" as const, sleepSchedule: "NIGHT_PERSON" as const, cleanlinessLevel: 4, studyEnvironment: "SILENT" as const, guestsPreference: "OCCASIONALLY" as const, languages: ["English", "Hindi"], aboutMe: "Love coding and gaming. Looking for a chill roommate who respects quiet hours.", accommodationType: "HOSTEL" as const },
     },
     {
       name: "Priya Patel", email: "priya.patel@bennett.edu.in",
-      profile: { phone: "+91 9876543211", gender: "FEMALE" as const, dob: new Date("2003-07-22"), course: "BBA", year: "2nd Year", smoking: "NEVER" as const, vaping: "NEVER" as const, drinking: "NEVER" as const, sleepSchedule: "MORNING_PERSON" as const, cleanlinessLevel: 5, studyEnvironment: "SILENT" as const, guestsPreference: "NEVER" as const, languages: ["English", "Hindi", "Gujarati"], aboutMe: "Early bird, neat freak. Prefer quiet environment for studying.", accommodationType: "HOSTEL" as const },
+      profile: { phone: "+91 9876543211", gender: "FEMALE" as const, dob: new Date("2003-07-22"), programCode: "BBA", admissionYear: 2023, smoking: "NEVER" as const, vaping: "NEVER" as const, drinking: "NEVER" as const, sleepSchedule: "MORNING_PERSON" as const, cleanlinessLevel: 5, studyEnvironment: "SILENT" as const, guestsPreference: "NEVER" as const, languages: ["English", "Hindi", "Gujarati"], aboutMe: "Early bird, neat freak. Prefer quiet environment for studying.", accommodationType: "HOSTEL" as const },
     },
     {
       name: "Rohit Kumar", email: "rohit.kumar@bennett.edu.in",
-      profile: { phone: "+91 9876543212", gender: "MALE" as const, dob: new Date("2002-11-08"), course: "B.Tech CSE (AI/ML)", year: "3rd Year", smoking: "OCCASIONALLY" as const, vaping: "NEVER" as const, drinking: "OCCASIONALLY" as const, sleepSchedule: "NIGHT_PERSON" as const, cleanlinessLevel: 3, studyEnvironment: "MODERATE" as const, guestsPreference: "FREQUENTLY" as const, languages: ["English", "Hindi", "Punjabi"], aboutMe: "Social butterfly. Love hanging out and exploring cafes.", accommodationType: "FLAT" as const },
+      profile: { phone: "+91 9876543212", gender: "MALE" as const, dob: new Date("2002-11-08"), programCode: "CSE", admissionYear: 2022, smoking: "OCCASIONALLY" as const, vaping: "NEVER" as const, drinking: "OCCASIONALLY" as const, sleepSchedule: "NIGHT_PERSON" as const, cleanlinessLevel: 3, studyEnvironment: "MODERATE" as const, guestsPreference: "FREQUENTLY" as const, languages: ["English", "Hindi", "Punjabi"], aboutMe: "Social butterfly. Love hanging out and exploring cafes.", accommodationType: "FLAT" as const },
     },
     {
       name: "Ananya Singh", email: "ananya.singh@bennett.edu.in",
-      profile: { phone: "+91 9876543213", gender: "FEMALE" as const, dob: new Date("2003-01-30"), course: "BA LLB", year: "2nd Year", smoking: "NEVER" as const, vaping: "NEVER" as const, drinking: "OCCASIONALLY" as const, sleepSchedule: "DEPENDS" as const, cleanlinessLevel: 4, studyEnvironment: "MODERATE" as const, guestsPreference: "OCCASIONALLY" as const, languages: ["English", "Hindi"], aboutMe: "Law student who loves debating and Netflix. Looking for a fun roommate!", accommodationType: "NOT_SURE" as const },
+      profile: { phone: "+91 9876543213", gender: "FEMALE" as const, dob: new Date("2003-01-30"), programCode: "BALLB", admissionYear: 2023, smoking: "NEVER" as const, vaping: "NEVER" as const, drinking: "OCCASIONALLY" as const, sleepSchedule: "DEPENDS" as const, cleanlinessLevel: 4, studyEnvironment: "MODERATE" as const, guestsPreference: "OCCASIONALLY" as const, languages: ["English", "Hindi"], aboutMe: "Law student who loves debating and Netflix. Looking for a fun roommate!", accommodationType: "NOT_SURE" as const },
     },
     {
       name: "Vikram Reddy", email: "vikram.reddy@bennett.edu.in",
-      profile: { phone: "+91 9876543214", gender: "MALE" as const, dob: new Date("2002-05-12"), course: "B.Tech ECE", year: "3rd Year", smoking: "NEVER" as const, vaping: "OCCASIONALLY" as const, drinking: "NEVER" as const, sleepSchedule: "MORNING_PERSON" as const, cleanlinessLevel: 5, studyEnvironment: "SILENT" as const, guestsPreference: "NEVER" as const, languages: ["English", "Hindi", "Telugu"], aboutMe: "Focused on academics. Early sleeper, early riser.", accommodationType: "HOSTEL" as const },
+      profile: { phone: "+91 9876543214", gender: "MALE" as const, dob: new Date("2002-05-12"), programCode: "ECE", admissionYear: 2022, smoking: "NEVER" as const, vaping: "OCCASIONALLY" as const, drinking: "NEVER" as const, sleepSchedule: "MORNING_PERSON" as const, cleanlinessLevel: 5, studyEnvironment: "SILENT" as const, guestsPreference: "NEVER" as const, languages: ["English", "Hindi", "Telugu"], aboutMe: "Focused on academics. Early sleeper, early riser.", accommodationType: "HOSTEL" as const },
     },
   ];
 

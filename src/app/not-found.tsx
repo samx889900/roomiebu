@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Home, Search, AlertCircle } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 
@@ -14,8 +14,8 @@ export default function NotFound() {
           Page Not Found
         </h1>
         <p className="mb-8 text-sm leading-6 text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved. 
-          Let's get you back to finding the perfect roommate.
+          The page you&apos;re looking for doesn&apos;t exist or has been moved. 
+          Let&apos;s get you back to finding the perfect roommate.
         </p>
         
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">

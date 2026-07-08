@@ -7,6 +7,8 @@ import { Mail, Phone, BookOpen, Sparkles, Home } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+import { getReadableProgramName } from "@/lib/academic/mapping";
+
 export default async function AdminProfilesPage() {
   const users = await getAdminUserProfiles();
   
@@ -58,7 +60,7 @@ export default async function AdminProfilesPage() {
                         <div className="flex items-center gap-1 text-muted-foreground mb-1">
                           <BookOpen className="w-3 h-3" /> Course
                         </div>
-                        <span className="font-medium truncate block">{profile.course || "—"}</span>
+                        <span className="font-medium truncate block">{profile.programCode ? getReadableProgramName(profile.programCode) : "—"}</span>
                       </div>
                       <div className="bg-muted/50 p-2 rounded">
                         <div className="flex items-center gap-1 text-muted-foreground mb-1">

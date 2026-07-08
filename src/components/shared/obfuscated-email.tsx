@@ -3,18 +3,20 @@
 import { useState, useEffect } from "react";
 
 export function ObfuscatedEmail() {
-  const [email, setEmail] = useState("");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Reconstruct the email on the client to hide it from simple scrapers
-    const user = "roomiebu";
-    const domain = "buconfess.in";
-    setEmail(`${user}@${domain}`);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
   }, []);
 
-  if (!email) {
+  if (!mounted) {
     return <span>Contact Support</span>;
   }
+
+  const user = "roomiebu";
+  const domain = "buconfess.in";
+  const email = `${user}@${domain}`;
 
   return (
     <a href={`mailto:${email}`} className="hover:text-foreground transition-colors">

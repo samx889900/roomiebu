@@ -133,6 +133,11 @@ enum NotificationType {
   LISTING_REPORTED
 }
 
+enum StudentStatus {
+  VERIFIED
+  PENDING_VERIFICATION
+}
+
 // ============================================
 // Auth.js Models
 // ============================================
@@ -143,11 +148,15 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
-  role          Role      @default(USER)
-  isOnboarded   Boolean   @default(false)
-  isSuspended   Boolean   @default(false)
-  isBanned      Boolean   @default(false)
+  role          Role          @default(USER)
+  studentStatus StudentStatus @default(PENDING_VERIFICATION)
+  isOnboarded   Boolean       @default(false)
+  isProfileComplete Boolean   @default(false)
+  phoneVerified Boolean       @default(false)
+  isSuspended   Boolean       @default(false)
+  isBanned      Boolean       @default(false)
 
+  lastLoginAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -226,8 +235,11 @@ model Profile {
   phone  String?
   gender Gender?
   dob    DateTime?
-  course String?
-  year   String?
+
+  // Academic Info (Parsed)
+  admissionYear Int?
+  programCode   String?
+  rollNumber    String?
 
   // Lifestyle
   smoking    FrequencyLevel @default(NEVER)

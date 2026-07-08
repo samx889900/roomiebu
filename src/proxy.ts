@@ -41,12 +41,21 @@ export default async function middleware(request: NextRequest) {
 
   // Not onboarded — redirect to onboarding (allow access to onboarding page itself)
   if (!session.user.isOnboarded && pathname !== onboardingPath) {
-    return NextResponse.redirect(new URL(onboardingPath, request.url));
-  }
-
-  // Already onboarded — don't allow re-visiting onboarding
-  if (session.user.isOnboarded && pathname === onboardingPath) {
-    return NextResponse.redirect(new URL("/listings", request.url));
+    // If pending verification, they shouldn't even go to onboarding yet
+    if (session.user.studentStatus === "PENDING_VERIFICATION") {
+      if (pathname !== "/verify-phone") {
+        return NextResponse.redirect(new URL("/verify-phone", request.url));
+      }
+    } else {
+      if (pathname === "/verify-phone") {
+         return NextResponse.redirect(new URL(onboardingPath, request.url));
+      }
+      return NextResponse.redirect(new URL(onboardingPath, request.url));
+    }
+  } else if (session.user.isOnboarded) {
+    if (pathname === onboardingPath || pathname === "/verify-phone") {
+      return NextResponse.redirect(new URL("/listings", request.url));
+    }
   }
 
   // Admin routes — require ADMIN role

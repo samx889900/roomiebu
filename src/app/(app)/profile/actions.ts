@@ -25,8 +25,7 @@ export async function updateProfile(data: UpdateProfileFormData) {
       ...(data.phone !== undefined && { phone: data.phone }),
       ...(data.gender !== undefined && { gender: data.gender }),
       ...(data.dob !== undefined && { dob: new Date(data.dob) }),
-      ...(data.course !== undefined && { course: data.course }),
-      ...(data.year !== undefined && { year: data.year }),
+
       ...(data.smoking !== undefined && { smoking: data.smoking }),
       ...(data.vaping !== undefined && { vaping: data.vaping }),
       ...(data.drinking !== undefined && { drinking: data.drinking }),

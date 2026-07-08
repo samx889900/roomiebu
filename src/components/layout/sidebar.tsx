@@ -16,11 +16,10 @@ import {
   TrendingUp,
   LogOut,
   ChevronLeft,
-  Building2,
   Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { NAV_ITEMS, ADMIN_NAV_ITEMS, APP_NAME } from "@/lib/constants";
+import { NAV_ITEMS, ADMIN_NAV_ITEMS } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";

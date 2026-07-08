@@ -272,6 +272,9 @@ export async function getAnalytics() {
     otherCount,
     recentListings,
     topLocations,
+    statusStats,
+    programStats,
+    batchStats
   ] = await Promise.all([
     prisma.listing.count({ where: { accommodationType: "HOSTEL", deletedAt: null } }),
     prisma.listing.count({ where: { accommodationType: "FLAT", deletedAt: null } }),
@@ -291,6 +294,20 @@ export async function getAnalytics() {
       orderBy: { _count: { location: "desc" } },
       take: 10,
     }),
+    prisma.user.groupBy({
+      by: ["studentStatus"],
+      _count: { studentStatus: true }
+    }),
+    prisma.profile.groupBy({
+      by: ["programCode"],
+      where: { programCode: { not: null } },
+      _count: { programCode: true }
+    }),
+    prisma.profile.groupBy({
+      by: ["admissionYear"],
+      where: { admissionYear: { not: null } },
+      _count: { admissionYear: true }
+    })
   ]);
 
   return {
@@ -301,5 +318,8 @@ export async function getAnalytics() {
       location: l.location || "Unknown",
       count: l._count.location,
     })),
+    statusStats: statusStats.reduce((acc, curr) => ({ ...acc, [curr.studentStatus]: curr._count.studentStatus }), {}),
+    programStats: programStats.reduce((acc, curr) => ({ ...acc, [curr.programCode!]: curr._count.programCode }), {}),
+    batchStats: batchStats.reduce((acc, curr) => ({ ...acc, [curr.admissionYear!]: curr._count.admissionYear }), {}),
   };
 }
