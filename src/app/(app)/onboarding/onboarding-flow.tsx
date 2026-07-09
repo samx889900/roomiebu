@@ -283,7 +283,7 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
                         <CheckCircle2 className="h-5 w-5 text-primary" />
                         <span className="font-semibold text-primary">Verified Bennett Student</span>
                       </div>
-                      <div className="grid grid-cols-2 gap-y-3 text-sm">
+                      <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[140px_1fr] gap-x-2 gap-y-3 text-sm sm:items-center">
                         <div className="text-muted-foreground">Name</div>
                         <div className="font-medium">{user.name}</div>
                         <div className="text-muted-foreground">Email</div>
@@ -324,7 +324,7 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
                           </p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-y-3 text-sm pt-2 border-t border-amber-200/50 items-center">
+                      <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[140px_1fr] gap-x-2 gap-y-3 text-sm pt-2 border-t border-amber-200/50 items-center">
                         <div className="text-amber-700/70">Name</div>
                         <div>
                           <Input
