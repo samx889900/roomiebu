@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { signOut, signIn } from "next-auth/react";
 import { LANGUAGE_OPTIONS, COURSE_OPTIONS } from "@/lib/constants";
 import { getReadableProgramName } from "@/lib/academic/mapping";
-import { computeCurrentAcademicYear } from "@/lib/academic/year";
+import { computeCurrentAcademicYear, getReadableAcademicYear } from "@/lib/academic/year";
 import type { UpdateProfileFormData } from "@/lib/validators/profile";
 
 import type { Profile } from "@prisma/client";
@@ -250,7 +250,7 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                     <div><span className="text-xs text-muted-foreground">Program</span><p className="font-medium">{getReadableProgramName(profile.programCode)}</p></div>
                   )}
                   {user?.studentStatus === "VERIFIED" && profile?.admissionYear && (
-                    <div><span className="text-xs text-muted-foreground">Year</span><p className="font-medium">{computeCurrentAcademicYear(profile.admissionYear)} Year</p></div>
+                    <div><span className="text-xs text-muted-foreground">Year</span><p className="font-medium">{getReadableAcademicYear(computeCurrentAcademicYear(profile.admissionYear))}</p></div>
                   )}
                   <div><span className="text-xs text-muted-foreground">Gender</span><p className="font-medium">{profile?.gender ? enumToLabel(profile.gender) : "—"}</p></div>
                 </>

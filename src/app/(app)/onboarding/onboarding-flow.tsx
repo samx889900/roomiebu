@@ -20,7 +20,7 @@ import { profileSchema, type ProfileFormData } from "@/lib/validators/profile";
 import { COURSE_OPTIONS, LANGUAGE_OPTIONS, APP_NAME } from "@/lib/constants";
 import { completeOnboarding } from "./actions";
 import { getReadableProgramName } from "@/lib/academic/mapping";
-import { computeCurrentAcademicYear } from "@/lib/academic/year";
+import { computeCurrentAcademicYear, getReadableAcademicYear } from "@/lib/academic/year";
 import { calculateProfileCompletion } from "@/lib/academic/score";
 import { toast } from "sonner";
 
@@ -310,7 +310,7 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
                           </Select>
                         </div>
                         <div className="text-muted-foreground">Year</div>
-                        <div className="font-medium">{computeCurrentAcademicYear(profile?.admissionYear)} Year</div>
+                        <div className="font-medium">{getReadableAcademicYear(computeCurrentAcademicYear(profile?.admissionYear))}</div>
                       </div>
                     </div>
                   ) : (
@@ -336,7 +336,7 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
                         <div className="text-amber-700/70">Email</div>
                         <div className="font-medium text-amber-900 truncate" title={user.email || ""}>{user.email}</div>
                         <div className="text-amber-700/70">Academic Year</div>
-                        <div className="font-medium text-amber-900">1st Year</div>
+                        <div className="font-medium text-amber-900">Fresher</div>
                       </div>
                     </div>
                   )}

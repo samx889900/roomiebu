@@ -14,8 +14,8 @@ export function parseBennettEmail(email: string): ParsedAcademicInfo | null {
   // Extract the local part (before @)
   const localPart = email.split("@")[0].toLowerCase();
 
-  // Regex to extract: prefix (letters), year (2 digits), program (letters), roll (digits)
-  const regex = /^([a-z]+)(\d{2})([a-z]+)(\d+)$/;
+  // Regex to extract: prefix (1 letter), year (2 digits), program (letters), roll (digits)
+  const regex = /^([a-z]{1})(\d{2})([a-z]+)(\d+)$/;
   const match = localPart.match(regex);
 
   if (!match) {
