@@ -146,6 +146,12 @@ enum StudentStatus {
   PENDING_VERIFICATION
 }
 
+enum AuthProvider {
+  GOOGLE
+  MICROSOFT
+  GOOGLE_MICROSOFT
+}
+
 // ============================================
 // Auth.js Models
 // ============================================
@@ -158,9 +164,9 @@ model User {
   image         String?
   role          Role          @default(USER)
   studentStatus StudentStatus @default(PENDING_VERIFICATION)
+  authProvider  AuthProvider  @default(GOOGLE)
   isOnboarded   Boolean       @default(false)
   isProfileComplete Boolean   @default(false)
-  phoneVerified Boolean       @default(false)
   isSuspended   Boolean       @default(false)
   isBanned      Boolean       @default(false)
 

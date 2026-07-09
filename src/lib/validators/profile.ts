@@ -8,7 +8,7 @@ export const profileSchema = z.object({
     .min(10, "Phone number must be at least 10 digits")
     .max(15, "Phone number is too long")
     .regex(/^\d+$/, "Phone number must contain only digits"),
-  gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional(),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]),
   dob: z.string().optional(),
   smoking: z.enum(["NEVER", "OCCASIONALLY", "REGULARLY"]),
   vaping: z.enum(["NEVER", "OCCASIONALLY", "REGULARLY"]),

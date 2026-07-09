@@ -14,18 +14,20 @@ import { enumToLabel, getInitials } from "@/lib/utils";
 import { updateProfile } from "./actions";
 import { toast } from "sonner";
 import { signOut, signIn } from "next-auth/react";
-import { LANGUAGE_OPTIONS } from "@/lib/constants";
+import { LANGUAGE_OPTIONS, COURSE_OPTIONS } from "@/lib/constants";
 import { getReadableProgramName } from "@/lib/academic/mapping";
 import { computeCurrentAcademicYear } from "@/lib/academic/year";
+import type { UpdateProfileFormData } from "@/lib/validators/profile";
 
 import type { Profile } from "@prisma/client";
 
-export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; studentStatus?: string; profile?: Profile | null; } }) {
+export function ProfileClient({ user }: { user: { name?: string | null; email?: string | null; image?: string | null; studentStatus?: string; authProvider?: string; profile?: Profile | null; } }) {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const profile = user?.profile || ({} as Partial<Profile>);
 
   const [formData, setFormData] = useState({
+    programCode: profile.programCode || "",
     phone: profile.phone || "",
     aboutMe: profile.aboutMe || "",
     otherHabits: profile.otherHabits || "",
@@ -76,11 +78,14 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
         });
       }
 
-      await updateProfile({
+      const payload = {
         ...formData,
-        languages: finalLanguages,
+        programCode: formData.programCode || undefined,
         cleanlinessLevel: parseInt(formData.cleanlinessLevel, 10),
-      });
+        languages: finalLanguages,
+      };
+
+      await updateProfile(payload as UpdateProfileFormData);
       toast.success("Profile updated!");
       setEditing(false);
     } catch {
@@ -153,6 +158,9 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
                   <span className="flex items-center gap-1 min-w-0"><Mail className="w-3.5 h-3.5 shrink-0" /><span className="truncate">{user?.email}</span></span>
                   {profile?.phone && <span className="flex items-center gap-1 min-w-0"><Phone className="w-3.5 h-3.5 shrink-0" /><span className="truncate">{profile.phone}</span></span>}
                 </div>
+                <div className="mt-2 text-xs font-medium text-muted-foreground bg-muted/50 inline-block px-2 py-1 rounded-md">
+                  Signed in with {user?.authProvider?.replace("_", " + ")}
+                </div>
               </div>
               {user?.studentStatus === "PENDING_VERIFICATION" && (
                 <Button 
@@ -174,6 +182,33 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
           </CardContent>
         </Card>
 
+        {user?.studentStatus === "PENDING_VERIFICATION" && (
+          <div className="mt-6 rounded-[24px] border border-amber-200 bg-amber-50 p-5 space-y-4">
+            <div className="flex items-start gap-3 mb-2">
+              <Sparkles className="h-6 w-6 text-amber-600 mt-0.5" />
+              <div>
+                <span className="font-semibold text-amber-800 block text-lg">Incoming Student</span>
+                <p className="text-sm text-amber-700/80 mt-1 leading-relaxed max-w-xl">
+                  You&apos;re currently using RoomieBU as an incoming student. Once Bennett issues your university account, simply link it here to automatically verify your profile and populate your academic information.
+                </p>
+                <Button 
+                  variant="default"
+                  className="mt-4 bg-amber-600 hover:bg-amber-700 text-white font-medium px-6 shadow-sm"
+                  onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/profile" })}
+                >
+                  <svg className="h-4 w-4 mr-2" viewBox="0 0 21 21" fill="none">
+                    <rect x="1" y="1" width="9" height="9" fill="currentColor" opacity="0.9" />
+                    <rect x="11" y="1" width="9" height="9" fill="currentColor" opacity="0.9" />
+                    <rect x="1" y="11" width="9" height="9" fill="currentColor" opacity="0.9" />
+                    <rect x="11" y="11" width="9" height="9" fill="currentColor" opacity="0.9" />
+                  </svg>
+                  Link Bennett University Account
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Info Cards */}
         <div className="grid gap-4 sm:grid-cols-2 mt-6">
           <Card>
@@ -181,6 +216,23 @@ export function ProfileClient({ user }: { user: { name?: string | null; email?: 
             <CardContent className="space-y-3">
               {editing ? (
                 <>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Program</span>
+                    <Select value={formData.programCode || undefined} onValueChange={(v) => handleSelectChange("programCode", v)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select program">
+                          {getReadableProgramName(formData.programCode || profile?.programCode)}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {profile?.programCode && !(COURSE_OPTIONS as readonly string[]).includes(profile.programCode) && !(COURSE_OPTIONS as readonly string[]).includes(getReadableProgramName(profile.programCode)) && (
+                          <SelectItem value={profile.programCode}>{getReadableProgramName(profile.programCode)}</SelectItem>
+                        )}
+                        {COURSE_OPTIONS.map((c) => (
+                          <SelectItem key={c} value={c}>{c}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="space-y-1"><span className="text-xs text-muted-foreground">Gender</span>
                     <Select value={formData.gender} onValueChange={(v) => handleSelectChange("gender", v)}>
                       <SelectTrigger><SelectValue /></SelectTrigger>

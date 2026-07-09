@@ -49,7 +49,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           session.user.isOnboarded = adapterUser.isOnboarded ?? false;
           session.user.isSuspended = adapterUser.isSuspended ?? false;
           session.user.isBanned = adapterUser.isBanned ?? false;
-          session.user.studentStatus = (adapterUser.studentStatus as any) ?? "PENDING_VERIFICATION";
+          session.user.studentStatus = (adapterUser.studentStatus as "PENDING_VERIFICATION" | "VERIFIED" | undefined) ?? "PENDING_VERIFICATION";
           session.user.isProfileComplete = adapterUser.isProfileComplete ?? false;
         } else {
           const dbUser = await prisma.user.findUnique({
@@ -73,14 +73,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   events: {
     async linkAccount({ user, account, profile }) {
       if (account.provider === "microsoft-entra-id") {
-        const bennettEmail = (profile as any)?.email || (profile as any)?.preferred_username;
+        const profileData = profile as Record<string, unknown>;
+        const bennettEmail = profileData?.email || profileData?.preferred_username;
         if (bennettEmail && typeof bennettEmail === "string" && bennettEmail.endsWith(BENNETT_EMAIL_DOMAIN)) {
           // Update user to verified and set email to bennett email
           await prisma.user.update({
             where: { id: user.id },
             data: { 
               email: bennettEmail,
-              studentStatus: "VERIFIED"
+              studentStatus: "VERIFIED",
+              authProvider: "GOOGLE_MICROSOFT"
             },
           });
 
@@ -110,7 +112,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user.email?.endsWith(BENNETT_EMAIL_DOMAIN)) {
         await prisma.user.update({
           where: { id: user.id },
-          data: { studentStatus: "VERIFIED" },
+          data: { studentStatus: "VERIFIED", authProvider: "MICROSOFT" },
         });
 
         const parsed = parseBennettEmail(user.email);

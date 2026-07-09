@@ -13,6 +13,7 @@ interface AnalyticsProps {
     statusStats?: Record<string, number>;
     programStats?: Record<string, number>;
     batchStats?: Record<string, number>;
+    authProviderStats?: Record<string, number>;
   };
 }
 
@@ -108,6 +109,27 @@ export function AnalyticsClient({ analytics }: AnalyticsProps) {
                   {Object.entries(analytics.statusStats || {}).map(([status, count]) => (
                     <div key={status} className="flex items-center justify-between">
                       <span className="text-sm font-medium">{status.replace(/_/g, " ")}</span>
+                      <span className="text-xs text-muted-foreground font-medium">{count as number} users</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Auth Providers */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
+          <Card>
+            <CardHeader><CardTitle className="text-sm flex items-center gap-2"><UsersIcon className="w-4 h-4" />Auth Providers</CardTitle></CardHeader>
+            <CardContent>
+              {Object.keys(analytics.authProviderStats || {}).length === 0 ? (
+                <p className="text-sm text-muted-foreground">No provider data yet</p>
+              ) : (
+                <div className="space-y-3">
+                  {Object.entries(analytics.authProviderStats || {}).map(([provider, count]) => (
+                    <div key={provider} className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{provider.replace(/_/g, " + ")}</span>
                       <span className="text-xs text-muted-foreground font-medium">{count as number} users</span>
                     </div>
                   ))}

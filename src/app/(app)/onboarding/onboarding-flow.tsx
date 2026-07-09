@@ -46,6 +46,8 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
+      customName: user.name || undefined,
+      programCode: profile?.programCode || undefined,
       smoking: "NEVER",
       vaping: "NEVER",
       drinking: "NEVER",
@@ -63,7 +65,7 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
 
   useEffect(() => {
     const fieldsToRegister: (keyof ProfileFormData)[] = [
-      "gender", "programCode", "smoking", "vaping", "drinking",
+      "customName", "gender", "programCode", "smoking", "vaping", "drinking",
       "sleepSchedule", "studyEnvironment",
       "guestsPreference", "accommodationType", "languages"
     ];
@@ -73,7 +75,31 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
   const totalSteps = STEPS.length;
   const progress = ((step + 1) / totalSteps) * 100;
 
-  const nextStep = () => setStep((s) => Math.min(s + 1, totalSteps - 1));
+  const nextStep = async () => {
+    let isValid = true;
+
+    if (step === 1) {
+      isValid = await form.trigger(["phone", "gender"]);
+      if (user.studentStatus === "PENDING_VERIFICATION") {
+        const isNameValid = await form.trigger(["customName"]);
+        isValid = isValid && isNameValid;
+      }
+    } else if (step === 2) {
+      isValid = await form.trigger(["smoking", "vaping", "drinking"]);
+    } else if (step === 3) {
+      isValid = await form.trigger(["sleepSchedule", "studyEnvironment", "guestsPreference"]);
+    } else if (step === 4) {
+      isValid = await form.trigger(["languages"]);
+    } else if (step === 5) {
+      isValid = await form.trigger(["accommodationType"]);
+    }
+
+    if (isValid) {
+      setStep((s) => Math.min(s + 1, totalSteps - 1));
+    } else {
+      toast.error("Please fill all required fields correctly.");
+    }
+  };
   const prevStep = () => setStep((s) => Math.max(s - 1, 0));
 
   const toggleLanguage = (lang: string) => {
@@ -119,6 +145,8 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
   };
 
   if (isSuccess) {
+    const isPending = user.studentStatus === "PENDING_VERIFICATION";
+
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 hero-wash">
         <motion.div
@@ -126,24 +154,39 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
           animate={{ opacity: 1, scale: 1 }}
           className="w-full max-w-lg surface-panel p-8 text-center space-y-8"
         >
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-            <CheckCircle className="h-10 w-10 text-primary" />
+          <div className={`mx-auto flex h-20 w-20 items-center justify-center rounded-full ${isPending ? 'bg-amber-100' : 'bg-primary/10'}`}>
+            {isPending ? (
+              <Sparkles className="h-10 w-10 text-amber-600" />
+            ) : (
+              <CheckCircle className="h-10 w-10 text-primary" />
+            )}
           </div>
           <div className="space-y-3">
-            <h1 className="text-3xl font-bold tracking-tight">You&apos;re all set!</h1>
+            <h1 className="text-3xl font-bold tracking-tight">🎉 Welcome to {APP_NAME}</h1>
             <p className="text-muted-foreground text-lg">
-              Your profile is verified and complete. Welcome to the {APP_NAME} community.
+              {isPending 
+                ? "Your profile is ready. You're currently registered as an Incoming Student." 
+                : "Your profile is verified and complete. Welcome to the community."}
             </p>
+            {isPending && (
+              <p className="text-sm text-muted-foreground mt-2">
+                You can link your Bennett University account anytime from your Profile page.
+              </p>
+            )}
           </div>
           <div className="rounded-[24px] bg-muted p-5 text-left space-y-3">
             <div className="flex justify-between items-center text-sm">
               <span className="text-muted-foreground">Status</span>
-              <Badge variant="outline" className="text-primary bg-primary/5 border-primary/20">Verified Student</Badge>
+              {isPending ? (
+                <Badge variant="outline" className="text-amber-600 bg-amber-50 border-amber-200">Incoming Student</Badge>
+              ) : (
+                <Badge variant="outline" className="text-primary bg-primary/5 border-primary/20">Verified Student</Badge>
+              )}
             </div>
-            {profile?.programCode && (
+            {!isPending && profile?.programCode && (
               <div className="flex justify-between items-center text-sm">
                 <span className="text-muted-foreground">Program</span>
-                <span className="font-medium">{getReadableProgramName(profile.programCode)}</span>
+                <span className="font-medium">{getReadableProgramName(profile.programCode as string)}</span>
               </div>
             )}
             <div className="flex justify-between items-center text-sm">
@@ -151,14 +194,26 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
               <span className="font-medium text-emerald-600">{calculateProfileCompletion(profile)}%</span>
             </div>
           </div>
-          <Button 
-            size="lg" 
-            className="w-full h-14 text-base"
-            onClick={() => router.push("/listings")}
-          >
-            Start Browsing Listings
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+          <div className="flex flex-col gap-3">
+            <Button 
+              size="lg" 
+              className="w-full h-14 text-base"
+              onClick={() => router.push("/listings")}
+            >
+              Explore Listings
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            {isPending && (
+              <Button 
+                variant="outline"
+                size="lg" 
+                className="w-full h-14 text-base"
+                onClick={() => router.push("/profile")}
+              >
+                Complete My Profile
+              </Button>
+            )}
+          </div>
         </motion.div>
       </div>
     );
@@ -233,31 +288,55 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
                         <div className="font-medium">{user.name}</div>
                         <div className="text-muted-foreground">Email</div>
                         <div className="font-medium">{user.email}</div>
-                        <div className="text-muted-foreground">Program</div>
-                        <div className="font-medium">{getReadableProgramName(profile?.programCode)}</div>
+                        <div className="text-muted-foreground flex items-center">Program</div>
+                        <div>
+                          <Select 
+                            value={form.watch("programCode") || undefined} 
+                            onValueChange={(v) => { if (v) form.setValue("programCode", v); }}
+                          >
+                            <SelectTrigger className="h-8 text-sm bg-white/50 border-primary/20">
+                              <SelectValue placeholder="Select course">
+                                {getReadableProgramName((form.watch("programCode") || profile?.programCode || undefined) as string | undefined)}
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {profile?.programCode && !(COURSE_OPTIONS as readonly string[]).includes(profile.programCode) && !(COURSE_OPTIONS as readonly string[]).includes(getReadableProgramName(profile.programCode as string)) && (
+                                <SelectItem value={profile.programCode}>{getReadableProgramName(profile.programCode as string)}</SelectItem>
+                              )}
+                              {COURSE_OPTIONS.map((c) => (
+                                <SelectItem key={c} value={c}>{c}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                         <div className="text-muted-foreground">Year</div>
                         <div className="font-medium">{computeCurrentAcademicYear(profile?.admissionYear)} Year</div>
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-4 mb-6">
-                      <div className="space-y-2">
-                        <Label>Full Name *</Label>
-                        <Input
-                          {...form.register("customName")}
-                          placeholder="Enter your name"
-                        />
+                    <div className="rounded-[24px] border border-amber-200 bg-amber-50 p-5 space-y-4 mb-6">
+                      <div className="flex items-start gap-2 mb-2">
+                        <Building2 className="h-5 w-5 text-amber-600 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-amber-800">Incoming Student</span>
+                          <p className="text-xs text-amber-700/80 mt-1 leading-relaxed">
+                            Your academic information will automatically update after you link your Bennett University account from your profile.
+                          </p>
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Intended Program (Optional)</Label>
-                        <Select value={form.watch("programCode") ?? null} onValueChange={(v: string | null) => { if (v) form.setValue("programCode", v); }}>
-                          <SelectTrigger><SelectValue placeholder="Select intended program" /></SelectTrigger>
-                          <SelectContent>
-                            {COURSE_OPTIONS.map((c) => (
-                              <SelectItem key={c} value={c}>{c}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                      <div className="grid grid-cols-2 gap-y-3 text-sm pt-2 border-t border-amber-200/50 items-center">
+                        <div className="text-amber-700/70">Name</div>
+                        <div>
+                          <Input
+                            {...form.register("customName")}
+                            className="bg-white/50 border-amber-200 focus-visible:ring-amber-500 h-8 text-sm"
+                            placeholder="Your full name"
+                          />
+                        </div>
+                        <div className="text-amber-700/70">Email</div>
+                        <div className="font-medium text-amber-900 truncate" title={user.email || ""}>{user.email}</div>
+                        <div className="text-amber-700/70">Academic Year</div>
+                        <div className="font-medium text-amber-900">1st Year</div>
                       </div>
                     </div>
                   )}
@@ -279,7 +358,7 @@ export default function OnboardingFlow({ user, profile }: { user: { studentStatu
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label>Gender (Optional)</Label>
+                      <Label>Gender *</Label>
                       <Select value={form.watch("gender") ?? null} onValueChange={(v: string | null) => { if (v) form.setValue("gender", v as ProfileFormData["gender"]); }}>
                         <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
                         <SelectContent>

@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 interface SignInButtonProps {
@@ -11,9 +11,11 @@ interface SignInButtonProps {
 }
 
 export function SignInButton({ children, size, variant, className }: SignInButtonProps) {
+  const router = useRouter();
+  
   return (
     <Button
-      onClick={() => signIn("microsoft-entra-id", { callbackUrl: "/listings" })}
+      onClick={() => router.push("/auth/signin")}
       size={size}
       variant={variant}
       className={className}

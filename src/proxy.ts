@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 
-const publicPaths = ["/", "/auth/signin", "/auth/error", "/api/dev-login"];
+const publicPaths = ["/", "/auth/signin", "/auth/error", "/api/dev-login", "/terms", "/privacy", "/contact"];
 const authApiPrefix = "/api/auth";
 const adminPrefix = "/admin";
 const onboardingPath = "/onboarding";
 
 export default async function middleware(request: NextRequest) {
+  console.log("PROXY MIDDLEWARE RAN: ", request.nextUrl.pathname);
   const { pathname } = request.nextUrl;
 
   // Allow auth API routes
@@ -15,12 +16,20 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Allow public paths
+  const session = await auth();
+
+  // If user is already authenticated and tries to access signin or landing page, redirect them to app
+  if (session?.user && (pathname === "/" || pathname === "/auth/signin")) {
+    if (!session.user.isOnboarded) {
+      return NextResponse.redirect(new URL(onboardingPath, request.url));
+    }
+    return NextResponse.redirect(new URL("/listings", request.url));
+  }
+
+  // Allow public paths for non-authenticated users
   if (publicPaths.includes(pathname)) {
     return NextResponse.next();
   }
-
-  const session = await auth();
 
   // Not authenticated — redirect to sign in
   if (!session?.user) {
@@ -40,20 +49,12 @@ export default async function middleware(request: NextRequest) {
   }
 
   // Not onboarded — redirect to onboarding (allow access to onboarding page itself)
-  if (!session.user.isOnboarded && pathname !== onboardingPath) {
-    // If pending verification, they shouldn't even go to onboarding yet
-    if (session.user.studentStatus === "PENDING_VERIFICATION") {
-      if (pathname !== "/verify-phone") {
-        return NextResponse.redirect(new URL("/verify-phone", request.url));
-      }
-    } else {
-      if (pathname === "/verify-phone") {
-         return NextResponse.redirect(new URL(onboardingPath, request.url));
-      }
+  if (!session.user.isOnboarded) {
+    if (pathname !== onboardingPath) {
       return NextResponse.redirect(new URL(onboardingPath, request.url));
     }
   } else if (session.user.isOnboarded) {
-    if (pathname === onboardingPath || pathname === "/verify-phone") {
+    if (pathname === onboardingPath) {
       return NextResponse.redirect(new URL("/listings", request.url));
     }
   }
