@@ -310,7 +310,7 @@ export function ListingFeed({ listings, total, userId, currentUserProfile }: Lis
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium text-foreground">{listing.user?.name}</p>
                           <p className="truncate text-xs text-muted-foreground">
-                            {listing.user?.studentStatus === "PENDING_VERIFICATION"
+                            {listing.user?.studentStatus === "PENDING_VERIFICATION" && (!listing.user?.profile || !listing.user?.profile?.programCode)
                               ? "Incoming Fresher"
                               : listing.user?.profile?.programCode
                                 ? `${getReadableProgramName(listing.user.profile.programCode)} • ${getReadableAcademicYear(computeCurrentAcademicYear(listing.user.profile.admissionYear))}`
