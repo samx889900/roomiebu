@@ -109,7 +109,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
         </div>
 
         {/* Right Column */}
-        <div className="space-y-6 md:grid-cols-2">
+        <div className="space-y-6 md:col-span-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Academic Info */}
             <Card>
@@ -136,7 +136,9 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
                 </div>
                 <div>
                   <span className="text-xs text-muted-foreground">Bennett Email</span>
-                  <p className="text-sm mt-1">{user.email.endsWith("@bennett.edu.in") ? user.email : "—"}</p>
+                  <p className="text-sm mt-1 truncate" title={user.email.endsWith("@bennett.edu.in") ? user.email : "—"}>
+                    {user.email.endsWith("@bennett.edu.in") ? user.email : "—"}
+                  </p>
                 </div>
               </CardContent>
             </Card>
