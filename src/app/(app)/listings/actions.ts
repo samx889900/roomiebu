@@ -241,6 +241,7 @@ export async function getListings(params: GetListingsParams = {}) {
             id: true,
             name: true,
             image: true,
+            studentStatus: true,
             profile: {
               select: {
                 programCode: true,

@@ -27,6 +27,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { cn, enumToLabel, formatRelativeDate, getRemainingSpots, getInitials, formatBudget } from "@/lib/utils";
+import { getReadableProgramName } from "@/lib/academic/mapping";
+import { computeCurrentAcademicYear, getReadableAcademicYear } from "@/lib/academic/year";
 import { calculateCompatibility } from "@/lib/compatibility";
 import { expressInterest } from "@/app/(app)/interests/actions";
 import { saveListing } from "@/app/(app)/saved/actions";
@@ -308,7 +310,12 @@ export function ListingFeed({ listings, total, userId, currentUserProfile }: Lis
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium text-foreground">{listing.user?.name}</p>
                           <p className="truncate text-xs text-muted-foreground">
-                            {listing.user?.profile?.course} • {listing.user?.profile?.year}
+                            {listing.user?.studentStatus === "PENDING_VERIFICATION"
+                              ? "Incoming Fresher"
+                              : listing.user?.profile?.programCode
+                                ? `${getReadableProgramName(listing.user.profile.programCode)} • ${getReadableAcademicYear(computeCurrentAcademicYear(listing.user.profile.admissionYear))}`
+                                : "Verified Student"
+                            }
                           </p>
                         </div>
                       </div>
