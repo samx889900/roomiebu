@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { formatDate, getInitials } from "@/lib/utils";
+import { getReadableProgramName } from "@/lib/academic/mapping";
+import { computeCurrentAcademicYear, getReadableAcademicYear } from "@/lib/academic/year";
 import { calculateCompatibility } from "@/lib/compatibility";
 import Link from "next/link";
 
@@ -55,7 +57,12 @@ export function MatchesClient({ matches, userId }: { matches: any[] /* eslint-di
                       <div className="flex-1">
                         <h3 className="font-semibold">{otherUser?.name}</h3>
                         <p className="text-sm text-muted-foreground">
-                          {otherProfile?.course} • {otherProfile?.year}
+                          {otherUser?.studentStatus === "PENDING_VERIFICATION" && (!otherProfile || !otherProfile.programCode)
+                            ? "Incoming Fresher"
+                            : otherProfile?.programCode
+                              ? `${getReadableProgramName(otherProfile.programCode)} • ${getReadableAcademicYear(computeCurrentAcademicYear(otherProfile.admissionYear))}`
+                              : "Verified Student"
+                          }
                         </p>
                       </div>
                       <CompatibilityBadge 

@@ -11,6 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { enumToLabel, formatRelativeDate, getInitials } from "@/lib/utils";
+import { getReadableProgramName } from "@/lib/academic/mapping";
+import { computeCurrentAcademicYear, getReadableAcademicYear } from "@/lib/academic/year";
 import { calculateCompatibility } from "@/lib/compatibility";
 import { acceptInterest, rejectInterest } from "./actions";
 import { toast } from "sonner";
@@ -105,7 +107,12 @@ export function InterestsClient({ received, sent, currentUserProfile }: { receiv
                           />
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {interest.interestedUser?.profile?.course} • {interest.interestedUser?.profile?.year}
+                          {interest.interestedUser?.studentStatus === "PENDING_VERIFICATION" && (!interest.interestedUser?.profile || !interest.interestedUser?.profile?.programCode)
+                            ? "Incoming Fresher"
+                            : interest.interestedUser?.profile?.programCode
+                              ? `${getReadableProgramName(interest.interestedUser.profile.programCode)} • ${getReadableAcademicYear(computeCurrentAcademicYear(interest.interestedUser.profile.admissionYear))}`
+                              : "Verified Student"
+                          }
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           Interested in: <Link href={`/listings/${interest.listing.id}`} className="text-primary hover:underline">{interest.listing.title}</Link>
