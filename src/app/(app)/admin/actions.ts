@@ -15,16 +15,43 @@ async function requireAdmin() {
 export async function getAdminStats() {
   await requireAdmin();
 
-  const [totalUsers, totalListings, activeListings, totalMatches, pendingReports] =
-    await Promise.all([
+  const [
+    totalUsers, totalListings, activeListings, totalMatches, pendingReports,
+    totalInterests, pendingInterests, acceptedInterests, rejectedInterests, allInterests
+  ] = await Promise.all([
       prisma.user.count(),
       prisma.listing.count({ where: { deletedAt: null } }),
       prisma.listing.count({ where: { status: "ACTIVE" } }),
       prisma.match.count(),
       prisma.report.count({ where: { isResolved: false } }),
+      prisma.listingInterest.count(),
+      prisma.listingInterest.count({ where: { status: "PENDING" } }),
+      prisma.listingInterest.count({ where: { status: "ACCEPTED" } }),
+      prisma.listingInterest.count({ where: { status: "REJECTED" } }),
+      prisma.listingInterest.findMany({
+        where: { status: { in: ["ACCEPTED", "REJECTED"] } },
+        select: { createdAt: true, updatedAt: true }
+      }),
     ]);
 
-  return { totalUsers, totalListings, activeListings, totalMatches, pendingReports };
+  const acceptanceRate = totalInterests > 0 
+    ? Math.round((acceptedInterests / totalInterests) * 100) 
+    : 0;
+
+  // Calculate average response time in hours
+  let avgResponseTimeHours = 0;
+  if (allInterests.length > 0) {
+    const totalTimeMs = allInterests.reduce((acc, interest) => {
+      return acc + (interest.updatedAt.getTime() - interest.createdAt.getTime());
+    }, 0);
+    avgResponseTimeHours = Math.round((totalTimeMs / allInterests.length) / (1000 * 60 * 60));
+  }
+
+  return { 
+    totalUsers, totalListings, activeListings, totalMatches, pendingReports,
+    totalInterests, pendingInterests, acceptedInterests, rejectedInterests,
+    acceptanceRate, avgResponseTimeHours
+  };
 }
 
 export async function getAdminReports(filter?: { resolved?: boolean }) {

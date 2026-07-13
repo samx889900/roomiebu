@@ -17,11 +17,25 @@ export async function expressInterest(listingId: string) {
 
   const listing = await prisma.listing.findUnique({
     where: { id: listingId },
-    include: { user: true },
+    include: { user: { include: { profile: true } } },
   });
 
   if (!listing || listing.status !== "ACTIVE") throw new Error("Listing not available");
   if (listing.userId === session.user.id) throw new Error("Cannot express interest in own listing");
+
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    include: { profile: true },
+  });
+
+  if (
+    listing.accommodationType === "HOSTEL" && 
+    listing.user.profile?.gender && 
+    currentUser?.profile?.gender && 
+    listing.user.profile.gender !== currentUser.profile.gender
+  ) {
+    throw new Error("Hostel accommodation is available only for students of the same gender.");
+  }
 
   // Check if already expressed interest
   const existing = await prisma.listingInterest.findUnique({

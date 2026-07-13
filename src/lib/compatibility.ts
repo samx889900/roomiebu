@@ -74,11 +74,11 @@ function academicPreferenceScore(
   }
 }
 
-export function calculateCompatibility(
+export function calculateDetailedCompatibility(
   currentUser: UserProfile,
   otherUser: UserProfile,
   listing?: ListingProfile
-): number {
+): { score: number, details: string[] } {
   const smokingS = frequencyScore(currentUser.smoking, otherUser.smoking);
   const drinkingS = frequencyScore(currentUser.drinking, otherUser.drinking);
   const sleepS = sleepScore(currentUser.sleepSchedule, otherUser.sleepSchedule);
@@ -105,5 +105,28 @@ export function calculateCompatibility(
     accommodationS * COMPATIBILITY_WEIGHTS.accommodationType +
     genderS * COMPATIBILITY_WEIGHTS.genderPreference) * (listing?.academicPreference && listing.academicPreference !== "ANY" ? (academicS === 0 ? 0.2 : 1) : 1);
 
-  return Math.round(raw * 100);
+  const score = Math.round(raw * 100);
+  
+  const details: string[] = [];
+  if (smokingS === 1) details.push("✓ Similar Smoking Habit");
+  else details.push("⚠ Different Smoking Habit");
+  
+  if (drinkingS === 1) details.push("✓ Similar Drinking Habit");
+  else details.push("⚠ Different Drinking Habit");
+  
+  if (sleepS === 1) details.push("✓ Similar Sleep Schedule");
+  else details.push("⚠ Different Sleep Schedule");
+  
+  if (accommodationS === 1) details.push("✓ Same Accommodation Preference");
+  else details.push("⚠ Different Accommodation Preference");
+
+  return { score, details };
+}
+
+export function calculateCompatibility(
+  currentUser: UserProfile,
+  otherUser: UserProfile,
+  listing?: ListingProfile
+): number {
+  return calculateDetailedCompatibility(currentUser, otherUser, listing).score;
 }

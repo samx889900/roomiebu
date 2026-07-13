@@ -52,6 +52,9 @@ export function AdminListingsClient({ listings }: { listings: any[] /* eslint-di
                       </Button>
                     ) : (
                       <>
+                        <Button render={<Link href={`/admin/listings/${listing.id}`} />} size="sm" variant="secondary" className="gap-1 flex-1 sm:flex-none">
+                          <List className="w-3 h-3" /> View Details
+                        </Button>
                         <Button render={<Link href={`/listings/${listing.id}/edit`} />} size="sm" variant="outline" className="gap-1 flex-1 sm:flex-none">
                           <Pencil className="w-3 h-3" /> Edit
                         </Button>

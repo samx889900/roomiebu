@@ -64,8 +64,9 @@ export function formatBudget(min?: number | null, max?: number | null): string {
   return `Up to ₹${max!.toLocaleString()}`;
 }
 
-export function enumToLabel(value: string): string {
-  return value
+export function enumToLabel(value: string | null | undefined): string {
+  if (!value) return "";
+  return String(value)
     .replace(/_/g, " ")
     .toLowerCase()
     .replace(/\b\w/g, (c) => c.toUpperCase());

@@ -2,7 +2,7 @@
 
 import { useOptimistic, useTransition } from "react";
 import { motion } from "framer-motion";
-import { Heart, Send, Check, X, Clock, CigaretteOff, Beer, Moon } from "lucide-react";
+import { Heart, Send, Check, X, Clock, CigaretteOff, Beer, Moon, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CompatibilityBadge } from "@/components/shared/compatibility-badge";
 import { EmptyState } from "@/components/shared/empty-state";
+import { ProfilePreviewDialog } from "@/components/profile/profile-preview-dialog";
 import { enumToLabel, formatRelativeDate, getInitials } from "@/lib/utils";
 import { getReadableProgramName } from "@/lib/academic/mapping";
 import { computeCurrentAcademicYear, getReadableAcademicYear } from "@/lib/academic/year";
@@ -132,7 +133,12 @@ export function InterestsClient({ received, sent, currentUserProfile }: { receiv
                         </p>
                       </div>
                       {(optimisticHandled[interest.id] || interest.status) === "PENDING" && (
-                        <div className="flex gap-2">
+                        <div className="flex flex-col gap-2 mt-2 sm:mt-0 sm:flex-row sm:items-center">
+                          <ProfilePreviewDialog userId={interest.interestedUser.id} listingId={interest.listing.id}>
+                            <Button size="sm" variant="outline" className="gap-1">
+                              <User className="w-3 h-3" /> View Profile
+                            </Button>
+                          </ProfilePreviewDialog>
                           <Button size="sm" className="gradient-accent gap-1" onClick={() => handleAccept(interest.id)}>
                             <Check className="w-3 h-3" /> Accept
                           </Button>

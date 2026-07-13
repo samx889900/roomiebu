@@ -40,6 +40,16 @@ export function ListingDetail({ listing, userId, currentUserProfile }: ListingDe
   const profile = listing.user?.profile;
 
   async function handleInterest() {
+    if (
+      listing.accommodationType === "HOSTEL" && 
+      profile?.gender && 
+      currentUserProfile?.gender && 
+      profile.gender !== currentUserProfile.gender
+    ) {
+      toast.error("Hostel accommodation is available only for students of the same gender.");
+      return;
+    }
+
     startTransition(() => {
       setOptimisticallyInterested(true);
     });

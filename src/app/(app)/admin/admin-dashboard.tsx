@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, List, BarChart3, Heart, Flag, TrendingUp } from "lucide-react";
+import { Users, List, BarChart3, Heart, Flag, TrendingUp, Clock, Check, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 
@@ -12,15 +12,24 @@ interface AdminDashboardProps {
     activeListings: number;
     totalMatches: number;
     pendingReports: number;
+    totalInterests?: number;
+    pendingInterests?: number;
+    acceptedInterests?: number;
+    rejectedInterests?: number;
+    acceptanceRate?: number;
+    avgResponseTimeHours?: number;
   };
 }
-
 const statCards = [
   { key: "totalUsers", label: "Total Users", icon: Users, color: "text-blue-400", bg: "bg-blue-500/10" },
   { key: "totalListings", label: "Total Listings", icon: List, color: "text-violet-400", bg: "bg-violet-500/10" },
   { key: "activeListings", label: "Active Listings", icon: TrendingUp, color: "text-emerald-400", bg: "bg-emerald-500/10" },
   { key: "totalMatches", label: "Matches Created", icon: Heart, color: "text-pink-400", bg: "bg-pink-500/10" },
   { key: "pendingReports", label: "Pending Reports", icon: Flag, color: "text-red-400", bg: "bg-red-500/10" },
+  { key: "totalInterests", label: "Total Interests", icon: Heart, color: "text-indigo-400", bg: "bg-indigo-500/10" },
+  { key: "pendingInterests", label: "Pending Interests", icon: Clock, color: "text-amber-400", bg: "bg-amber-500/10" },
+  { key: "acceptedInterests", label: "Accepted Interests", icon: Check, color: "text-emerald-400", bg: "bg-emerald-500/10" },
+  { key: "rejectedInterests", label: "Rejected Interests", icon: X, color: "text-red-400", bg: "bg-red-500/10" },
 ];
 
 export function AdminDashboard({ stats }: AdminDashboardProps) {

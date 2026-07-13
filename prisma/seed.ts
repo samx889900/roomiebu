@@ -70,6 +70,14 @@ async function main() {
     },
   ];
 
+  // Create an onboarding user
+  await prisma.user.upsert({
+    where: { email: 'qa.onboard@example.com' },
+    update: { isOnboarded: false },
+    create: { email: 'qa.onboard@example.com', name: 'QA Onboard', isOnboarded: false, studentStatus: 'PENDING_VERIFICATION' }
+  });
+  console.log(`✅ User: QA Onboard (qa.onboard@example.com)`);
+
   const createdUsers = [];
   for (const userData of sampleUsers) {
     const user = await prisma.user.upsert({

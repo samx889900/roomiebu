@@ -87,43 +87,44 @@ export function MyListingsClient({ listings }: { listings: any[] /* eslint-disab
                 transition={{ delay: i * 0.05 }}
               >
                 <Card className="hover:border-primary/20 transition-colors">
-                  <CardContent className="p-5">
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold truncate">{listing.title}</h3>
-                          <Badge variant="outline" className={statusColors[status]}>
-                            {status}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                          <span>{enumToLabel(listing.accommodationType)}</span>
-                          <span>•</span>
-                          <span>{remaining} spot{remaining !== 1 ? "s" : ""} remaining</span>
-                          <span>•</span>
-                          <span>{listing._count.interests} interest{listing._count.interests !== 1 ? "s" : ""}</span>
-                          <span>•</span>
-                          <span>{formatRelativeDate(listing.createdAt)}</span>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button render={<Link href={`/listings/${listing.id}`} />} variant="ghost" size="icon">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        {status === "ACTIVE" && (
-                          <>
-                            <Button render={<Link href={`/listings/${listing.id}/edit`} />} variant="ghost" size="icon">
-                              <Pencil className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={() => handleClose(listing.id)}>
-                              <XCircle className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={() => handleDelete(listing.id)}>
-                              <Trash2 className="w-4 h-4 text-destructive" />
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <CardContent className="p-4 sm:p-5">
+                    {/* Title + badge */}
+                    <div className="flex items-start gap-2 mb-2">
+                      <h3 className="font-semibold flex-1 min-w-0 break-words leading-snug">{listing.title}</h3>
+                      <Badge variant="outline" className={`shrink-0 text-xs ${statusColors[status]}`}>
+                        {status}
+                      </Badge>
+                    </div>
+
+                    {/* Metadata — wraps naturally on mobile */}
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground mb-3">
+                      <span>{enumToLabel(listing.accommodationType)}</span>
+                      <span className="hidden xs:inline">•</span>
+                      <span>{remaining} spot{remaining !== 1 ? "s" : ""} remaining</span>
+                      <span className="hidden xs:inline">•</span>
+                      <span>{listing._count.interests} interest{listing._count.interests !== 1 ? "s" : ""}</span>
+                      <span className="hidden xs:inline">•</span>
+                      <span>{formatRelativeDate(listing.createdAt)}</span>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex gap-1 justify-end">
+                      <Button render={<Link href={`/listings/${listing.id}`} />} variant="ghost" size="icon" className="h-8 w-8">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      {status === "ACTIVE" && (
+                        <>
+                          <Button render={<Link href={`/listings/${listing.id}/edit`} />} variant="ghost" size="icon" className="h-8 w-8">
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleClose(listing.id)}>
+                            <XCircle className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(listing.id)}>
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

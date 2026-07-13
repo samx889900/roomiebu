@@ -71,7 +71,7 @@ export function ListingForm({ initialData, onSubmit, loading, submitLabel }: Lis
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
           <Label>Accommodation</Label>
-          <Select defaultValue={form.getValues("accommodationType")} onValueChange={(v: string | null) => { if (v) form.setValue("accommodationType", v as "HOSTEL" | "FLAT" | "NOT_SURE"); }}>
+          <Select value={form.watch("accommodationType")} onValueChange={(v: string | null) => { if (v) form.setValue("accommodationType", v as "HOSTEL" | "FLAT" | "NOT_SURE"); }}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="HOSTEL">Hostel</SelectItem>
@@ -82,7 +82,7 @@ export function ListingForm({ initialData, onSubmit, loading, submitLabel }: Lis
         </div>
         <div className="space-y-2">
           <Label>Gender preference</Label>
-          <Select defaultValue={form.getValues("genderPreference")} onValueChange={(v: string | null) => { if (v) form.setValue("genderPreference", v as ListingFormData["genderPreference"]); }}>
+          <Select value={form.watch("genderPreference")} onValueChange={(v: string | null) => { if (v) form.setValue("genderPreference", v as ListingFormData["genderPreference"]); }}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="MALE">Male</SelectItem>
@@ -93,7 +93,7 @@ export function ListingForm({ initialData, onSubmit, loading, submitLabel }: Lis
         </div>
         <div className="space-y-2">
           <Label>Urgency</Label>
-          <Select defaultValue={form.getValues("currentStatus")} onValueChange={(v: string | null) => { if (v) form.setValue("currentStatus", v as ListingFormData["currentStatus"]); }}>
+          <Select value={form.watch("currentStatus")} onValueChange={(v: string | null) => { if (v) form.setValue("currentStatus", v as ListingFormData["currentStatus"]); }}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="LOOKING_URGENTLY">Looking urgently</SelectItem>
