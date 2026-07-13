@@ -52,16 +52,21 @@ export function AdminListingDetailClient({ listing }: { listing: any }) {
             <CardTitle>Overview</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center gap-4">
-              <Avatar className="h-10 w-10">
+            <Link 
+              href={`/admin/users/${listing.user?.id}`} 
+              className="flex items-center gap-4 group hover:opacity-90 transition-opacity w-fit"
+            >
+              <Avatar className="h-10 w-10 ring-2 ring-transparent group-hover:ring-primary/20 transition-all">
                 <AvatarImage src={listing.user?.image || ""} />
                 <AvatarFallback>{getInitials(listing.user?.name || "?")}</AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-semibold">{listing.user?.name}</p>
-                <p className="text-xs text-muted-foreground">Listing Owner</p>
+                <p className="font-semibold group-hover:text-primary group-hover:underline transition-colors leading-snug">
+                  {listing.user?.name}
+                </p>
+                <p className="text-xs text-muted-foreground">Listing Owner (View Profile)</p>
               </div>
-            </div>
+            </Link>
 
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
