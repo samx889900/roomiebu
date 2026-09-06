@@ -3,7 +3,7 @@ import MicrosoftEntraID from "next-auth/providers/microsoft-entra-id";
 import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
-import { BENNETT_EMAIL_DOMAIN } from "@/lib/constants";
+import { BENNETT_EMAIL_DOMAIN, DEFAULT_ADMIN_EMAILS } from "@/lib/constants";
 import { parseBennettEmail } from "@/lib/academic/parser";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -140,11 +140,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // Ignore if user not fully created yet
       }
 
-      // Auto-promote users to ADMIN based on ADMIN_EMAILS environment variable
-      const adminEmails = (process.env.ADMIN_EMAILS || "")
+      // Auto-promote users to ADMIN based on ADMIN_EMAILS environment variable and defaults
+      const envAdminEmails = (process.env.ADMIN_EMAILS || "")
         .split(",")
         .map((e) => e.trim().toLowerCase())
         .filter(Boolean);
+      const adminEmails = Array.from(
+        new Set([...DEFAULT_ADMIN_EMAILS.map((e) => e.toLowerCase()), ...envAdminEmails])
+      );
 
       if (user.email && adminEmails.includes(user.email.toLowerCase())) {
         const dbUser = await prisma.user.findUnique({

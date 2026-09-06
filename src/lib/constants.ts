@@ -8,6 +8,11 @@ export const APP_DESCRIPTION =
 
 export const BENNETT_EMAIL_DOMAIN = "@bennett.edu.in";
 
+export const DEFAULT_ADMIN_EMAILS = [
+  "e23cseu1717@bennett.edu.in",
+  "e23cseu0425@bennett.edu.in",
+];
+
 // ============================================
 // Course Options (Bennett University)
 // ============================================
